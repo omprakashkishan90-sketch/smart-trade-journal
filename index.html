@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Trade Journal</title>
+    <title>Smart Trade Journal - The Vault</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FullCalendar.js for My Trades -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
     <style>
         .circle-chart {
             width: 100px; height: 100px; border-radius: 50%;
@@ -18,153 +22,237 @@
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        /* Calendar Customization */
+        .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 2px 0; border: none !important;}
+        .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
     </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col">
-        <div class="h-16 flex items-center px-6 mt-4">
-            <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+    <!-- LOGIN OVERLAY -->
+    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="bg-[#1e293b] p-10 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700">
+            <svg class="w-16 h-16 text-blue-400 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/>
             </svg>
-            <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
-        </div>
-
-        <nav class="flex-1 mt-6 px-4 space-y-2">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                Dashboard
-            </button>
-            <button onclick="switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                My Strategies
-            </button>
-            <button onclick="switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Log Trade
-            </button>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
-        
-        <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-8 border-b border-gray-200">
-            <h1 class="text-xl font-semibold text-slate-800" id="header-title">Dashboard</h1>
-            <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-400">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="w-full h-full object-cover">
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto">
+            <h1 class="text-3xl font-bold text-white mb-2">Trade Vault</h1>
+            <p class="text-gray-400 mb-8">Discipline is the Ultimate Edge.</p>
             
-            <!-- 1. DASHBOARD TAB -->
-            <div id="tab-dashboard" class="tab-content active pb-10">
-                <div class="bg-[#1e2433] h-48 px-8 pt-8 relative z-0">
-                    <h2 class="text-3xl font-semibold text-white">Welcome Back</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-8 -mt-20 relative z-10">
-                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-                        <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
-                        <div class="circle-chart"><div class="circle-inner"><span class="text-xl font-bold text-slate-800">93%</span></div></div>
-                    </div>
-                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                        <h3 class="text-gray-500 font-medium text-sm mb-4">Account Balance</h3>
-                        <span class="text-2xl font-bold text-slate-800">$10,450.00</span>
-                    </div>
-                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                        <h3 class="text-gray-500 font-medium text-sm mb-4">Rules Followed</h3>
-                        <span class="text-2xl font-bold text-green-600">8/10 Trades</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. MY STRATEGIES TAB -->
-            <div id="tab-strategies" class="tab-content px-8 pt-8 pb-10">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
-                    <p class="text-gray-500 mb-6">Apni strategies yahan save karein, taaki baad mein trade log karte waqt directly inhe select kar sakein.</p>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
-                            <!-- ID ADDED HERE -->
-                            <input id="strategy-name-input" type="text" placeholder="e.g. SMC Liquidity Sweep + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Code / Logic</label>
-                            <!-- ID ADDED HERE -->
-                            <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="8" placeholder="// Apna code yahan paste karein..."></textarea>
-                        </div>
-                        <!-- ONCLICK ADDED HERE -->
-                        <button onclick="saveNewStrategy()" class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save Strategy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. LOG TRADE TAB -->
-            <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
-                    
-                    <div id="upload-section">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Step 1: Upload Chart Image</h3>
-                        <label class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-10 h-10 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
-                            </div>
-                            <input id="image-upload" type="file" class="hidden" accept="image/*" onchange="showTradeOptions()" />
-                        </label>
-                        <p id="file-name-display" class="mt-2 text-sm text-green-600 font-medium hidden">Image Attached Successfully! ✅</p>
-                    </div>
-
-                    <div id="trade-options-section" class="mt-8 hidden space-y-6 pt-6 border-t border-gray-200">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Step 2: Trade Details & Discipline</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Select Saved Strategy</label>
-                                <!-- ID ADDED TO SELECT DROPDOWN -->
-                                <select id="strategy-dropdown" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-slate-500">
-                                    <option value="">Select a strategy...</option>
-                                    <option value="SMC">SMC Liquidity Sweep + CHoCH</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Net P/L ($)</label>
-                                <input type="number" placeholder="e.g. 50.00" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                            </div>
-                        </div>
-
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-slate-800 mb-3">Discipline Checklist</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <label class="flex items-center space-x-3 cursor-pointer">
-                                    <input type="checkbox" class="w-4 h-4 text-slate-800 rounded">
-                                    <span class="text-sm text-slate-700">Followed Strategy Rules?</span>
-                                </label>
-                                <label class="flex items-center space-x-3 cursor-pointer">
-                                    <input type="checkbox" class="w-4 h-4 text-slate-800 rounded">
-                                    <span class="text-sm text-slate-700">Risked < 1% of account?</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <button onclick="submitTrade()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700">
-                            Save Trade to Vault
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+            <button onclick="loginUser()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6" alt="Google">
+                <span>Sign in with Google</span>
+            </button>
+            <p class="text-xs text-gray-500 mt-6">Firebase Auth Placeholder</p>
         </div>
-    </main>
+    </div>
 
-    <!-- JavaScript for Interactivity -->
+    <!-- MAIN APP STRUCTURE -->
+    <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col">
+            <div class="h-16 flex items-center px-6 mt-4">
+                <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/>
+                </svg>
+                <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
+            </div>
+
+            <nav class="flex-1 mt-6 px-4 space-y-2">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    Dashboard
+                </button>
+                <button onclick="switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    My Trades
+                </button>
+                <button onclick="switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    My Strategies
+                </button>
+                <button onclick="switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Log Trade
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+            
+            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-8 border-b border-gray-200">
+                <h1 class="text-xl font-semibold text-slate-800" id="header-title">Dashboard</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm font-medium text-slate-600">Fx_arjun</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-400">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto">
+                
+                <!-- 1. DASHBOARD TAB -->
+                <div id="tab-dashboard" class="tab-content active pb-10">
+                    <div class="bg-[#1e2433] h-48 px-8 pt-8 relative z-0">
+                        <h2 class="text-3xl font-semibold text-white">Welcome Back, Fx_arjun</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-8 -mt-16 relative z-10">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
+                            <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
+                            <div class="circle-chart"><div class="circle-inner"><span class="text-xl font-bold text-slate-800">75%</span></div></div>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
+                            <h3 class="text-gray-500 font-medium text-sm mb-2">Net P/L (This Week)</h3>
+                            <span class="text-3xl font-bold text-green-600">+$320.50</span>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
+                            <h3 class="text-gray-500 font-medium text-sm mb-2">Discipline Score</h3>
+                            <span class="text-3xl font-bold text-slate-800">8/10 Trades</span>
+                            <span class="text-xs text-green-600 font-medium mt-1">Rules Followed</span>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Coach Section -->
+                    <div class="px-8 mt-8">
+                        <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-20">
+                                <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">
+                                🧠 AI Coach Weekly Insight
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed max-w-3xl">
+                                "Arjun, your data shows a strong edge when using the <span class="font-bold text-white">'SMC Liquidity Sweep'</span> strategy. However, 80% of your losses this week came from breaking the <span class="font-bold text-red-400">Risk < 1%</span> rule. Your entries are highly accurate, but over-leveraging is killing the RR. Focus strictly on position sizing next week."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. MY TRADES (CALENDAR) TAB -->
+                <div id="tab-mytrades" class="tab-content px-8 pt-8 pb-10">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-5xl">
+                        <h2 class="text-xl font-bold text-slate-800 mb-6">Trading Calendar</h2>
+                        <!-- Calendar Container -->
+                        <div id="calendar" class="min-h-[500px]"></div>
+                    </div>
+                </div>
+
+                <!-- 3. MY STRATEGIES TAB -->
+                <div id="tab-strategies" class="tab-content px-8 pt-8 pb-10">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
+                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-1">Code / Logic</label>
+                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="6" placeholder="// Apna code yahan paste karein..."></textarea>
+                            </div>
+                            <button onclick="saveNewStrategy()" class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save Strategy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. LOG TRADE TAB -->
+                <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
+                        <div id="upload-section">
+                            <h3 class="text-lg font-bold text-slate-800 mb-4">Step 1: Upload Chart Image</h3>
+                            <label class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg class="w-10 h-10 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span></p>
+                                </div>
+                                <input id="image-upload" type="file" class="hidden" accept="image/*" onchange="showTradeOptions()" />
+                            </label>
+                            <p id="file-name-display" class="mt-2 text-sm text-green-600 font-medium hidden">Image Attached Successfully! ✅</p>
+                        </div>
+
+                        <div id="trade-options-section" class="mt-8 hidden space-y-6 pt-6 border-t border-gray-200">
+                            <h3 class="text-lg font-bold text-slate-800 mb-4">Step 2: Trade Details</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Select Strategy</label>
+                                    <select id="strategy-dropdown" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-slate-500">
+                                        <option value="SMC">SMC Liquidity Sweep + CHoCH</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Net P/L ($)</label>
+                                    <input id="trade-pl" type="number" placeholder="e.g. 50 or -20" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                            <button onclick="submitTrade()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4">
+                                Save to Vault & Calendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- DAY VIEW MODAL (Opens when clicking a date in Calendar) -->
+    <div id="dayModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h2 class="text-xl font-bold text-slate-800" id="modal-date-title">Trade Info</h2>
+                <button onclick="closeDayModal()" class="text-gray-500 hover:text-red-500 font-bold text-xl">&times;</button>
+            </div>
+            
+            <!-- Dummy Trade Data Info -->
+            <div class="space-y-4">
+                <div class="bg-slate-100 w-full h-40 rounded-lg flex items-center justify-center border border-gray-300">
+                    <span class="text-gray-400 font-medium">Chart Screenshot</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                        <span class="block text-xs text-gray-500 uppercase">Pair</span>
+                        <span class="font-bold text-slate-800">XAUUSD</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                        <span class="block text-xs text-gray-500 uppercase">Strategy</span>
+                        <span class="font-bold text-slate-800">SMC Liquidity Sweep</span>
+                    </div>
+                </div>
+                <div class="bg-red-50 p-3 rounded border border-red-200">
+                    <span class="font-bold text-red-600 block mb-1">Rules Broken:</span>
+                    <ul class="text-sm text-red-500 list-disc pl-5">
+                        <li>Entered before CHoCH confirmation.</li>
+                        <li>Risk exceeded 1% max limit.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script>
-        // Tab Switching Logic
+        // 1. Fake Login Logic
+        function loginUser() {
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            
+            loginScreen.classList.add('opacity-0');
+            setTimeout(() => {
+                loginScreen.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+                
+                // Init Calendar after login so it renders correctly
+                initCalendar();
+            }, 500);
+        }
+
+        // 2. Tab Logic
+        let calendarInstance = null;
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(btn => {
@@ -177,56 +265,59 @@
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('bg-gray-200', 'text-slate-800');
 
-            const titles = { 'dashboard': 'Dashboard', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade' };
             document.getElementById('header-title').innerText = titles[tabId];
+
+            // Re-render calendar to fix sizing issues if switching to My Trades
+            if(tabId === 'mytrades' && calendarInstance) {
+                setTimeout(() => { calendarInstance.render(); }, 100);
+            }
         }
 
-        // Reveal Options after Image Upload
+        // 3. Calendar Initialization (FullCalendar)
+        function initCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            calendarInstance = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+                dateClick: function(info) {
+                    openDayModal(info.dateStr);
+                },
+                // Mock Data Events
+                events: [
+                    { title: '+$150', start: '2026-08-05', color: '#22c55e' }, // Green for profit
+                    { title: '-$50', start: '2026-08-06', color: '#ef4444' }   // Red for loss
+                ]
+            });
+            calendarInstance.render();
+        }
+
+        // 4. Modal Logic
+        function openDayModal(dateStr) {
+            document.getElementById('modal-date-title').innerText = "Trade Info: " + dateStr;
+            document.getElementById('dayModal').classList.remove('hidden');
+        }
+        function closeDayModal() {
+            document.getElementById('dayModal').classList.add('hidden');
+        }
+
+        // 5. Log Trade UI flow
         function showTradeOptions() {
-            const fileInput = document.getElementById('image-upload');
-            if(fileInput.files.length > 0) {
-                const msg = document.getElementById('file-name-display');
-                msg.innerText = "Attached: " + fileInput.files[0].name + " ✅";
-                msg.classList.remove('hidden');
+            if(document.getElementById('image-upload').files.length > 0) {
+                document.getElementById('file-name-display').classList.remove('hidden');
                 document.getElementById('trade-options-section').classList.remove('hidden');
             }
         }
 
-        // --- NEW: Save Strategy Logic ---
         function saveNewStrategy() {
-            const nameInput = document.getElementById('strategy-name-input');
-            const codeInput = document.getElementById('strategy-code-input');
-            const strategyName = nameInput.value.trim();
-            
-            if(strategyName === "") {
-                alert("Bhai, pehle strategy ka naam toh daalo!");
-                return;
-            }
-
-            // 1. Add this new strategy to the dropdown in Log Trade tab
+            const name = document.getElementById('strategy-name-input').value.trim();
+            if(!name) { alert("Strategy name dalna zaroori hai!"); return; }
             const dropdown = document.getElementById('strategy-dropdown');
-            const newOption = document.createElement('option');
-            newOption.text = strategyName;
-            newOption.value = strategyName;
-            dropdown.add(newOption);
-
-            // 2. Alert the user
-            alert("Success! '" + strategyName + "' Vault me save ho gayi hai ✅\nAb aap ise 'Log Trade' section me select kar sakte hain.");
-
-            // 3. Clear the form fields for the next entry
-            nameInput.value = "";
-            codeInput.value = "";
+            dropdown.add(new Option(name, name));
+            alert("Strategy '" + name + "' Vault me save ho gayi!");
+            document.getElementById('strategy-name-input').value = "";
+            document.getElementById('strategy-code-input').value = "";
         }
 
-        // Fake Submit Action
         function submitTrade() {
-            alert("Trade saved successfully to your Vault!");
-            document.getElementById('image-upload').value = "";
-            document.getElementById('trade-options-section').classList.add('hidden');
-            document.getElementById('file-name-display').classList.add('hidden');
-            switchTab('dashboard');
-        }
-    </script>
-</body>
-</html>
-
+            co
