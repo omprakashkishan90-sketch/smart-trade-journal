@@ -141,6 +141,27 @@
                             <span class="text-xs text-green-600 font-medium mt-1">Personal Data Isolation Active</span>
                         </div>
                     </div>
+                    
+                    <!-- NEW SMART AUTO-ANALYTICS SECTION -->
+                    <div class="px-4 md:px-8 mt-6 md:mt-8">
+                        <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-5 md:p-6 text-white shadow-md relative overflow-hidden">
+                            <h3 class="text-lg font-bold text-blue-300 mb-4 flex items-center">🧠 Smart Auto-Analytics Insights</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <span class="block text-xs text-gray-400 uppercase font-bold mb-1">Top Performing Strategy</span>
+                                    <span class="text-lg font-extrabold text-green-400 truncate block" id="ai-best-strat">Analyzing...</span>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <span class="block text-xs text-gray-400 uppercase font-bold mb-1">Most Profitable Day</span>
+                                    <span class="text-lg font-extrabold text-blue-400 truncate block" id="ai-best-day">Analyzing...</span>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <span class="block text-xs text-gray-400 uppercase font-bold mb-1">Biggest Single Win</span>
+                                    <span class="text-lg font-extrabold text-yellow-400 truncate block" id="ai-biggest-win">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 2. MY TRADES & REPORTS TAB -->
@@ -361,7 +382,6 @@
                 </div>
             </div>
 
-            <!-- Added Trade Direction Block Here -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-4">
                 <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Direction</span>
@@ -603,6 +623,11 @@
 
                 let totalTrades = 0, wins = 0, netPl = 0;
 
+                // Smart Analytics Variables
+                let strategyStats = {};
+                let dayStats = { "Sunday": 0, "Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0 };
+                let biggestWinAmt = 0;
+
                 tradeSnapshot.forEach((doc) => {
                     const t = doc.data();
                     globalTradesCache.push(t);
@@ -610,6 +635,23 @@
                     const amt = parseFloat(t.amount || 0);
                     netPl += amt;
                     if(amt >= 0) wins++;
+
+                    // For AI: Strategy Performance
+                    if(t.strategy) {
+                        if(!strategyStats[t.strategy]) strategyStats[t.strategy] = 0;
+                        strategyStats[t.strategy] += amt;
+                    }
+
+                    // For AI: Day Performance
+                    if(t.date) {
+                        const d = new Date(t.date);
+                        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        const dayName = days[d.getDay()];
+                        dayStats[dayName] += amt;
+                    }
+
+                    // For AI: Biggest Win
+                    if(amt > biggestWinAmt) biggestWinAmt = amt;
 
                     calendarInstance.addEvent({
                         title: (amt >= 0 ? '+$' : '-$') + Math.abs(amt),
@@ -620,6 +662,7 @@
                     });
                 });
 
+                // Update Basic Dashboard Stats
                 document.getElementById('dash-totaltrades').innerText = totalTrades;
                 const netPlEl = document.getElementById('dash-netpl');
                 netPlEl.innerText = (netPl >= 0 ? '+$' : '-$') + Math.abs(netPl).toFixed(2);
@@ -628,6 +671,24 @@
                 let winRate = totalTrades > 0 ? Math.round((wins / totalTrades) * 100) : 0;
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
+
+                // Update Smart Analytics UI
+                let bestStrategy = "N/A";
+                let maxStratPL = -Infinity;
+                for(let s in strategyStats) {
+                    if(strategyStats[s] > maxStratPL) { maxStratPL = strategyStats[s]; bestStrategy = s; }
+                }
+
+                let bestDay = "N/A";
+                let maxDayPL = -Infinity;
+                for(let d in dayStats) {
+                    if(dayStats[d] > maxDayPL && dayStats[d] > 0) { maxDayPL = dayStats[d]; bestDay = d; }
+                }
+
+                document.getElementById('ai-best-strat').innerText = maxStratPL > -Infinity ? bestStrategy : "No Data Yet";
+                document.getElementById('ai-best-day').innerText = bestDay !== "N/A" ? bestDay : "No Data Yet";
+                document.getElementById('ai-biggest-win').innerText = biggestWinAmt > 0 ? "+$" + biggestWinAmt.toFixed(2) : "$0.00";
+
             } catch(e) { console.log(e); }
         }
 
