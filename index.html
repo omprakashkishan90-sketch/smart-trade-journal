@@ -82,7 +82,8 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
-                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">📊 Visitor Activity Log</button>
+                <!-- Visitor Activity Log (Hidden for Google Users, Visible only for Fx arjun) -->
+                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
@@ -119,7 +120,7 @@
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
                             <h3 class="text-gray-500 font-medium text-sm mb-2">Total Trades Logged</h3>
                             <span class="text-3xl font-bold text-slate-800" id="dash-totaltrades">0</span>
-                            <span class="text-xs text-green-600 font-medium mt-1">Dual Login System Active</span>
+                            <span class="text-xs text-green-600 font-medium mt-1">Secure Vault Active</span>
                         </div>
                     </div>
                     
@@ -127,7 +128,7 @@
                         <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
                             <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">🧠 AI Coach Performance Insight</h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl" id="ai-coach-text">
-                                "Analyzing your XAUUSD trades... Google & Credentials login active with visitor tracking."
+                                "Analyzing your XAUUSD trades... Secure login & visitor tracking active."
                             </p>
                         </div>
                     </div>
@@ -396,7 +397,7 @@
                     await logVisitorAndEnter(result.user.email, "Google Login");
                 }
             } catch (e) {
-                alert("Google Sign-In Notice: " + e.message);
+                alert("Google Sign-In Error: " + e.message);
             }
         };
 
@@ -433,6 +434,17 @@
             document.getElementById('main-app').classList.remove('hidden');
             setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
             document.getElementById('user-display-name').innerText = identifier;
+
+            // Check if logged in user is Master (Fx arjun)
+            const activityBtn = document.getElementById('btn-activity');
+            if(identifier.toLowerCase() === "fx arjun" || identifier.toLowerCase() === "fxarjun812@gmail.com") {
+                activityBtn.classList.remove('hidden');
+                activityBtn.classList.add('flex');
+            } else {
+                activityBtn.classList.add('hidden');
+                activityBtn.classList.remove('flex');
+            }
+
             initApp();
         }
 
@@ -716,7 +728,7 @@
             const container = document.getElementById('rules-list-container');
             if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic">No rules added yet...</li>`; return; }
             container.innerHTML = "";
-            currentRulesList.forEach((rule, idx) => {
+            currentRulesList.rules.forEach((rule, idx) => {
                 container.innerHTML += `<li class="bg-white p-2 px-3 rounded border border-gray-200"><strong>Rule ${idx + 1}:</strong> ${rule}</li>`;
             });
         }
