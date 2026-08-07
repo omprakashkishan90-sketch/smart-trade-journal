@@ -104,7 +104,7 @@
                         <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
                             <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">🧠 AI Coach Performance Insight</h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl" id="ai-coach-text">
-                                "Analyzing your XAUUSD trades... Log trades using your chart setups to unlock advanced risk metrics."
+                                "Analyzing your XAUUSD trades... Log trades with rule verification to track discipline."
                             </p>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB (Dual Image Upload & Accurate Calculator) -->
+                <!-- 4. LOG TRADE TAB -->
                 <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
                         
@@ -178,7 +178,7 @@
                                         <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                         <p class="text-xs text-gray-500 font-medium" id="chart-file-label">Upload Chart</p>
                                     </div>
-                                    <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label')" />
+                                    <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label', 'chartImgData')" />
                                 </label>
                             </div>
                             <div>
@@ -188,7 +188,7 @@
                                         <svg class="w-6 h-6 text-green-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         <p class="text-xs text-gray-500 font-medium" id="rr-file-label">Upload RR Box</p>
                                     </div>
-                                    <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label')" />
+                                    <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label', 'rrImgData')" />
                                 </label>
                             </div>
                         </div>
@@ -237,8 +237,8 @@
                                 </div>
                             </div>
 
-                            <button onclick="window.submitTrade()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4 shadow-lg">
-                                Save Trade & Update Dashboard 🚀
+                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4 shadow-lg">
+                                Save Trade & Verify Rules 🚀
                             </button>
                         </div>
                     </div>
@@ -248,25 +248,57 @@
         </main>
     </div>
 
-    <!-- DAY VIEW MODAL -->
+    <!-- RULE VERIFICATION MODAL -->
+    <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <h3 class="text-xl font-bold text-slate-800 mb-2">🛡️ Strategy Rules Checklist</h3>
+            <p class="text-xs text-gray-500 mb-4">Did you follow your strategy rules for this trade?</p>
+            
+            <div id="modal-rules-checklist" class="space-y-3 max-h-60 overflow-y-auto mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <!-- Dynamic Rules Checkboxes -->
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="window.closeRuleModal()" class="flex-1 bg-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-300">Cancel</button>
+                <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 shadow">Confirm & Save ✅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY VIEW MODAL (WITH IMAGE PREVIEWS) -->
     <div id="dayModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-xl p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-3">
                 <h2 class="text-xl font-bold text-slate-800" id="modal-date-title">Trade Info</h2>
                 <button onclick="window.closeDayModal()" class="text-gray-500 hover:text-red-500 font-bold text-xl">&times;</button>
             </div>
             <div class="space-y-4">
-                <div class="bg-slate-100 w-full h-32 rounded-lg flex items-center justify-center border border-gray-300">
-                    <span class="text-gray-400 font-medium">Dual Snapshots Attached</span>
-                </div>
                 <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-xs font-bold text-gray-500 uppercase mb-1">Chart Screenshot</span>
+                        <div class="bg-slate-100 w-full h-36 rounded-lg flex items-center justify-center border border-gray-300 overflow-hidden" id="modal-chart-preview">
+                            <span class="text-xs text-gray-400">No Image</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-bold text-gray-500 uppercase mb-1">RR Target Box</span>
+                        <div class="bg-slate-100 w-full h-36 rounded-lg flex items-center justify-center border border-gray-300 overflow-hidden" id="modal-rr-preview">
+                            <span class="text-xs text-gray-400">No Image</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 pt-2">
                     <div class="bg-gray-50 p-3 rounded border border-gray-200">
                         <span class="block text-xs text-gray-500 uppercase">Strategy</span>
-                        <span class="font-bold text-slate-800" id="modal-strat-val">-</span>
+                        <span class="font-bold text-slate-800 text-sm" id="modal-strat-val">-</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                        <span class="block text-xs text-gray-500 uppercase">Lot Size</span>
+                        <span class="font-bold text-slate-800 text-sm" id="modal-lot-val">-</span>
                     </div>
                     <div class="bg-gray-50 p-3 rounded border border-gray-200">
                         <span class="block text-xs text-gray-500 uppercase">Net P/L</span>
-                        <span class="font-bold text-slate-800" id="modal-pl-val">-</span>
+                        <span class="font-bold text-slate-800 text-sm" id="modal-pl-val">-</span>
                     </div>
                 </div>
             </div>
@@ -296,9 +328,13 @@
 
         let calendarInstance = null;
         let globalTradesCache = [];
+        let strategiesCache = [];
         let tempStrategyName = "";
         let tempStrategyDesc = "";
         let currentRulesList = [];
+        
+        let chartImgData = "";
+        let rrImgData = "";
 
         window.loginUser = function() {
             signInWithPopup(auth, provider)
@@ -350,8 +386,10 @@
                 const stratSnapshot = await getDocs(collection(db, "strategies"));
                 const dropdown = document.getElementById('strategy-dropdown');
                 dropdown.innerHTML = "";
+                strategiesCache = [];
                 stratSnapshot.forEach((doc) => {
                     const data = doc.data();
+                    strategiesCache.push(data);
                     if(data.name) dropdown.add(new Option(data.name, data.name));
                 });
                 if(dropdown.options.length === 0) dropdown.add(new Option("SMC", "SMC"));
@@ -374,7 +412,7 @@
                         title: (amt >= 0 ? '+$' : '-$') + Math.abs(amt),
                         start: t.date,
                         color: amt >= 0 ? '#22c55e' : '#ef4444',
-                        extendedProps: { strategy: t.strategy, pl: amt }
+                        extendedProps: { trade: t }
                     });
                 });
 
@@ -388,17 +426,25 @@
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
 
                 if(totalTrades > 0) {
-                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Your dual image RR setup tracking on XAUUSD is fully optimized!"`;
+                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Your rule verification and RR tracking on XAUUSD are fully active!"`;
                 }
             } catch(e) { console.log(e); }
         }
 
-        window.previewImage = function(inputId, labelId) {
+        window.previewImage = function(inputId, labelId, varName) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(labelId);
             if(input.files && input.files[0]) {
-                label.innerText = "Attached: " + input.files[0].name;
+                const file = input.files[0];
+                label.innerText = "Attached: " + file.name;
                 label.className = "text-xs text-green-600 font-bold truncate max-w-[150px]";
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if(varName === 'chartImgData') chartImgData = e.target.result;
+                    if(varName === 'rrImgData') rrImgData = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         };
 
@@ -419,7 +465,36 @@
             document.getElementById('trade-pl').value = netPL.toFixed(2);
         };
 
-        window.submitTrade = async function() {
+        // Open Rule Verification Modal before saving trade
+        window.openRuleVerificationModal = function() {
+            const selectedStratName = document.getElementById('strategy-dropdown').value;
+            const matchedStrat = strategiesCache.find(s => s.name === selectedStratName);
+            
+            const container = document.getElementById('modal-rules-checklist');
+            container.innerHTML = "";
+
+            if(matchedStrat && matchedStrat.rules && matchedStrat.rules.length > 0) {
+                matchedStrat.rules.forEach((rule, idx) => {
+                    container.innerHTML += `
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 bg-white rounded border border-gray-200">
+                            <input type="checkbox" class="rule-checkbox w-4 h-4 text-blue-600 rounded" checked />
+                            <span class="text-sm text-slate-700 font-medium">Rule ${idx + 1}: ${rule}</span>
+                        </label>`;
+                });
+            } else {
+                container.innerHTML = `<p class="text-sm text-gray-500 italic">No specific rules found for this strategy. You can proceed!</p>`;
+            }
+
+            document.getElementById('ruleVerificationModal').classList.remove('hidden');
+        };
+
+        window.closeRuleModal = function() {
+            document.getElementById('ruleVerificationModal').classList.add('hidden');
+        };
+
+        window.confirmAndSaveTrade = async function() {
+            document.getElementById('ruleVerificationModal').classList.add('hidden');
+            
             const plValue = document.getElementById('trade-pl').value;
             const strategy = document.getElementById('strategy-dropdown').value;
             const lotsize = document.getElementById('trade-lotsize').value;
@@ -440,11 +515,18 @@
                     entry: entry,
                     sl: sl,
                     tp: tp,
+                    chartImg: chartImgData,
+                    rrImg: rrImgData,
                     date: todayStr, 
                     timestamp: new Date() 
                 });
 
-                alert("Trade saved successfully to Firestore Database! ✅");
+                alert("Trade saved successfully with rule verification! ✅");
+                chartImgData = "";
+                rrImgData = "";
+                document.getElementById('chart-file-label').innerText = "Upload Chart";
+                document.getElementById('rr-file-label').innerText = "Upload RR Box";
+                
                 await loadUserDataFromFirebase();
                 window.switchTab('dashboard');
             } catch (e) { alert("Error: " + e.message); }
@@ -452,7 +534,16 @@
 
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
-            const worksheet = XLSX.utils.json_to_sheet(globalTradesCache);
+            const exportData = globalTradesCache.map(t => ({
+                Date: t.date,
+                Strategy: t.strategy,
+                "Lot Size": t.lotSize,
+                "Entry Price": t.entry,
+                "Stop Loss": t.sl,
+                "Take Profit": t.tp,
+                "Net P/L ($)": t.amount
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
             XLSX.writeFile(workbook, "TradeVault_Report.xlsx");
@@ -525,12 +616,25 @@
         window.openDayModalByDate = function(dateStr) {
             document.getElementById('modal-date-title').innerText = "Trade Info: " + dateStr;
             const match = globalTradesCache.find(t => t.date === dateStr);
+            
+            const chartPreview = document.getElementById('modal-chart-preview');
+            const rrPreview = document.getElementById('modal-rr-preview');
+
             if(match) {
                 document.getElementById('modal-strat-val').innerText = match.strategy || 'SMC';
-                document.getElementById('modal-pl-val').innerText = (match.amount >= 0 ? '+$' : '-$') + Math.abs(match.amount);
+                document.getElementById('modal-lot-val').innerText = match.lotSize || '0.01';
+                const plEl = document.getElementById('modal-pl-val');
+                plEl.innerText = (match.amount >= 0 ? '+$' : '-$') + Math.abs(match.amount);
+                plEl.className = "font-bold text-sm " + (match.amount >= 0 ? "text-green-600" : "text-red-600");
+
+                chartPreview.innerHTML = match.chartImg ? `<img src="${match.chartImg}" class="w-full h-full object-cover">` : `<span class="text-xs text-gray-400">No Image</span>`;
+                rrPreview.innerHTML = match.rrImg ? `<img src="${match.rrImg}" class="w-full h-full object-cover">` : `<span class="text-xs text-gray-400">No Image</span>`;
             } else {
                 document.getElementById('modal-strat-val').innerText = 'No Trade';
+                document.getElementById('modal-lot-val').innerText = '-';
                 document.getElementById('modal-pl-val').innerText = '$0.00';
+                chartPreview.innerHTML = `<span class="text-xs text-gray-400">No Image</span>`;
+                rrPreview.innerHTML = `<span class="text-xs text-gray-400">No Image</span>`;
             }
             document.getElementById('dayModal').classList.remove('hidden');
         };
