@@ -258,6 +258,18 @@
                                 </div>
                             </div>
 
+                            <!-- Exit Details Row -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                                <div>
+                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price (Actual)</label>
+                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold" placeholder="Price when closed...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Reason</label>
+                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP, Trailed SL, Early exit..." class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold">
+                                </div>
+                            </div>
+
                             <!-- Ratios and Net P/L -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
@@ -271,18 +283,6 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Net P/L ($)</label>
                                     <input id="trade-pl" type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-green-600 bg-white" value="0.00">
-                                </div>
-                            </div>
-
-                            <!-- NEW: Exit Details Row -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                                <div>
-                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price</label>
-                                    <input id="trade-exit-price" type="number" step="0.01" class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold" placeholder="Price when closed...">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Reason</label>
-                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP, Trailed SL, Early exit..." class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold">
                                 </div>
                             </div>
 
@@ -373,7 +373,7 @@
                 </div>
             </div>
 
-            <!-- NEW: Exit Details displayed in Report -->
+            <!-- Exit Details displayed in Report -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-8">
                 <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
                     <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Price</span>
@@ -677,16 +677,46 @@
             const sl = parseFloat(document.getElementById('trade-sl').value) || 0;
             const tp = parseFloat(document.getElementById('trade-tp').value) || 0;
             const lotsize = parseFloat(document.getElementById('trade-lotsize').value) || 0.01;
+            
+            // Check if user has entered an actual exit price
+            const exitPriceInput = document.getElementById('trade-exit-price').value;
+            const exitPrice = parseFloat(exitPriceInput);
 
             const risk = Math.abs(entry - sl);
-            const reward = Math.abs(tp - entry);
+            const expectedReward = Math.abs(tp - entry);
 
-            let rr = risk > 0 ? (reward / risk).toFixed(1) : 0;
+            // RR Calculation always based on expected setup
+            let rr = risk > 0 ? (expectedReward / risk).toFixed(1) : 0;
             document.getElementById('trade-rr-val').value = "1:" + rr;
-            document.getElementById('trade-pips').value = reward.toFixed(1) + " Pts";
 
-            const netPL = reward * lotsize * 100;
-            document.getElementById('trade-pl').value = netPL.toFixed(2);
+            // Determine if the trade was Long (Buy) or Short (Sell) based on TP vs Entry
+            const isBuy = tp >= entry;
+
+            let actualPoints = 0;
+            if (exitPriceInput !== "" && !isNaN(exitPrice)) {
+                // If exit price is given, use it to calculate real points
+                actualPoints = isBuy ? (exitPrice - entry) : (entry - exitPrice);
+            } else {
+                // Otherwise use the expected TP points
+                actualPoints = expectedReward;
+            }
+
+            document.getElementById('trade-pips').value = Math.abs(actualPoints).toFixed(1) + " Pts";
+
+            // Net P/L: Points * lot size * standard 100 contract size
+            const netPL = actualPoints * lotsize * 100;
+            
+            const plField = document.getElementById('trade-pl');
+            plField.value = netPL.toFixed(2);
+            
+            // Change color dynamically to Red if loss, Green if profit
+            if(netPL >= 0) {
+                plField.classList.remove('text-red-600');
+                plField.classList.add('text-green-600');
+            } else {
+                plField.classList.remove('text-green-600');
+                plField.classList.add('text-red-600');
+            }
         };
 
         window.openRuleVerificationModal = function() {
@@ -720,7 +750,6 @@
             const plValue = document.getElementById('trade-pl').value;
             if(!plValue) { alert("P/L required!"); return; }
 
-            // Extract Exit Details
             const exitPriceValue = document.getElementById('trade-exit-price').value || "";
             const exitReasonValue = document.getElementById('trade-exit-reason').value || "";
 
@@ -744,7 +773,6 @@
 
                 alert("Trade saved successfully to your personal vault! ✅");
                 
-                // Clear fields after save
                 chartImgData = ""; rrImgData = "";
                 document.getElementById('chart-file-label').innerText = "Upload Chart";
                 document.getElementById('rr-file-label').innerText = "Upload RR Box";
@@ -763,7 +791,6 @@
             document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
             document.getElementById('rep-levels').innerText = `Entry: ${trade.entry || '-'}\nSL: ${trade.sl || '-'}\nTP: ${trade.tp || '-'}`;
             
-            // Populate Exit Details in Modal
             document.getElementById('rep-exit-price').innerText = trade.exitPrice ? trade.exitPrice : '-';
             document.getElementById('rep-exit-reason').innerText = trade.exitReason ? trade.exitReason : '-';
 
