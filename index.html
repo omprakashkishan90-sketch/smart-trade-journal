@@ -16,7 +16,6 @@
             background-color: white; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
         }
-        /* Hide sections by default */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
     </style>
@@ -85,18 +84,21 @@
             <div id="tab-strategies" class="tab-content px-8 pt-8 pb-10">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
-                    <p class="text-gray-500 mb-6">Apni XAUUSD ya dusri trading strategies yahan save karein, taaki baad mein trade log karte waqt directly inhe select kar sakein.</p>
+                    <p class="text-gray-500 mb-6">Apni strategies yahan save karein, taaki baad mein trade log karte waqt directly inhe select kar sakein.</p>
                     
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
-                            <input type="text" placeholder="e.g. SMC Liquidity Sweep + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                            <!-- ID ADDED HERE -->
+                            <input id="strategy-name-input" type="text" placeholder="e.g. SMC Liquidity Sweep + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Code / Logic (Python, Pine Script)</label>
-                            <textarea class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="8" placeholder="// Apna code yahan paste karein..."></textarea>
+                            <label class="block text-sm font-bold text-slate-800 mb-1">Code / Logic</label>
+                            <!-- ID ADDED HERE -->
+                            <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="8" placeholder="// Apna code yahan paste karein..."></textarea>
                         </div>
-                        <button class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save Strategy</button>
+                        <!-- ONCLICK ADDED HERE -->
+                        <button onclick="saveNewStrategy()" class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save Strategy</button>
                     </div>
                 </div>
             </div>
@@ -105,7 +107,6 @@
             <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
                     
-                    <!-- Step 1: Upload Photo First -->
                     <div id="upload-section">
                         <h3 class="text-lg font-bold text-slate-800 mb-4">Step 1: Upload Chart Image</h3>
                         <label class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
@@ -119,17 +120,16 @@
                         <p id="file-name-display" class="mt-2 text-sm text-green-600 font-medium hidden">Image Attached Successfully! ✅</p>
                     </div>
 
-                    <!-- Step 2: Trade Options (Hidden by default) -->
                     <div id="trade-options-section" class="mt-8 hidden space-y-6 pt-6 border-t border-gray-200">
                         <h3 class="text-lg font-bold text-slate-800 mb-4">Step 2: Trade Details & Discipline</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Select Saved Strategy</label>
-                                <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-slate-500">
-                                    <option>Select a strategy...</option>
-                                    <option>SMC Liquidity Sweep + CHoCH</option>
-                                    <option>London Session Breakout</option>
+                                <!-- ID ADDED TO SELECT DROPDOWN -->
+                                <select id="strategy-dropdown" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-slate-500">
+                                    <option value="">Select a strategy...</option>
+                                    <option value="SMC">SMC Liquidity Sweep + CHoCH</option>
                                 </select>
                             </div>
                             <div>
@@ -138,7 +138,6 @@
                             </div>
                         </div>
 
-                        <!-- Discipline Rules Inline -->
                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <h4 class="font-semibold text-slate-800 mb-3">Discipline Checklist</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -157,7 +156,6 @@
                             Save Trade to Vault
                         </button>
                     </div>
-
                 </div>
             </div>
 
@@ -166,47 +164,63 @@
 
     <!-- JavaScript for Interactivity -->
     <script>
-        // 1. Tab Switching Logic
+        // Tab Switching Logic
         function switchTab(tabId) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Remove active style from all sidebar buttons
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.classList.remove('bg-gray-200', 'text-slate-800');
                 btn.classList.add('text-gray-500');
             });
 
-            // Show selected tab
             document.getElementById('tab-' + tabId).classList.add('active');
-            
-            // Add active style to clicked button
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('bg-gray-200', 'text-slate-800');
 
-            // Change Header Title
             const titles = { 'dashboard': 'Dashboard', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade' };
             document.getElementById('header-title').innerText = titles[tabId];
         }
 
-        // 2. Reveal Options after Image Upload
+        // Reveal Options after Image Upload
         function showTradeOptions() {
             const fileInput = document.getElementById('image-upload');
             if(fileInput.files.length > 0) {
-                // Show file name & success message
                 const msg = document.getElementById('file-name-display');
                 msg.innerText = "Attached: " + fileInput.files[0].name + " ✅";
                 msg.classList.remove('hidden');
-
-                // Reveal the rest of the form
                 document.getElementById('trade-options-section').classList.remove('hidden');
             }
         }
 
-        // 3. Fake Submit Action
+        // --- NEW: Save Strategy Logic ---
+        function saveNewStrategy() {
+            const nameInput = document.getElementById('strategy-name-input');
+            const codeInput = document.getElementById('strategy-code-input');
+            const strategyName = nameInput.value.trim();
+            
+            if(strategyName === "") {
+                alert("Bhai, pehle strategy ka naam toh daalo!");
+                return;
+            }
+
+            // 1. Add this new strategy to the dropdown in Log Trade tab
+            const dropdown = document.getElementById('strategy-dropdown');
+            const newOption = document.createElement('option');
+            newOption.text = strategyName;
+            newOption.value = strategyName;
+            dropdown.add(newOption);
+
+            // 2. Alert the user
+            alert("Success! '" + strategyName + "' Vault me save ho gayi hai ✅\nAb aap ise 'Log Trade' section me select kar sakte hain.");
+
+            // 3. Clear the form fields for the next entry
+            nameInput.value = "";
+            codeInput.value = "";
+        }
+
+        // Fake Submit Action
         function submitTrade() {
             alert("Trade saved successfully to your Vault!");
-            // Reset form and go back to dashboard
             document.getElementById('image-upload').value = "";
             document.getElementById('trade-options-section').classList.add('hidden');
             document.getElementById('file-name-display').classList.add('hidden');
@@ -214,5 +228,5 @@
         }
     </script>
 </body>
-                            </html>
+</html>
 
