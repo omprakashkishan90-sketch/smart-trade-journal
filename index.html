@@ -42,7 +42,6 @@
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6" alt="Google">
                 <span>Sign in with Google</span>
             </button>
-            <p class="text-xs text-green-400 font-medium mt-6">Master Admin & Approval System Active 🔒</p>
         </div>
     </div>
 
@@ -70,7 +69,6 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
-                <!-- Admin Panel Button (Only visible for fxarjun812@gmail.com) -->
                 <button onclick="window.switchTab('adminpanel')" id="btn-adminpanel" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">🛡️ Admin Approvals</button>
             </nav>
         </aside>
@@ -108,7 +106,7 @@
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
                             <h3 class="text-gray-500 font-medium text-sm mb-2">Total Trades Logged</h3>
                             <span class="text-3xl font-bold text-slate-800" id="dash-totaltrades">0</span>
-                            <span class="text-xs text-green-600 font-medium mt-1">Master Admin Security Active</span>
+                            <span class="text-xs text-green-600 font-medium mt-1">Professional Suite Active</span>
                         </div>
                     </div>
                     
@@ -257,7 +255,7 @@
                     </div>
                 </div>
 
-                <!-- 5. ADMIN APPROVALS TAB (Master Admin Only) -->
+                <!-- 5. ADMIN APPROVALS TAB -->
                 <div id="tab-adminpanel" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
                         <h2 class="text-2xl font-bold text-slate-800 mb-2">🛡️ User Access & Approvals</h2>
@@ -271,9 +269,7 @@
                                         <th class="p-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admin-users-table" class="divide-y divide-gray-200 text-sm">
-                                    <!-- Dynamic Users List -->
-                                </tbody>
+                                <tbody id="admin-users-table" class="divide-y divide-gray-200 text-sm"></tbody>
                             </table>
                         </div>
                     </div>
@@ -288,9 +284,7 @@
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
             <h3 class="text-xl font-bold text-slate-800 mb-2">🛡️ Strategy Rules Checklist</h3>
             <p class="text-xs text-gray-500 mb-4">Did you follow your strategy rules for this trade?</p>
-            
             <div id="modal-rules-checklist" class="space-y-3 max-h-60 overflow-y-auto mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200"></div>
-
             <div class="flex space-x-3">
                 <button onclick="window.closeRuleModal()" class="flex-1 bg-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-300">Cancel</button>
                 <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 shadow">Confirm & Save ✅</button>
@@ -351,8 +345,8 @@
     <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateData } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -382,13 +376,29 @@
         let rrImgData = "";
         let currentUser = null;
 
-        window.loginUser = function() {
-            signInWithPopup(auth, provider)
-                .then(async (result) => {
+        // Check redirect result when page loads
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result && result.user) {
                     currentUser = result.user;
                     await checkUserAccessAndInit(currentUser);
-                })
-                .catch((e) => alert("Login Error: " + e.message));
+                } else {
+                    // Check if already signed in
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            currentUser = user;
+                            await checkUserAccessAndInit(user);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log("Auth Redirect Error:", e);
+            }
+        });
+
+        window.loginUser = function() {
+            signInWithRedirect(auth, provider);
         };
 
         async function checkUserAccessAndInit(user) {
@@ -397,14 +407,12 @@
             const userSnap = await getDoc(userRef);
 
             if (userEmail === ADMIN_EMAIL) {
-                // Master Admin always approved
                 if (!userSnap.exists()) {
                     await setDoc(userRef, { email: userEmail, status: 'approved', role: 'admin' });
                 }
                 grantAccessAndStartApp(userEmail);
             } else {
                 if (!userSnap.exists()) {
-                    // New user request pending
                     await setDoc(userRef, { email: userEmail, status: 'pending', role: 'user' });
                     document.getElementById('login-screen').classList.add('hidden');
                     document.getElementById('pending-screen').classList.remove('hidden');
@@ -526,7 +534,7 @@
                 tableBody.innerHTML = "";
                 snapshot.forEach((docSnap) => {
                     const u = docSnap.data();
-                    if(u.email === ADMIN_EMAIL) return; // Skip master admin
+                    if(u.email === ADMIN_EMAIL) return;
                     tableBody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3 font-medium text-slate-800">${u.email}</td>
@@ -552,7 +560,7 @@
         window.sendWeeklyReportEmail = async function() {
             if(!currentUser) { alert("Please login first!"); return; }
             let totalPl = globalTradesCache.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
-            let messageBody = `Weekly Trading Report for ${currentUser.email}\\nTotal Trades: ${globalTradesCache.length}\\nNet P/L: $${totalPl.toFixed(2)}`;
+            let messageBody = `Weekly Trading Report for ${currentUser.email}\nTotal Trades: ${globalTradesCache.length}\nNet P/L: $${totalPl.toFixed(2)}`;
 
             const formData = new FormData();
             formData.append("access_key", WEB3FORMS_KEY);
