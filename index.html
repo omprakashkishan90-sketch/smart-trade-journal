@@ -39,11 +39,11 @@
             <h1 class="text-3xl font-bold text-white mb-2">Trade Vault</h1>
             <p class="text-gray-400 mb-8">Discipline is the Ultimate Edge.</p>
             
-            <button onclick="loginUser()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg">
+            <button onclick="window.loginUser()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6" alt="Google">
                 <span>Sign in with Google</span>
             </button>
-            <p class="text-xs text-gray-500 mt-6">Firebase Auth Placeholder</p>
+            <p class="text-xs text-green-400 font-medium mt-6">Firebase Database & Auth Active 🚀</p>
         </div>
     </div>
 
@@ -60,19 +60,19 @@
             </div>
 
             <nav class="flex-1 mt-6 px-4 space-y-2">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium transition-colors">
+                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard
                 </button>
-                <button onclick="switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     My Trades
                 </button>
-                <button onclick="switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     My Strategies
                 </button>
-                <button onclick="switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     Log Trade
                 </button>
@@ -125,7 +125,7 @@
                                 🧠 AI Coach Weekly Insight
                             </h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl">
-                                "Arjun, your data shows a strong edge when using the <span class="font-bold text-white">'SMC Liquidity Sweep'</span> strategy. However, 80% of your losses this week came from breaking the <span class="font-bold text-red-400">Risk < 1%</span> rule. Your entries are highly accurate, but over-leveraging is killing the RR. Focus strictly on position sizing next week."
+                                "Arjun, your data shows a strong edge when using the <span class="font-bold text-white">'SMC Liquidity Sweep'</span> strategy on XAUUSD. However, 80% of your losses this week came from breaking the <span class="font-bold text-red-400">Risk < 1%</span> rule. Your entries are highly accurate, but over-leveraging is killing the RR. Focus strictly on position sizing next week."
                             </p>
                         </div>
                     </div>
@@ -135,7 +135,6 @@
                 <div id="tab-mytrades" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-5xl">
                         <h2 class="text-xl font-bold text-slate-800 mb-6">Trading Calendar</h2>
-                        <!-- Calendar Container -->
                         <div id="calendar" class="min-h-[500px]"></div>
                     </div>
                 </div>
@@ -151,9 +150,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-800 mb-1">Code / Logic</label>
-                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="6" placeholder="// Apna code yahan paste karein..."></textarea>
+                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="6" placeholder="// Apna Pine Script / Python bot code ya entry rules yahan likho..."></textarea>
                             </div>
-                            <button onclick="saveNewStrategy()" class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save Strategy</button>
+                            <button onclick="window.saveNewStrategy()" class="bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Save to Database</button>
                         </div>
                     </div>
                 </div>
@@ -168,7 +167,7 @@
                                     <svg class="w-10 h-10 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span></p>
                                 </div>
-                                <input id="image-upload" type="file" class="hidden" accept="image/*" onchange="showTradeOptions()" />
+                                <input id="image-upload" type="file" class="hidden" accept="image/*" onchange="window.showTradeOptions()" />
                             </label>
                             <p id="file-name-display" class="mt-2 text-sm text-green-600 font-medium hidden">Image Attached Successfully! ✅</p>
                         </div>
@@ -187,8 +186,8 @@
                                     <input id="trade-pl" type="number" placeholder="e.g. 50 or -20" class="w-full px-4 py-2 border border-gray-300 rounded-md">
                                 </div>
                             </div>
-                            <button onclick="submitTrade()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4">
-                                Save to Vault & Calendar
+                            <button onclick="window.submitTrade()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4">
+                                Save Trade
                             </button>
                         </div>
                     </div>
@@ -198,18 +197,16 @@
         </main>
     </div>
 
-    <!-- DAY VIEW MODAL (Opens when clicking a date in Calendar) -->
+    <!-- DAY VIEW MODAL -->
     <div id="dayModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-3">
                 <h2 class="text-xl font-bold text-slate-800" id="modal-date-title">Trade Info</h2>
-                <button onclick="closeDayModal()" class="text-gray-500 hover:text-red-500 font-bold text-xl">&times;</button>
+                <button onclick="window.closeDayModal()" class="text-gray-500 hover:text-red-500 font-bold text-xl">&times;</button>
             </div>
-            
-            <!-- Dummy Trade Data Info -->
             <div class="space-y-4">
                 <div class="bg-slate-100 w-full h-40 rounded-lg flex items-center justify-center border border-gray-300">
-                    <span class="text-gray-400 font-medium">Chart Screenshot</span>
+                    <span class="text-gray-400 font-medium">Chart Screenshot Placeholder</span>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-3 rounded border border-gray-200">
@@ -221,39 +218,63 @@
                         <span class="font-bold text-slate-800">SMC Liquidity Sweep</span>
                     </div>
                 </div>
-                <div class="bg-red-50 p-3 rounded border border-red-200">
-                    <span class="font-bold text-red-600 block mb-1">Rules Broken:</span>
-                    <ul class="text-sm text-red-500 list-disc pl-5">
-                        <li>Entered before CHoCH confirmation.</li>
-                        <li>Risk exceeded 1% max limit.</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script>
-        // 1. Fake Login Logic
-        function loginUser() {
-            const loginScreen = document.getElementById('login-screen');
-            const mainApp = document.getElementById('main-app');
-            
-            loginScreen.classList.add('opacity-0');
-            setTimeout(() => {
-                loginScreen.classList.add('hidden');
-                mainApp.classList.remove('hidden');
-                setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
-                
-                // Init Calendar after login so it renders correctly
-                initCalendar();
-            }, 500);
-        }
 
-        // 2. Tab Logic
+    <!-- ============================================== -->
+    <!-- FIREBASE AND UI LOGIC SCRIPT                   -->
+    <!-- ============================================== -->
+    <script type="module">
+        // 1. Firebase Modules Import
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // 2. Firebase Configuration (Apni keys daalna zaroori hai!)
+        const firebaseConfig = {
+            apiKey: "YAHAN_APNI_API_KEY_DAALEIN", 
+            authDomain: "smart-journel.firebaseapp.com",
+            projectId: "smart-journel",
+            storageBucket: "smart-journel.appspot.com",
+            messagingSenderId: "951559141981",
+            appId: "YAHAN_APNA_APP_ID_DAALEIN",
+            measurementId: "G-HGQZQJ6OEG"
+        };
+
+        // 3. Initialize Firebase Engine
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const db = getFirestore(app);
+
+        // 4. UI Logic Functions (Global window object pe attach kiye hain taaki HTML buttons inhe dhoondh sakein)
         let calendarInstance = null;
 
-        function switchTab(tabId) {
+        window.loginUser = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("Welcome,", user.displayName);
+                    
+                    const loginScreen = document.getElementById('login-screen');
+                    const mainApp = document.getElementById('main-app');
+                    
+                    loginScreen.classList.add('opacity-0');
+                    setTimeout(() => {
+                        loginScreen.classList.add('hidden');
+                        mainApp.classList.remove('hidden');
+                        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+                        initCalendar();
+                    }, 500);
+                })
+                .catch((error) => {
+                    alert("Login Error: " + error.message);
+                });
+        };
+
+        window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.classList.remove('bg-gray-200', 'text-slate-800');
@@ -268,56 +289,30 @@
             const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade' };
             document.getElementById('header-title').innerText = titles[tabId];
 
-            // Re-render calendar to fix sizing issues if switching to My Trades
             if(tabId === 'mytrades' && calendarInstance) {
                 setTimeout(() => { calendarInstance.render(); }, 100);
             }
-        }
+        };
 
-        // 3. Calendar Initialization (FullCalendar)
         function initCalendar() {
             var calendarEl = document.getElementById('calendar');
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
-                dateClick: function(info) {
-                    openDayModal(info.dateStr);
-                },
-                // Mock Data Events
-                events: [
-                    { title: '+$150', start: '2026-08-05', color: '#22c55e' }, // Green for profit
-                    { title: '-$50', start: '2026-08-06', color: '#ef4444' }   // Red for loss
-                ]
+                dateClick: function(info) { window.openDayModal(info.dateStr); },
+                events: [] // Data future me Firebase se pull hoga
             });
             calendarInstance.render();
         }
 
-        // 4. Modal Logic
-        function openDayModal(dateStr) {
+        window.openDayModal = function(dateStr) {
             document.getElementById('modal-date-title').innerText = "Trade Info: " + dateStr;
             document.getElementById('dayModal').classList.remove('hidden');
-        }
-        function closeDayModal() {
+        };
+
+        window.closeDayModal = function() {
             document.getElementById('dayModal').classList.add('hidden');
-        }
+        };
 
-        // 5. Log Trade UI flow
-        function showTradeOptions() {
-            if(document.getElementById('image-upload').files.length > 0) {
-                document.getElementById('file-name-display').classList.remove('hidden');
-                document.getElementById('trade-options-section').classList.remove('hidden');
-            }
-        }
-
-        function saveNewStrategy() {
-            const name = document.getElementById('strategy-name-input').value.trim();
-            if(!name) { alert("Strategy name dalna zaroori hai!"); return; }
-            const dropdown = document.getElementById('strategy-dropdown');
-            dropdown.add(new Option(name, name));
-            alert("Strategy '" + name + "' Vault me save ho gayi!");
-            document.getElementById('strategy-name-input').value = "";
-            document.getElementById('strategy-code-input').value = "";
-        }
-
-        function submitTrade() {
-            co
+        window.showTradeOptions = function() {
+            if(document.getElementById('ima
