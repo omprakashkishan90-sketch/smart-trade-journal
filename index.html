@@ -230,11 +230,18 @@
                         <div class="space-y-6 pt-4 border-t border-gray-200">
                             <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
                             
-                            <!-- Strategy and Lot Size -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Strategy, Direction, and Lot Size -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Strategy</label>
                                     <select id="strategy-dropdown" class="w-full px-3 py-2 border border-gray-300 rounded-md"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Trade Direction</label>
+                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-slate-800">
+                                        <option value="buy">🟢 Buy (Long)</option>
+                                        <option value="sell">🔴 Sell (Short)</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Lot Size</label>
@@ -253,7 +260,7 @@
                                     <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-md bg-red-50 text-red-700 font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. TP</label>
+                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. TP (Expected)</label>
                                     <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-md bg-green-50 text-green-700 font-bold">
                                 </div>
                             </div>
@@ -354,7 +361,12 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
+            <!-- Added Trade Direction Block Here -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-4">
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Direction</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-direction">-</span>
+                </div>
                 <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Strategy</span>
                     <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-strat">-</span>
@@ -673,6 +685,7 @@
         };
 
         window.calculateFromPrices = function() {
+            const direction = document.getElementById('trade-direction').value;
             const entry = parseFloat(document.getElementById('trade-entry').value) || 0;
             const sl = parseFloat(document.getElementById('trade-sl').value) || 0;
             const tp = parseFloat(document.getElementById('trade-tp').value) || 0;
@@ -682,6 +695,7 @@
             const exitPriceInput = document.getElementById('trade-exit-price').value;
             const exitPrice = parseFloat(exitPriceInput);
 
+            // Using Math.abs for RR logic
             const risk = Math.abs(entry - sl);
             const expectedReward = Math.abs(tp - entry);
 
@@ -689,17 +703,25 @@
             let rr = risk > 0 ? (expectedReward / risk).toFixed(1) : 0;
             document.getElementById('trade-rr-val').value = "1:" + rr;
 
-            // Determine if the trade was Long (Buy) or Short (Sell) based on TP vs Entry
-            const isBuy = tp >= entry;
-
             let actualPoints = 0;
-            if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                // If exit price is given, use it to calculate real points
-                actualPoints = isBuy ? (exitPrice - entry) : (entry - exitPrice);
-            } else {
-                // Otherwise use the expected TP points
-                actualPoints = expectedReward;
+            
+            // Determine actual points based on Buy or Sell direction
+            if (direction === 'buy') {
+                if (exitPriceInput !== "" && !isNaN(exitPrice)) {
+                    actualPoints = exitPrice - entry; // Real points for Buy
+                } else {
+                    actualPoints = tp - entry; // Expected points for Buy
+                }
+            } else if (direction === 'sell') {
+                if (exitPriceInput !== "" && !isNaN(exitPrice)) {
+                    actualPoints = entry - exitPrice; // Real points for Sell
+                } else {
+                    actualPoints = entry - tp; // Expected points for Sell
+                }
             }
+
+            // Fallback safety if actualPoints becomes NaN
+            if (isNaN(actualPoints)) actualPoints = 0;
 
             document.getElementById('trade-pips').value = Math.abs(actualPoints).toFixed(1) + " Pts";
 
@@ -750,6 +772,7 @@
             const plValue = document.getElementById('trade-pl').value;
             if(!plValue) { alert("P/L required!"); return; }
 
+            const directionValue = document.getElementById('trade-direction').value;
             const exitPriceValue = document.getElementById('trade-exit-price').value || "";
             const exitReasonValue = document.getElementById('trade-exit-reason').value || "";
 
@@ -758,6 +781,7 @@
                     userEmail: currentLoggedInUser, 
                     amount: parseFloat(plValue), 
                     strategy: document.getElementById('strategy-dropdown').value, 
+                    direction: directionValue, // Added direction!
                     lotSize: document.getElementById('trade-lotsize').value,
                     entry: document.getElementById('trade-entry').value,
                     sl: document.getElementById('trade-sl').value,
@@ -787,6 +811,11 @@
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
+            
+            // Show proper Buy/Sell indicator in report
+            const dirLabel = trade.direction === 'sell' ? '🔴 SELL' : '🟢 BUY';
+            document.getElementById('rep-direction').innerText = dirLabel;
+            
             document.getElementById('rep-strat').innerText = trade.strategy;
             document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
             document.getElementById('rep-levels').innerText = `Entry: ${trade.entry || '-'}\nSL: ${trade.sl || '-'}\nTP: ${trade.tp || '-'}`;
