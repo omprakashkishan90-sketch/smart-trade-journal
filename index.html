@@ -358,7 +358,7 @@
     <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -389,18 +389,15 @@
         let chartImgData = "";
         let rrImgData = "";
 
-        // Check Google Redirect login on load
-        window.addEventListener('DOMContentLoaded', async () => {
+        window.loginWithGoogle = async function() {
             try {
-                const result = await getRedirectResult(auth);
+                const result = await signInWithPopup(auth, provider);
                 if (result && result.user) {
                     await logVisitorAndEnter(result.user.email, "Google Login");
                 }
-            } catch (e) { console.log(e); }
-        });
-
-        window.loginWithGoogle = function() {
-            signInWithRedirect(auth, provider);
+            } catch (e) {
+                alert("Google Sign-In Error: " + e.message);
+            }
         };
 
         window.handleUserPassLogin = async function() {
@@ -709,7 +706,7 @@
 
         window.addSingleRule = function() {
             const ruleText = document.getElementById('single-rule-input').value.trim();
-            if(!ruleTest) return;
+            if(!ruleText) return;
             currentRulesList.push(ruleText);
             document.getElementById('single-rule-input').value = "";
             renderRulesUI();
