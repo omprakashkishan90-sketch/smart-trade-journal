@@ -104,7 +104,7 @@
                         <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
                             <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">🧠 AI Coach Performance Insight</h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl" id="ai-coach-text">
-                                "Analyzing your XAUUSD trades... Log trades using your chart setup to unlock advanced risk metrics."
+                                "Analyzing your XAUUSD trades... Log trades using dual image uploads to unlock advanced risk metrics."
                             </p>
                         </div>
                     </div>
@@ -165,23 +165,36 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB (TradingView 3-Line RR Matcher) -->
+                <!-- 4. LOG TRADE TAB (Dual Image Upload & Accurate RR Matcher) -->
                 <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
-                        <div id="upload-section">
-                            <h3 class="text-lg font-bold text-slate-800 mb-4">Step 1: Upload Chart Image (TradingView Setup)</h3>
-                            <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                <div class="flex flex-col items-center justify-center pt-4 pb-5">
-                                    <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                    <p class="text-sm text-gray-500"><span class="font-semibold">Click to attach chart screenshot</span></p>
-                                </div>
-                                <input id="image-upload" type="file" class="hidden" accept="image/*" onchange="window.showTradeOptions()" />
-                            </label>
-                            <p id="file-name-display" class="mt-2 text-sm text-green-600 font-medium hidden">Chart Attached Successfully! ✅</p>
+                        
+                        <!-- Dual Image Upload Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3">
+                                        <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <p class="text-xs text-gray-500 font-medium">Upload Chart</p>
+                                    </div>
+                                    <input type="file" class="hidden" accept="image/*" />
+                                </label>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. TradingView RR / Target Box</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3">
+                                        <svg class="w-6 h-6 text-green-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <p class="text-xs text-gray-500 font-medium">Upload RR Box</p>
+                                    </div>
+                                    <input type="file" class="hidden" accept="image/*" />
+                                </label>
+                            </div>
                         </div>
 
-                        <div id="trade-options-section" class="mt-8 hidden space-y-6 pt-6 border-t border-gray-200">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2">Step 2: Enter TradingView 3-Line Levels (Entry, SL, TP)</h3>
+                        <div class="space-y-6 pt-4 border-t border-gray-200">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -194,35 +207,33 @@
                                 </div>
                             </div>
 
-                            <!-- TradingView 3-Line Exact Inputs -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-gray-200">
                                 <div>
-                                    <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry Price (Middle Line)</label>
-                                    <input id="trade-entry" type="number" step="0.01" value="4189.51" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-blue-300 rounded-md bg-blue-50 text-blue-900 font-bold">
+                                    <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry Price</label>
+                                    <input id="trade-entry" type="number" step="0.01" value="4323.23" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-blue-300 rounded-md bg-blue-50 text-blue-900 font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-red-600 uppercase mb-1">2. Stop Loss (Bottom Line)</label>
-                                    <input id="trade-sl" type="number" step="0.01" value="4179.21" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-md bg-red-50 text-red-700 font-bold">
+                                    <label class="block text-xs font-bold text-red-600 uppercase mb-1">2. Stop Loss (SL)</label>
+                                    <input id="trade-sl" type="number" step="0.01" value="4335.74" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-md bg-red-50 text-red-700 font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. Take Profit (Top Line)</label>
-                                    <input id="trade-tp" type="number" step="0.01" value="4216.86" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-md bg-green-50 text-green-700 font-bold">
+                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. Take Profit (TP)</label>
+                                    <input id="trade-tp" type="number" step="0.01" value="4284.23" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-md bg-green-50 text-green-700 font-bold">
                                 </div>
                             </div>
 
-                            <!-- Auto Computed Stats -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated RR Ratio</label>
-                                    <input id="trade-rr-val" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="1:2.6">
+                                    <input id="trade-rr-val" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="1:3.1">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Reward Pips</label>
-                                    <input id="trade-pips" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="27.3 Pips">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Points / Pips</label>
+                                    <input id="trade-pips" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="38.9 Pts">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Net Expected P/L ($)</label>
-                                    <input id="trade-pl" type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-green-600 bg-white" value="27.35">
+                                    <input id="trade-pl" type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-green-600 bg-white" value="38.90">
                                 </div>
                             </div>
 
@@ -246,7 +257,7 @@
             </div>
             <div class="space-y-4">
                 <div class="bg-slate-100 w-full h-32 rounded-lg flex items-center justify-center border border-gray-300">
-                    <span class="text-gray-400 font-medium">Chart Snapshot Attached</span>
+                    <span class="text-gray-400 font-medium">Dual Snapshots Attached</span>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-3 rounded border border-gray-200">
@@ -275,7 +286,7 @@
             storageBucket: "smart-journel.firebasestorage.app",
             messagingSenderId: "951559141981",
             appId: "1:951559141981:web:e7f31e8ce333c769702bb4",
-            measurementId: "G-HGQZQJ6OEG"
+            measurementId: "G-HGQZQJ60EG"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -377,12 +388,12 @@
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
 
                 if(totalTrades > 0) {
-                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Your 3-line RR level execution on XAUUSD is tracking well!"`;
+                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Your dual image RR setup tracking on XAUUSD is fully optimized!"`;
                 }
             } catch(e) { console.log(e); }
         }
 
-        // Automatic Math Calculation from 3-Line TradingView Levels (Entry, SL, TP)
+        // Accurate XAUUSD Calculation from Levels
         window.calculateFromPrices = function() {
             const entry = parseFloat(document.getElementById('trade-entry').value) || 0;
             const sl = parseFloat(document.getElementById('trade-sl').value) || 0;
@@ -394,19 +405,11 @@
 
             let rr = risk > 0 ? (reward / risk).toFixed(1) : 0;
             document.getElementById('trade-rr-val').value = "1:" + rr;
-            document.getElementById('trade-pips').value = reward.toFixed(1) + " Pips";
+            document.getElementById('trade-pips').value = reward.toFixed(1) + " Pts";
 
-            // XAUUSD Calculation: 1 Lot = $100 per point/pip, 0.01 Lot = $1 per point/pip
-            const netPL = reward * lotsize * 10;
+            // XAUUSD calculation: 1 lot = $100 per point move, 0.01 lot = $1 per point move
+            const netPL = reward * lotsize * 100;
             document.getElementById('trade-pl').value = netPL.toFixed(2);
-        };
-
-        window.showTradeOptions = function() {
-            if(document.getElementById('image-upload').files.length > 0) {
-                document.getElementById('file-name-display').classList.remove('hidden');
-                document.getElementById('trade-options-section').classList.remove('hidden');
-                window.calculateFromPrices();
-            }
         };
 
         window.submitTrade = async function() {
@@ -435,10 +438,6 @@
                 });
 
                 alert("Trade saved successfully to Firestore Database! ✅");
-                document.getElementById('image-upload').value = "";
-                document.getElementById('trade-options-section').classList.add('hidden');
-                document.getElementById('file-name-display').classList.add('hidden');
-                
                 await loadUserDataFromFirebase();
                 window.switchTab('dashboard');
             } catch (e) { alert("Error: " + e.message); }
