@@ -39,7 +39,7 @@
             <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
             <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
-            <!-- Google Sign In Option (Redirect Method for Mobile) -->
+            <!-- Google Sign In Option -->
             <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
@@ -389,7 +389,7 @@
         let chartImgData = "";
         let rrImgData = "";
 
-        // Handle Google Redirect Result on Page Load
+        // Safe Redirect Result Handler
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const result = await getRedirectResult(auth);
@@ -397,7 +397,7 @@
                     await logVisitorAndEnter(result.user.email, "Google Login");
                 }
             } catch (e) {
-                console.log("Redirect error:", e);
+                console.log("Redirect Auth Handled:", e);
             }
         });
 
@@ -410,14 +410,14 @@
             const pInput = document.getElementById('login-password').value;
 
             if(uInput === CORRECT_USER && pInput === CORRECT_PASS) {
-                await logVisitorAndEnter(uInput, "Master Credentials");
+                await logVisitorAndEnter(uInput, "Master Credentials 🔒");
             } else {
                 if(uInput !== "") {
                     try {
                         await addDoc(collection(db, "visitors"), {
                             username: uInput + " (Wrong Password)",
                             loginTime: new Date().toLocaleString(),
-                            status: "Failed Attempt"
+                            status: "Failed Attempt ❌"
                         });
                     } catch(e) {}
                 }
@@ -430,7 +430,7 @@
                 await addDoc(collection(db, "visitors"), {
                     username: identifier,
                     loginTime: new Date().toLocaleString(),
-                    status: "Success (" + method + ")"
+                    status: method
                 });
             } catch(e) { console.log(e); }
 
@@ -537,7 +537,7 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3 font-medium text-slate-800">${v.username}</td>
                             <td class="p-3 text-gray-600">${v.loginTime}</td>
-                            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded ${v.status.includes('Success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
+                            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded ${v.status.includes('Master') || v.status.includes('Google') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
                         </tr>`;
                 });
             } catch(e) { console.log(e); }
