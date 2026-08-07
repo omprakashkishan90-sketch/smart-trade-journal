@@ -104,7 +104,7 @@
                         <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
                             <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">🧠 AI Coach Performance Insight</h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl" id="ai-coach-text">
-                                "Analyzing your XAUUSD trades... Log trades using dual image uploads to unlock advanced risk metrics."
+                                "Analyzing your XAUUSD trades... Log trades using your chart setups to unlock advanced risk metrics."
                             </p>
                         </div>
                     </div>
@@ -165,11 +165,11 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB (Fixed Dual Image Upload & Preview) -->
+                <!-- 4. LOG TRADE TAB (Dual Image Upload & Accurate Calculator) -->
                 <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
                         
-                        <!-- Dual Image Upload Section with Working Inputs -->
+                        <!-- Dual Image Upload Section -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
@@ -286,7 +286,7 @@
             storageBucket: "smart-journel.firebasestorage.app",
             messagingSenderId: "951559141981",
             appId: "1:951559141981:web:e7f31e8ce333c769702bb4",
-            measurementId: "G-HGQZQJ60EG"
+            measurementId: "G-HGQZQJ6OEG"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -393,7 +393,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // Image Preview Handler
         window.previewImage = function(inputId, labelId) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(labelId);
@@ -403,7 +402,6 @@
             }
         };
 
-        // Accurate XAUUSD Calculation from Levels
         window.calculateFromPrices = function() {
             const entry = parseFloat(document.getElementById('trade-entry').value) || 0;
             const sl = parseFloat(document.getElementById('trade-sl').value) || 0;
@@ -452,7 +450,6 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
-        // Excel & PDF Export Features
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
             const worksheet = XLSX.utils.json_to_sheet(globalTradesCache);
