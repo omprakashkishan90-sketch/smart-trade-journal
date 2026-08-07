@@ -125,7 +125,7 @@
                                 🧠 AI Coach Weekly Insight
                             </h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl">
-                                "Arjun, your data shows a strong edge when using the <span class="font-bold text-white">'SMC Liquidity Sweep'</span> strategy on XAUUSD. However, 80% of your losses this week came from breaking the <span class="font-bold text-red-400">Risk < 1%</span> rule. Your entries are highly accurate, but over-leveraging is killing the RR. Focus strictly on position sizing next week."
+                                "Your data shows a strong edge when using the <span class="font-bold text-white">'SMC Liquidity Sweep'</span> strategy. However, 80% of your losses this week came from breaking the <span class="font-bold text-red-400">Risk < 1%</span> rule. Your entries are highly accurate, but over-leveraging is killing the RR. Focus strictly on position sizing next week."
                             </p>
                         </div>
                     </div>
@@ -227,20 +227,20 @@
     <!-- FIREBASE AND UI LOGIC SCRIPT                   -->
     <!-- ============================================== -->
     <script type="module">
-        // 1. Firebase Modules Import
+        // 1. Firebase Modules Import (CDN versions for HTML)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // 2. Firebase Configuration (Apni keys daalna zaroori hai!)
+        // 2. Firebase Configuration (Aapki Asli Keys yahan add kar di gayi hain!)
         const firebaseConfig = {
-            apiKey: "YAHAN_APNI_API_KEY_DAALEIN", 
+            apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
             authDomain: "smart-journel.firebaseapp.com",
             projectId: "smart-journel",
-            storageBucket: "smart-journel.appspot.com",
+            storageBucket: "smart-journel.firebasestorage.app",
             messagingSenderId: "951559141981",
-            appId: "YAHAN_APNA_APP_ID_DAALEIN",
-            measurementId: "G-HGQZQJ6OEG"
+            appId: "1:951559141981:web:e7f31e8ce333c769702bb4",
+            measurementId: "G-HGQZQJ60EG"
         };
 
         // 3. Initialize Firebase Engine
@@ -249,7 +249,7 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        // 4. UI Logic Functions (Global window object pe attach kiye hain taaki HTML buttons inhe dhoondh sakein)
+        // 4. UI Logic Functions
         let calendarInstance = null;
 
         window.loginUser = function() {
@@ -300,7 +300,7 @@
                 initialView: 'dayGridMonth',
                 headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
                 dateClick: function(info) { window.openDayModal(info.dateStr); },
-                events: [] // Data future me Firebase se pull hoga
+                events: [] 
             });
             calendarInstance.render();
         }
@@ -315,4 +315,69 @@
         };
 
         window.showTradeOptions = function() {
-            if(document.getElementById('ima
+            if(document.getElementById('image-upload').files.length > 0) {
+                document.getElementById('file-name-display').classList.remove('hidden');
+                document.getElementById('trade-options-section').classList.remove('hidden');
+            }
+        };
+
+        // 5. Firebase Save Logic (Real Database)
+        window.saveNewStrategy = async function() {
+            const name = document.getElementById('strategy-name-input').value.trim();
+            const code = document.getElementById('strategy-code-input').value.trim();
+            if(!name) { alert("Strategy name dalna zaroori hai!"); return; }
+
+            try {
+                await addDoc(collection(db, "strategies"), { 
+                    name: name, 
+                    code: code, 
+                    timestamp: new Date() 
+                });
+                
+                const dropdown = document.getElementById('strategy-dropdown');
+                dropdown.add(new Option(name, name));
+                alert("Strategy '" + name + "' Database me lifetime ke liye save ho gayi! 🚀");
+                
+                document.getElementById('strategy-name-input').value = "";
+                document.getElementById('strategy-code-input').value = "";
+            } catch (e) { 
+                alert("Error: " + e.message); 
+            }
+        };
+
+        window.submitTrade = async function() {
+            const plValue = document.getElementById('trade-pl').value;
+            const strategy = document.getElementById('strategy-dropdown').value;
+            if(!plValue) { alert("P/L daalna zaroori hai!"); return; }
+
+            const amount = parseFloat(plValue);
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            try {
+                await addDoc(collection(db, "trades"), { 
+                    amount: amount, 
+                    strategy: strategy, 
+                    date: todayStr, 
+                    timestamp: new Date() 
+                });
+
+                calendarInstance.addEvent({
+                    title: amount >= 0 ? '+$' + amount : '-$' + Math.abs(amount),
+                    start: todayStr,
+                    color: amount >= 0 ? '#22c55e' : '#ef4444'
+                });
+                
+                alert("Trade Firestore Database me permanently save ho gaya! ✅");
+                
+                document.getElementById('image-upload').value = "";
+                document.getElementById('trade-pl').value = "";
+                document.getElementById('trade-options-section').classList.add('hidden');
+                document.getElementById('file-name-display').classList.add('hidden');
+                window.switchTab('mytrades');
+            } catch (e) { 
+                alert("Error: " + e.message); 
+            }
+        };
+    </script>
+</body>
+</html>
