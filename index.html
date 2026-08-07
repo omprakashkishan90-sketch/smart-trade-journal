@@ -165,30 +165,30 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB (Dual Image Upload & Accurate RR Matcher) -->
+                <!-- 4. LOG TRADE TAB (Fixed Dual Image Upload & Preview) -->
                 <div id="tab-logtrade" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
                         
-                        <!-- Dual Image Upload Section -->
+                        <!-- Dual Image Upload Section with Working Inputs -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
                                 <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
                                         <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                        <p class="text-xs text-gray-500 font-medium">Upload Chart</p>
+                                        <p class="text-xs text-gray-500 font-medium" id="chart-file-label">Upload Chart</p>
                                     </div>
-                                    <input type="file" class="hidden" accept="image/*" />
+                                    <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label')" />
                                 </label>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. TradingView RR / Target Box</label>
                                 <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
                                         <svg class="w-6 h-6 text-green-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        <p class="text-xs text-gray-500 font-medium">Upload RR Box</p>
+                                        <p class="text-xs text-gray-500 font-medium" id="rr-file-label">Upload RR Box</p>
                                     </div>
-                                    <input type="file" class="hidden" accept="image/*" />
+                                    <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label')" />
                                 </label>
                             </div>
                         </div>
@@ -393,6 +393,16 @@
             } catch(e) { console.log(e); }
         }
 
+        // Image Preview Handler
+        window.previewImage = function(inputId, labelId) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(labelId);
+            if(input.files && input.files[0]) {
+                label.innerText = "Attached: " + input.files[0].name;
+                label.className = "text-xs text-green-600 font-bold truncate max-w-[150px]";
+            }
+        };
+
         // Accurate XAUUSD Calculation from Levels
         window.calculateFromPrices = function() {
             const entry = parseFloat(document.getElementById('trade-entry').value) || 0;
@@ -407,7 +417,6 @@
             document.getElementById('trade-rr-val').value = "1:" + rr;
             document.getElementById('trade-pips').value = reward.toFixed(1) + " Pts";
 
-            // XAUUSD calculation: 1 lot = $100 per point move, 0.01 lot = $1 per point move
             const netPL = reward * lotsize * 100;
             document.getElementById('trade-pl').value = netPL.toFixed(2);
         };
