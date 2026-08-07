@@ -3,35 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Trade Journal - Dashboard</title>
+    <title>Smart Trade Journal - Log Trade</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .circle-chart {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: conic-gradient(#1e293b 0% 93%, #e2e8f0 93% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .circle-inner {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
     <!-- Sidebar -->
     <aside class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col">
-        <!-- Logo Area -->
         <div class="h-16 flex items-center px-6 mt-4">
             <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/>
@@ -39,23 +17,16 @@
             <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
         </div>
 
-        <!-- Navigation Links -->
         <nav class="flex-1 mt-6 px-4 space-y-2">
-            <a href="#" class="flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium">
+            <!-- Dashboard Link (Updated to go back to index.html) -->
+            <a href="index.html" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 Dashboard
             </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+            <!-- Log Trade Link (Active State) -->
+            <a href="log_trade.html" class="flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                 Log Trade
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                Analytics
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                Settings
             </a>
         </nav>
     </aside>
@@ -65,116 +36,132 @@
         
         <!-- Top Header -->
         <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-8">
-            <h1 class="text-xl font-semibold text-slate-800">Dashboard</h1>
+            <h1 class="text-xl font-semibold text-slate-800">Log New Trade</h1>
             <div class="flex items-center space-x-6">
-                <!-- Search Bar -->
-                <div class="relative">
-                    <svg class="w-4 h-4 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="Search" class="pl-10 pr-4 py-2 bg-gray-200 border-none rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-                </div>
-                <!-- Notifications -->
-                <button class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                </button>
-                <!-- Profile Avatar -->
                 <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-400">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="w-full h-full object-cover">
                 </div>
             </div>
         </header>
 
-        <!-- Dashboard Content Scrollable -->
-        <div class="flex-1 overflow-y-auto pb-10">
-            <!-- Dark Welcome Banner -->
-            <div class="bg-[#1e2433] h-48 px-8 pt-8 relative z-0">
-                <h2 class="text-3xl font-semibold text-white tracking-wide">Welcome, Trader</h2>
-            </div>
-
-            <!-- 3 Stat Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-8 -mt-20 relative z-10">
+        <!-- Form Content -->
+        <div class="flex-1 overflow-y-auto px-8 pb-10">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl">
                 
-                <!-- Win Rate Card -->
-                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-                    <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
-                    <div class="circle-chart">
-                        <div class="circle-inner">
-                            <span class="text-xl font-bold text-slate-800">93%</span>
-                            <span class="text-xs text-gray-500">Rate</span>
+                <form id="tradeForm" class="space-y-6">
+                    
+                    <!-- Basic Details Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Instrument / Pair</label>
+                            <input type="text" value="XAUUSD" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Date</label>
+                            <input type="date" value="2026-08-07" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500">
                         </div>
                     </div>
-                </div>
 
-                <!-- Net P/L Card -->
-                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                    <h3 class="text-gray-500 font-medium text-sm mb-4">Net P/L</h3>
-                    <div class="flex items-end justify-between h-24 mt-auto space-x-2">
-                        <div class="w-1/6 bg-slate-400 h-8 rounded-sm"></div>
-                        <div class="w-1/6 bg-slate-500 h-16 rounded-sm"></div>
-                        <div class="w-1/6 bg-slate-400 h-10 rounded-sm"></div>
-                        <div class="w-1/6 bg-slate-700 h-24 rounded-sm"></div>
-                        <div class="w-1/6 bg-slate-600 h-14 rounded-sm"></div>
-                        <div class="w-1/6 bg-slate-800 h-20 rounded-sm"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Type</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500">
+                                <option>Long (Buy)</option>
+                                <option>Short (Sell)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Net P/L ($)</label>
+                            <input type="number" placeholder="e.g. 50.00" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Account Balance Card -->
-                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 relative overflow-hidden">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-slate-800 font-semibold text-sm">Account Balance</h3>
-                        <span class="text-slate-800 font-medium">-$185.00</span>
+                    <!-- Photo Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Upload Chart Screenshot</label>
+                        <input type="file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
                     </div>
-                    <span class="text-gray-400 text-xs">Equity</span>
-                    <div class="absolute bottom-0 left-0 w-full h-24 mt-4">
-                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-3d" preserveAspectRatio="none">
-                            <path d="M0,40 Q10,30 20,25 T40,20 T60,10 T80,5 T100,2" fill="none" stroke="#475569" stroke-width="2"/>
-                            <path d="M0,40 Q10,30 20,25 T40,20 T60,10 T80,5 T100,2 L100,40 L0,40 Z" fill="#e2e8f0" opacity="0.3"/>
-                        </svg>
-                    </div>
-                </div>
 
+                    <!-- Strategy / Code Section -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <label class="block text-sm font-bold text-slate-800 mb-1">
+                            Trade Strategy & Code Logic
+                        </label>
+                        <p class="text-xs text-gray-500 italic mb-3">
+                            * Note: Agar aap comfortable hain, tabhi apni strategy share karein. Yeh completely optional hai.
+                        </p>
+                        <!-- Dark textarea simulating a code editor -->
+                        <textarea 
+                            class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-slate-400" 
+                            rows="6" 
+                            placeholder="# Paste your Python/Pine Script or SMC Logic here...&#10;&#10;// Example:&#10;if (liquidity_swept and choch_formed) {&#10;    enter_trade();&#10;}"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button type="button" onclick="openModal()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 transition-colors">
+                            Submit Trade Entry
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <!-- Recent Trades Table -->
-            <div class="px-8 mt-8">
-                <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                    <h3 class="text-lg font-semibold text-slate-800 mb-6">Recent Trades</h3>
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="text-sm text-gray-500 border-b border-gray-300">
-                                <th class="pb-3 font-medium">Date</th>
-                                <th class="pb-3 font-medium">Instrument</th>
-                                <th class="pb-3 font-medium">Type (Long/Short)</th>
-                                <th class="pb-3 font-medium text-right">P/L</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm text-slate-700">
-                            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                <td class="py-4">2026-08-07</td>
-                                <td class="py-4 font-medium">USD</td>
-                                <td class="py-4">Long</td>
-                                <td class="py-4 text-right font-medium text-green-600">+$25.00</td>
-                            </tr>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                <td class="py-4">2026-08-07</td>
-                                <td class="py-4 font-medium">ASP</td>
-                                <td class="py-4">Short</td>
-                                <td class="py-4 text-right font-medium text-slate-500">-$0.00</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-4">2026-08-06</td>
-                                <td class="py-4 font-medium">USD</td>
-                                <td class="py-4">Long</td>
-                                <td class="py-4 text-right font-medium text-green-600">+$5.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
     </main>
-</div>
+
+    <!-- The Discipline Checklist Modal (Hidden by default) -->
+    <div id="ruleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform scale-95 transition-transform duration-300">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Discipline Check 🛑</h2>
+            <p class="text-sm text-gray-500 mb-6">Aaj aapne inme se kaun kaun se rules follow kiye? Sach sach batana.</p>
+            
+            <div class="space-y-3">
+                <label class="flex items-center space-x-3 bg-gray-50 p-3 rounded-md border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 text-slate-800 rounded focus:ring-slate-500">
+                    <span class="text-slate-700 font-medium">Liquidity sweep ka wait kiya?</span>
+                </label>
+                <label class="flex items-center space-x-3 bg-gray-50 p-3 rounded-md border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 text-slate-800 rounded focus:ring-slate-500">
+                    <span class="text-slate-700 font-medium">Risk 1% se kam tha?</span>
+                </label>
+                <label class="flex items-center space-x-3 bg-gray-50 p-3 rounded-md border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 text-slate-800 rounded focus:ring-slate-500">
+                    <span class="text-slate-700 font-medium">Sirf apne active session me trade liya?</span>
+                </label>
+                <label class="flex items-center space-x-3 bg-gray-50 p-3 rounded-md border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 text-slate-800 rounded focus:ring-slate-500">
+                    <span class="text-slate-700 font-medium">No FOMO (Dar ke entry nahi li)?</span>
+                </label>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-slate-600 font-medium hover:bg-gray-100 rounded-md">Cancel</button>
+                <a href="index.html" class="px-6 py-2 bg-slate-800 text-white font-medium rounded-md hover:bg-slate-700">Save to Vault</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Modal -->
+    <script>
+        const modal = document.getElementById('ruleModal');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            // Slight delay for animation effect
+            setTimeout(() => {
+                modal.children[0].classList.remove('scale-95');
+                modal.children[0].classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.children[0].classList.remove('scale-100');
+            modal.children[0].classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+    </script>
 
 </body>
-  </html>
-
+                                                                                                                                                                                                 </html>
+                                                                                                                                                                                                 
