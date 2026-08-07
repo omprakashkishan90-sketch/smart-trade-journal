@@ -39,7 +39,7 @@
             <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
             <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
-            <!-- Google Sign In Option -->
+            <!-- Google Sign In Option (Redirect Method for Mobile) -->
             <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
@@ -358,7 +358,7 @@
     <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -389,15 +389,20 @@
         let chartImgData = "";
         let rrImgData = "";
 
-        window.loginWithGoogle = async function() {
+        // Handle Google Redirect Result on Page Load
+        window.addEventListener('DOMContentLoaded', async () => {
             try {
-                const result = await signInWithPopup(auth, provider);
+                const result = await getRedirectResult(auth);
                 if (result && result.user) {
                     await logVisitorAndEnter(result.user.email, "Google Login");
                 }
             } catch (e) {
-                alert("Google Sign-In Error: " + e.message);
+                console.log("Redirect error:", e);
             }
+        });
+
+        window.loginWithGoogle = function() {
+            signInWithRedirect(auth, provider);
         };
 
         window.handleUserPassLogin = async function() {
