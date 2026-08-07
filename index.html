@@ -32,24 +32,37 @@
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
-    <!-- LOGIN SCREEN (USERNAME & PASSWORD) -->
-    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="bg-[#1e293b] p-10 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700">
-            <svg class="w-16 h-16 text-blue-400 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
-            <h1 class="text-3xl font-bold text-white mb-2">Trade Vault Pro</h1>
-            <p class="text-gray-400 mb-6">Professional Risk & Journal Suite</p>
+    <!-- DUAL LOGIN SCREEN -->
+    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
+        <div class="bg-[#1e293b] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
+            <svg class="w-14 h-14 text-blue-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+            <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
+            <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
+            <!-- Google Sign In Option -->
+            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                <span>Sign in with Google</span>
+            </button>
+
+            <div class="flex items-center my-4">
+                <div class="flex-grow border-t border-gray-600"></div>
+                <span class="px-3 text-xs text-gray-400 uppercase font-bold">Or Master Login</span>
+                <div class="flex-grow border-t border-gray-600"></div>
+            </div>
+
+            <!-- Username & Password Option -->
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Username</label>
-                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium">
+                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Password</label>
-                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium">
+                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
                 </div>
-                <button onclick="window.handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-lg mt-2">
-                    Login to Vault 🚀
+                <button onclick="window.handleUserPassLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-lg mt-2 text-sm">
+                    Login with Credentials 🚀
                 </button>
             </div>
         </div>
@@ -69,7 +82,7 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
-                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">📊 Visitor / User Activity</button>
+                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
@@ -106,7 +119,7 @@
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
                             <h3 class="text-gray-500 font-medium text-sm mb-2">Total Trades Logged</h3>
                             <span class="text-3xl font-bold text-slate-800" id="dash-totaltrades">0</span>
-                            <span class="text-xs text-green-600 font-medium mt-1">Secure Vault Active</span>
+                            <span class="text-xs text-green-600 font-medium mt-1">Dual Login System Active</span>
                         </div>
                     </div>
                     
@@ -114,7 +127,7 @@
                         <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-md relative overflow-hidden">
                             <h3 class="text-lg font-bold text-blue-300 mb-2 flex items-center">🧠 AI Coach Performance Insight</h3>
                             <p class="text-slate-300 text-sm leading-relaxed max-w-3xl" id="ai-coach-text">
-                                "Analyzing your XAUUSD trades... Secure login & visitor tracking active."
+                                "Analyzing your XAUUSD trades... Google & Credentials login active with visitor tracking."
                             </p>
                         </div>
                     </div>
@@ -255,18 +268,18 @@
                     </div>
                 </div>
 
-                <!-- 5. VISITOR / USER ACTIVITY LOG TAB -->
+                <!-- 5. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-8 pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
                         <h2 class="text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity Log</h2>
-                        <p class="text-xs text-gray-500 mb-6">Track who is logging in and using your website.</p>
+                        <p class="text-xs text-gray-500 mb-6">Track who is logging in via Google or master credentials.</p>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-gray-100 text-xs font-bold text-gray-600 uppercase border-b">
-                                        <th class="p-3">User / Visitor Identifier</th>
-                                        <th class="p-3">Login Time / Date</th>
-                                        <th class="p-3">Status</th>
+                                        <th class="p-3">User / Visitor Email / Name</th>
+                                        <th class="p-3">Login Time</th>
+                                        <th class="p-3">Login Method / Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="visitor-activity-table" class="divide-y divide-gray-200 text-sm"></tbody>
@@ -345,7 +358,8 @@
     <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -358,6 +372,8 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
         const CORRECT_USER = "Fx arjun";
@@ -373,39 +389,55 @@
         let chartImgData = "";
         let rrImgData = "";
 
-        window.handleLogin = async function() {
+        // Check Google Redirect login on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result && result.user) {
+                    await logVisitorAndEnter(result.user.email, "Google Login");
+                }
+            } catch (e) { console.log(e); }
+        });
+
+        window.loginWithGoogle = function() {
+            signInWithRedirect(auth, provider);
+        };
+
+        window.handleUserPassLogin = async function() {
             const uInput = document.getElementById('login-username').value.trim();
             const pInput = document.getElementById('login-password').value;
 
             if(uInput === CORRECT_USER && pInput === CORRECT_PASS) {
-                // Save visitor log to Firebase
-                try {
-                    await addDoc(collection(db, "visitors"), {
-                        username: uInput,
-                        loginTime: new Date().toLocaleString(),
-                        status: "Successful Login"
-                    });
-                } catch(e) { console.log(e); }
-
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-                document.getElementById('user-display-name').innerText = uInput;
-                initApp();
+                await logVisitorAndEnter(uInput, "Master Credentials");
             } else {
-                // Log failed attempt if someone else tries
                 if(uInput !== "") {
                     try {
                         await addDoc(collection(db, "visitors"), {
-                            username: uInput + " (Attempted)",
+                            username: uInput + " (Wrong Password)",
                             loginTime: new Date().toLocaleString(),
-                            status: "Failed / Unauthorized"
+                            status: "Failed Attempt"
                         });
-                    } catch(e) { console.log(e); }
+                    } catch(e) {}
                 }
                 alert("Incorrect Username or Password! ❌");
             }
         };
+
+        async function logVisitorAndEnter(identifier, method) {
+            try {
+                await addDoc(collection(db, "visitors"), {
+                    username: identifier,
+                    loginTime: new Date().toLocaleString(),
+                    status: "Success (" + method + ")"
+                });
+            } catch(e) { console.log(e); }
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
+            document.getElementById('user-display-name').innerText = identifier;
+            initApp();
+        }
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -418,7 +450,7 @@
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('bg-gray-200', 'text-slate-800');
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'activity': 'Visitor & Login Activity' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'activity': 'Visitor Activity Log' };
             document.getElementById('header-title').innerText = titles[tabId];
 
             if(tabId === 'mytrades' && calendarInstance) {
@@ -503,7 +535,7 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3 font-medium text-slate-800">${v.username}</td>
                             <td class="p-3 text-gray-600">${v.loginTime}</td>
-                            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded ${v.status.includes('Successful') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
+                            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded ${v.status.includes('Success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
                         </tr>`;
                 });
             } catch(e) { console.log(e); }
@@ -677,7 +709,7 @@
 
         window.addSingleRule = function() {
             const ruleText = document.getElementById('single-rule-input').value.trim();
-            if(!ruleText) return;
+            if(!ruleTest) return;
             currentRulesList.push(ruleText);
             document.getElementById('single-rule-input').value = "";
             renderRulesUI();
