@@ -26,7 +26,7 @@
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 2px 0; border: none !important;}
+        .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; }
         .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
     </style>
 </head>
@@ -255,7 +255,7 @@
             <p class="text-xs text-gray-500 mb-4">Did you follow your strategy rules for this trade?</p>
             
             <div id="modal-rules-checklist" class="space-y-3 max-h-60 overflow-y-auto mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <!-- Dynamic Rules Checkboxes -->
+                <!-- Dynamic Checkboxes -->
             </div>
 
             <div class="flex space-x-3">
@@ -265,42 +265,62 @@
         </div>
     </div>
 
-    <!-- DAY VIEW MODAL (WITH IMAGE PREVIEWS) -->
-    <div id="dayModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-xl p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <h2 class="text-xl font-bold text-slate-800" id="modal-date-title">Trade Info</h2>
-                <button onclick="window.closeDayModal()" class="text-gray-500 hover:text-red-500 font-bold text-xl">&times;</button>
+    <!-- DETAILED TRADE REPORT FULL-SCREEN VIEW (NEW PAGE / MODAL) -->
+    <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex flex-col z-50 overflow-y-auto p-4 md:p-10">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto p-8 relative my-auto">
+            <button onclick="window.closeTradeReport()" class="absolute top-6 right-6 bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl transition">&times;</button>
+            
+            <div class="flex items-center space-x-3 mb-6 border-b pb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800" id="rep-title">Detailed Trade Analysis</h2>
+                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-07</p>
+                </div>
             </div>
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <span class="block text-xs font-bold text-gray-500 uppercase mb-1">Chart Screenshot</span>
-                        <div class="bg-slate-100 w-full h-36 rounded-lg flex items-center justify-center border border-gray-300 overflow-hidden" id="modal-chart-preview">
-                            <span class="text-xs text-gray-400">No Image</span>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="block text-xs font-bold text-gray-500 uppercase mb-1">RR Target Box</span>
-                        <div class="bg-slate-100 w-full h-36 rounded-lg flex items-center justify-center border border-gray-300 overflow-hidden" id="modal-rr-preview">
-                            <span class="text-xs text-gray-400">No Image</span>
-                        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Chart Screenshot</h4>
+                    <div class="bg-gray-100 rounded-xl h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-chart-img">
+                        <span class="text-gray-400 text-sm">No Image</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-3 pt-2">
-                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
-                        <span class="block text-xs text-gray-500 uppercase">Strategy</span>
-                        <span class="font-bold text-slate-800 text-sm" id="modal-strat-val">-</span>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
-                        <span class="block text-xs text-gray-500 uppercase">Lot Size</span>
-                        <span class="font-bold text-slate-800 text-sm" id="modal-lot-val">-</span>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
-                        <span class="block text-xs text-gray-500 uppercase">Net P/L</span>
-                        <span class="font-bold text-slate-800 text-sm" id="modal-pl-val">-</span>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">RR Target Box</h4>
+                    <div class="bg-gray-100 rounded-xl h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-rr-img">
+                        <span class="text-gray-400 text-sm">No Image</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <span class="block text-xs text-gray-400 uppercase font-bold">Strategy Used</span>
+                    <span class="text-lg font-extrabold text-slate-800" id="rep-strat">-</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <span class="block text-xs text-gray-400 uppercase font-bold">Lot Size</span>
+                    <span class="text-lg font-extrabold text-slate-800" id="rep-lot">-</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <span class="block text-xs text-gray-400 uppercase font-bold">Entry / SL / TP</span>
+                    <span class="text-xs font-bold text-slate-700 mt-1 block" id="rep-levels">-</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <span class="block text-xs text-gray-400 uppercase font-bold">Net P/L</span>
+                    <span class="text-lg font-extrabold text-green-600" id="rep-pl">-</span>
+                </div>
+            </div>
+
+            <!-- Rules Followed Section -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 class="text-sm font-bold text-blue-900 uppercase tracking-wide mb-3 flex items-center">
+                    <svg class="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    Strategy Rules Followed For This Trade:
+                </h3>
+                <ul id="rep-rules-list" class="space-y-2 text-sm text-slate-700">
+                    <li class="italic text-gray-500">No rule checklist recorded.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -335,6 +355,7 @@
         
         let chartImgData = "";
         let rrImgData = "";
+        let currentCheckedRules = [];
 
         window.loginUser = function() {
             signInWithPopup(auth, provider)
@@ -374,7 +395,11 @@
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
-                dateClick: function(info) { window.openDayModalByDate(info.dateStr); },
+                eventClick: function(info) {
+                    // Clicking directly on the P/L event opens the full trade report page
+                    const tradeObj = info.event.extendedProps.trade;
+                    window.openTradeReport(tradeObj);
+                },
                 events: [] 
             });
             calendarInstance.render();
@@ -411,7 +436,8 @@
                     calendarInstance.addEvent({
                         title: (amt >= 0 ? '+$' : '-$') + Math.abs(amt),
                         start: t.date,
-                        color: amt >= 0 ? '#22c55e' : '#ef4444',
+                        backgroundColor: amt >= 0 ? '#22c55e' : '#ef4444',
+                        borderColor: amt >= 0 ? '#16a34a' : '#dc2626',
                         extendedProps: { trade: t }
                     });
                 });
@@ -426,7 +452,7 @@
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
 
                 if(totalTrades > 0) {
-                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Your rule verification and RR tracking on XAUUSD are fully active!"`;
+                    document.getElementById('ai-coach-text').innerText = `"Arjun, you have logged ${totalTrades} trades with a win rate of ${winRate}%. Click on any profit card in the calendar to view full logic & rule breakdown!"`;
                 }
             } catch(e) { console.log(e); }
         }
@@ -465,7 +491,6 @@
             document.getElementById('trade-pl').value = netPL.toFixed(2);
         };
 
-        // Open Rule Verification Modal before saving trade
         window.openRuleVerificationModal = function() {
             const selectedStratName = document.getElementById('strategy-dropdown').value;
             const matchedStrat = strategiesCache.find(s => s.name === selectedStratName);
@@ -477,7 +502,7 @@
                 matchedStrat.rules.forEach((rule, idx) => {
                     container.innerHTML += `
                         <label class="flex items-center space-x-3 cursor-pointer p-2 bg-white rounded border border-gray-200">
-                            <input type="checkbox" class="rule-checkbox w-4 h-4 text-blue-600 rounded" checked />
+                            <input type="checkbox" value="${rule}" class="rule-checkbox w-4 h-4 text-blue-600 rounded" checked />
                             <span class="text-sm text-slate-700 font-medium">Rule ${idx + 1}: ${rule}</span>
                         </label>`;
                 });
@@ -495,6 +520,11 @@
         window.confirmAndSaveTrade = async function() {
             document.getElementById('ruleVerificationModal').classList.add('hidden');
             
+            // Collect checked rules
+            const checkboxes = document.querySelectorAll('.rule-checkbox:checked');
+            const followedRules = [];
+            checkboxes.forEach(cb => followedRules.push(cb.value));
+
             const plValue = document.getElementById('trade-pl').value;
             const strategy = document.getElementById('strategy-dropdown').value;
             const lotsize = document.getElementById('trade-lotsize').value;
@@ -517,6 +547,7 @@
                     tp: tp,
                     chartImg: chartImgData,
                     rrImg: rrImgData,
+                    rulesFollowed: followedRules,
                     date: todayStr, 
                     timestamp: new Date() 
                 });
@@ -532,6 +563,41 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
+        // Open Detailed Trade Report Page / Modal
+        window.openTradeReport = function(trade) {
+            document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
+            document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
+            document.getElementById('rep-strat').innerText = trade.strategy;
+            document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
+            document.getElementById('rep-levels').innerText = `Entry: ${trade.entry || '-'}\nSL: ${trade.sl || '-'}\nTP: ${trade.tp || '-'}`;
+            
+            const plEl = document.getElementById('rep-pl');
+            plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
+            plEl.className = "text-lg font-extrabold " + (trade.amount >= 0 ? "text-green-600" : "text-red-600");
+
+            const chartContainer = document.getElementById('rep-chart-img');
+            const rrContainer = document.getElementById('rep-rr-img');
+
+            chartContainer.innerHTML = trade.chartImg ? `<img src="${trade.chartImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
+            rrContainer.innerHTML = trade.rrImg ? `<img src="${trade.rrImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
+
+            const rulesListContainer = document.getElementById('rep-rules-list');
+            rulesListContainer.innerHTML = "";
+            if(trade.rulesFollowed && trade.rulesFollowed.length > 0) {
+                trade.rulesFollowed.forEach((rule, idx) => {
+                    rulesListContainer.innerHTML += `<li class="flex items-center text-slate-800 font-medium"><svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>${rule}</li>`;
+                });
+            } else {
+                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No specific rules were checked for this trade.</li>`;
+            }
+
+            document.getElementById('tradeReportModal').classList.remove('hidden');
+        };
+
+        window.closeTradeReport = function() {
+            document.getElementById('tradeReportModal').classList.add('hidden');
+        };
+
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
             const exportData = globalTradesCache.map(t => ({
@@ -541,7 +607,8 @@
                 "Entry Price": t.entry,
                 "Stop Loss": t.sl,
                 "Take Profit": t.tp,
-                "Net P/L ($)": t.amount
+                "Net P/L ($)": t.amount,
+                "Rules Followed": t.rulesFollowed ? t.rulesFollowed.join(", ") : "None"
             }));
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
@@ -612,34 +679,6 @@
                 window.switchTab('dashboard');
             } catch (e) { alert("Error: " + e.message); }
         };
-
-        window.openDayModalByDate = function(dateStr) {
-            document.getElementById('modal-date-title').innerText = "Trade Info: " + dateStr;
-            const match = globalTradesCache.find(t => t.date === dateStr);
-            
-            const chartPreview = document.getElementById('modal-chart-preview');
-            const rrPreview = document.getElementById('modal-rr-preview');
-
-            if(match) {
-                document.getElementById('modal-strat-val').innerText = match.strategy || 'SMC';
-                document.getElementById('modal-lot-val').innerText = match.lotSize || '0.01';
-                const plEl = document.getElementById('modal-pl-val');
-                plEl.innerText = (match.amount >= 0 ? '+$' : '-$') + Math.abs(match.amount);
-                plEl.className = "font-bold text-sm " + (match.amount >= 0 ? "text-green-600" : "text-red-600");
-
-                chartPreview.innerHTML = match.chartImg ? `<img src="${match.chartImg}" class="w-full h-full object-cover">` : `<span class="text-xs text-gray-400">No Image</span>`;
-                rrPreview.innerHTML = match.rrImg ? `<img src="${match.rrImg}" class="w-full h-full object-cover">` : `<span class="text-xs text-gray-400">No Image</span>`;
-            } else {
-                document.getElementById('modal-strat-val').innerText = 'No Trade';
-                document.getElementById('modal-lot-val').innerText = '-';
-                document.getElementById('modal-pl-val').innerText = '$0.00';
-                chartPreview.innerHTML = `<span class="text-xs text-gray-400">No Image</span>`;
-                rrPreview.innerHTML = `<span class="text-xs text-gray-400">No Image</span>`;
-            }
-            document.getElementById('dayModal').classList.remove('hidden');
-        };
-
-        window.closeDayModal = function() { document.getElementById('dayModal').classList.add('hidden'); };
     </script>
 </body>
 </html>
