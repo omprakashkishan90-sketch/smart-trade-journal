@@ -1002,6 +1002,16 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
+            // Helper function to maintain image aspect ratio
+            const getAspectRatio = (dataUrl) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img.height / img.width);
+                    img.onerror = () => resolve(0.75); // fallback ratio
+                    img.src = dataUrl;
+                });
+            };
+            
             doc.setFontSize(18);
             doc.setFont("helvetica", "bold");
             doc.text("Trade Vault Pro - Detailed Trade Report", 14, 20);
@@ -1041,16 +1051,19 @@
                 
                 yPos += 10;
                 
-                // Rendering Uploaded Images inside PDF
-                let imgHeight = 60;
-                let imgWidth = 80;
+                // DYNAMIC IMAGE SCALING LOGIC
+                let maxImgWidth = 85; // Half of the A4 width
+                let height1 = 0;
+                let height2 = 0;
                 let hasImages = false;
                 
                 if (t.chartImg && t.chartImg.includes("data:image")) {
                     doc.setFont("helvetica", "bold");
                     doc.text("Chart Screenshot:", 14, yPos);
                     try {
-                        doc.addImage(t.chartImg, 14, yPos + 3, imgWidth, imgHeight);
+                        const ratio = await getAspectRatio(t.chartImg);
+                        height1 = maxImgWidth * ratio; // Auto-calculate correct height
+                        doc.addImage(t.chartImg, 14, yPos + 3, maxImgWidth, height1);
                         hasImages = true;
                     } catch(e) { console.log("Chart render error", e); }
                 }
@@ -1059,14 +1072,16 @@
                     doc.setFont("helvetica", "bold");
                     doc.text("RR Target Box:", 105, yPos);
                     try {
-                        doc.addImage(t.rrImg, 105, yPos + 3, imgWidth, imgHeight);
+                        const ratio = await getAspectRatio(t.rrImg);
+                        height2 = maxImgWidth * ratio; // Auto-calculate correct height
+                        doc.addImage(t.rrImg, 105, yPos + 3, maxImgWidth, height2);
                         hasImages = true;
                     } catch(e) { console.log("RR render error", e); }
                 }
                 
                 // Adjust Y position after images
                 if (hasImages) {
-                    yPos += imgHeight + 15;
+                    yPos += Math.max(height1, height2) + 15;
                 } else {
                     yPos += 5;
                 }
