@@ -29,7 +29,6 @@
         .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; }
         .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
         
-        /* Custom scrollbar for sidebar */
         aside::-webkit-scrollbar { width: 4px; }
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .neon-glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
@@ -45,7 +44,6 @@
             <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
             <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
-            <!-- Google Sign In Option -->
             <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
@@ -57,7 +55,6 @@
                 <div class="flex-grow border-t border-gray-600"></div>
             </div>
 
-            <!-- Username & Password Option -->
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Username</label>
@@ -77,7 +74,6 @@
     <!-- MAIN APP STRUCTURE -->
     <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500 relative">
         
-        <!-- Mobile Sidebar Overlay -->
         <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 hidden md:hidden" onclick="window.toggleSidebar()"></div>
 
         <!-- Sidebar -->
@@ -87,7 +83,6 @@
                     <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
                     <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
                 </div>
-                <!-- Close Button for Mobile -->
                 <button onclick="window.toggleSidebar()" class="md:hidden text-gray-500 hover:text-slate-800">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -106,7 +101,6 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden w-full">
             <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200">
                 <div class="flex items-center">
-                    <!-- Hamburger Menu for Mobile -->
                     <button onclick="window.toggleSidebar()" class="mr-3 md:hidden text-slate-800 hover:text-blue-600 focus:outline-none">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
@@ -114,8 +108,9 @@
                 </div>
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
-                    <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-400 shrink-0 cursor-pointer" onclick="window.logout()" title="Click to Logout">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                    <!-- Clickable Profile Avatar to open Profile Settings -->
+                    <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="window.openProfileModal()" title="Click to Edit Profile & PFP">
+                        <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
                     </div>
                 </div>
             </header>
@@ -125,7 +120,7 @@
                 <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-10">
                     <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
-                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, Fx_arjun</h2>
+                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, <span id="welcome-user-name">Fx_arjun</span></h2>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 -mt-16 relative z-10">
@@ -379,6 +374,30 @@
         </main>
     </div>
 
+    <!-- PROFILE SETTINGS MODAL -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 class="text-xl font-bold text-slate-800">👤 Edit Trader Profile</h3>
+                <button onclick="window.closeProfileModal()" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Custom Trader Name</label>
+                    <input id="profile-username-input" type="text" placeholder="e.g. Fx_arjun" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Profile Picture (Image URL)</label>
+                    <input id="profile-pfp-input" type="text" placeholder="Paste image URL here..." class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <p class="text-[10px] text-gray-400 mt-1">Tip: You can paste any image link or use your avatar URL.</p>
+                </div>
+                <button onclick="window.saveProfileSettings()" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 shadow mt-2">
+                    Save Profile & Sync Leaderboard 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- RULE VERIFICATION MODAL -->
     <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
@@ -399,7 +418,7 @@
             <div class="text-5xl mb-2">👑</div>
             <h2 class="text-xs font-extrabold tracking-widest text-yellow-500 uppercase mb-1">Certificate of Excellence</h2>
             <h1 class="text-2xl md:text-3xl font-bold text-white mb-6">Weekly Trading Champion</h1>
-            <p class="text-gray-30s0 text-sm mb-2">This is proudly presented to</p>
+            <p class="text-gray-300 text-sm mb-2">This is proudly presented to</p>
             <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-4 underline decoration-yellow-500">Fx_arjun</h3>
             <p class="text-gray-400 text-xs leading-relaxed mb-8 px-6">For dominating the markets, capturing the highest weekly Pips, and exhibiting elite discipline in Trade Vault Pro.</p>
             <div class="flex justify-between items-center px-8 border-t border-gray-700 pt-4">
@@ -424,7 +443,7 @@
                 <svg class="w-6 h-6 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <div>
                     <h2 class="text-xl md:text-2xl font-extrabold text-slate-800" id="rep-title">Trade Analysis</h2>
-                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-07</p>
+                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-09</p>
                 </div>
             </div>
 
@@ -484,7 +503,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -501,7 +520,6 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        const CORRECT_USER = "fx arjun";
         const CORRECT_PASS = "Xauusd @123";
         const WEB3FORMS_KEY = "A335f7b9-e4d4-4832-97f9-b5c8dc33eaae";
 
@@ -514,6 +532,7 @@
         let chartImgData = "";
         let rrImgData = "";
         let currentLoggedInUser = "";
+        let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('tradeVaultUser');
@@ -522,17 +541,18 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-                document.getElementById('user-display-name').innerText = savedUser;
                 
-                const activityBtn = document.getElementById('btn-activity');
-                if(savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun") {
-                    activityBtn.classList.remove('hidden');
-                    activityBtn.classList.add('flex');
-                } else {
-                    activityBtn.classList.add('hidden');
-                    activityBtn.classList.remove('flex');
-                }
-                initApp();
+                loadUserProfileFromFirebase().then(() => {
+                    const activityBtn = document.getElementById('btn-activity');
+                    if(savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun") {
+                        activityBtn.classList.remove('hidden');
+                        activityBtn.classList.add('flex');
+                    } else {
+                        activityBtn.classList.add('hidden');
+                        activityBtn.classList.remove('flex');
+                    }
+                    initApp();
+                });
             }
         });
 
@@ -596,7 +616,8 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-            document.getElementById('user-display-name').innerText = identifier;
+
+            await loadUserProfileFromFirebase();
 
             const activityBtn = document.getElementById('btn-activity');
             if(identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun") {
@@ -609,6 +630,58 @@
 
             initApp();
         }
+
+        async function loadUserProfileFromFirebase() {
+            try {
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    currentUserProfile = docSnap.data();
+                } else {
+                    currentUserProfile = {
+                        username: currentLoggedInUser.split('@')[0],
+                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`
+                    };
+                    await setDoc(docRef, currentUserProfile);
+                }
+            } catch(e) {
+                currentUserProfile = { username: currentLoggedInUser.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}` };
+            }
+            
+            document.getElementById('user-display-name').innerText = currentUserProfile.username;
+            document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
+            document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
+        }
+
+        window.openProfileModal = function() {
+            document.getElementById('profile-username-input').value = currentUserProfile.username;
+            document.getElementById('profile-pfp-input').value = currentUserProfile.pfp;
+            document.getElementById('profileModal').classList.remove('hidden');
+        };
+
+        window.closeProfileModal = function() {
+            document.getElementById('profileModal').classList.add('hidden');
+        };
+
+        window.saveProfileSettings = async function() {
+            const newName = document.getElementById('profile-username-input').value.trim();
+            const newPfp = document.getElementById('profile-pfp-input').value.trim();
+
+            if(!newName) { alert("Trader name cannot be empty!"); return; }
+
+            currentUserProfile.username = newName;
+            if(newPfp) currentUserProfile.pfp = newPfp;
+
+            try {
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                await setDoc(docRef, currentUserProfile, { merge: true });
+                alert("Profile updated successfully! 🚀");
+                window.closeProfileModal();
+                loadUserProfileFromFirebase();
+            } catch(e) {
+                alert("Error saving profile: " + e.message);
+            }
+        };
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -740,7 +813,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // Leaderboard Calculation Based on Pips/Points
+        // Leaderboard Calculation using Custom Profiles & Pips
         async function loadLeaderboardData() {
             const podiumEl = document.getElementById('leaderboard-podium');
             const challengersEl = document.getElementById('leaderboard-challengers');
@@ -748,15 +821,25 @@
             challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
 
             try {
+                // Fetch profiles first to map custom usernames & pfps
+                const profileSnap = await getDocs(collection(db, "profiles"));
+                let profilesMap = {};
+                profileSnap.forEach(docSnap => {
+                    profilesMap[docSnap.id] = docSnap.data();
+                });
+
                 const snapshot = await getDocs(collection(db, "trades"));
                 let tradersMap = {};
 
                 snapshot.forEach((docSnap) => {
                     const t = docSnap.data();
                     let email = t.userEmail || "Anonymous";
-                    let username = email.split('@')[0];
+                    
+                    let profile = profilesMap[email] || { 
+                        username: email.split('@')[0], 
+                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` 
+                    };
 
-                    // Calculate Pips/Points from Entry & Exit / TP
                     let entry = parseFloat(t.entry) || 0;
                     let exitP = parseFloat(t.exitPrice) || parseFloat(t.tp) || 0;
                     let points = 0;
@@ -764,20 +847,23 @@
                         points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
                     }
 
-                    if(!tradersMap[username]) {
-                        tradersMap[username] = { username: username, totalPips: 0, totalTrades: 0 };
+                    if(!tradersMap[email]) {
+                        tradersMap[email] = { 
+                            username: profile.username, 
+                            pfp: profile.pfp, 
+                            totalPips: 0, 
+                            totalTrades: 0 
+                        };
                     }
-                    tradersMap[username].totalPips += points;
-                    tradersMap[username].totalTrades += 1;
+                    tradersMap[email].totalPips += points;
+                    tradersMap[email].totalTrades += 1;
                 });
 
-                // Convert map to array & sort by highest Pips
                 let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
 
-                // If no data, add current user or mock demo leaders for full visual impact
                 if(leaderboardArray.length === 0) {
                     leaderboardArray = [
-                        { username: currentLoggedInUser.split('@')[0] || "Fx_arjun", totalPips: 0, totalTrades: 0 }
+                        { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0 }
                     ];
                 }
 
@@ -787,34 +873,38 @@
                 let top3 = leaderboardArray.slice(0, 3);
                 let rest = leaderboardArray.slice(3);
 
-                // Render Podium (Ranks 1, 2, 3)
                 let rankConfigs = [
-                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-48 md:h-56", width: "w-28 md:w-48", labelColor: "text-gray-400" },
-                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-56 md:h-72", width: "w-32 md:w-56", labelColor: "text-blue-400", isFirst: true },
-                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-40 md:h-48", width: "w-28 md:w-48", labelColor: "text-orange-500" }
+                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-52 md:h-60", width: "w-28 md:w-48", labelColor: "text-gray-400" },
+                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-60 md:h-76", width: "w-32 md:w-56", labelColor: "text-blue-400", isFirst: true },
+                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-44 md:h-52", width: "w-28 md:w-48", labelColor: "text-orange-500" }
                 ];
 
-                // Reorder for visual podium presentation: 2nd, 1st, 3rd
-                let podiumOrder = [top3[1] || { username: "RunnerUp_2", totalPips: 120, totalTrades: 5 }, top3[0] || { username: "Fx_arjun", totalPips: 350, totalTrades: 10 }, top3[2] || { username: "RunnerUp_3", totalPips: 80, totalTrades: 4 }];
-                let activeRanks = [rankConfigs[0], rankConfigs[1], rankConfigs[2]];
+                let podiumOrder = [
+                    top3[1] || { username: "Challenger 2", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0 }, 
+                    top3[0] || { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0 }, 
+                    top3[2] || { username: "Challenger 3", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0 }
+                ];
 
                 podiumOrder.forEach((trader, idx) => {
-                    let cfg = activeRanks[idx];
+                    let cfg = rankConfigs[idx];
                     let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
                     
-                    let certBtn = cfg.isFirst ? `<button onclick="window.openCertificateModal('${trader.username}')" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg"><span>📜</span> Certificate</button>` : '';
+                    let certBtn = cfg.isFirst ? `<button onclick="window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg"><span>📜</span> Certificate</button>` : '';
 
                     podiumEl.innerHTML += `
                         <div class="flex flex-col items-center bg-[#1e293b] p-4 md:p-6 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
                             <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
-                            <h3 class="font-extrabold text-base md:text-xl text-white mt-2 truncate max-w-full">${trader.username}</h3>
-                            <p class="text-green-400 font-black text-sm md:text-lg mt-1">${pipsText}</p>
-                            <span class="text-xs ${cfg.labelColor} font-bold mt-2 uppercase">Rank ${cfg.rank}</span>
+                            <!-- Custom Profile Picture on Podium -->
+                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-700 overflow-hidden border-2 border-white mb-2 shadow-md">
+                                <img src="${trader.pfp}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-extrabold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
+                            <p class="text-green-400 font-black text-xs md:text-base mt-0.5">${pipsText}</p>
+                            <span class="text-[10px] ${cfg.labelColor} font-bold mt-1 uppercase">Rank ${cfg.rank}</span>
                             ${certBtn}
                         </div>`;
                 });
 
-                // Render Challenger Board (Rank 4 onwards)
                 if(rest.length === 0) {
                     challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">No further challengers this week.</td></tr>`;
                 } else {
@@ -824,7 +914,12 @@
                         challengersEl.innerHTML += `
                             <tr class="border-b border-gray-800 hover:bg-[#253347] transition">
                                 <td class="p-4 text-gray-400 font-bold">#${rankNum}</td>
-                                <td class="p-4 font-medium text-gray-200">${trader.username}</td>
+                                <td class="p-4 font-medium text-gray-200 flex items-center gap-3">
+                                    <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-600 shrink-0">
+                                        <img src="${trader.pfp}" class="w-full h-full object-cover">
+                                    </div>
+                                    <span>${trader.username}</span>
+                                </td>
                                 <td class="p-4 text-gray-500 hidden md:table-cell">${trader.totalTrades}</td>
                                 <td class="p-4 text-right text-green-400 font-bold">${pipsText}</td>
                             </tr>`;
