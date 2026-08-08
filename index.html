@@ -32,6 +32,8 @@
         /* Custom scrollbar for sidebar */
         aside::-webkit-scrollbar { width: 4px; }
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .neon-glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
     </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
@@ -95,6 +97,7 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
+                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
@@ -121,12 +124,10 @@
                 
                 <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-10">
-                    <!-- Top Blue Header -->
                     <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
                         <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, Fx_arjun</h2>
                     </div>
                     
-                    <!-- Top 3 KPI Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 -mt-16 relative z-10">
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
                             <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
@@ -145,35 +146,20 @@
                         </div>
                     </div>
                     
-                    <!-- Performance Insights (Bold & Clean UI) -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 mt-4 md:mt-6 relative z-10">
-                        <!-- Best Strategy -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-blue-100 text-blue-600 p-1 rounded mr-2">🔥</span> Top Strategy
                             </h3>
                             <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-strat">-</span>
                         </div>
-
-                        <!-- Best Day -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-indigo-100 text-indigo-600 p-1 rounded mr-2">📅</span> Best Day
                             </h3>
                             <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-day">-</span>
                         </div>
-
-                        <!-- Biggest Win -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15c0-1.09 1.01-1.85 2.7-1.85c1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61c0 2.31 1.91 3.46 4.7 4.13c2.5.6 3 1.48 3 2.41c0 .69-.49 1.79-2.7 1.79c-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55c0-2.84-2.43-3.81-4.7-4.4z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-green-100 text-green-600 p-1 rounded mr-2">💰</span> Biggest Win
                             </h3>
@@ -242,7 +228,6 @@
                 <div id="tab-logtrade" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl">
                         
-                        <!-- Dual Image Upload Section -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
@@ -269,7 +254,6 @@
                         <div class="space-y-6 pt-4 border-t border-gray-200">
                             <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
                             
-                            <!-- Strategy, Direction, and Lot Size -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Strategy</label>
@@ -288,7 +272,6 @@
                                 </div>
                             </div>
 
-                            <!-- Entry, SL, TP -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-gray-200">
                                 <div>
                                     <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry</label>
@@ -304,7 +287,6 @@
                                 </div>
                             </div>
 
-                            <!-- Exit Details Row -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
                                 <div>
                                     <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price (Actual)</label>
@@ -316,7 +298,6 @@
                                 </div>
                             </div>
 
-                            <!-- Ratios and Net P/L -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated RR Ratio</label>
@@ -339,7 +320,42 @@
                     </div>
                 </div>
 
-                <!-- 5. VISITOR ACTIVITY LOG TAB -->
+                <!-- 5. WEEKLY LEADERBOARD TAB -->
+                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
+                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)</p>
+                        </div>
+
+                        <!-- THE PODIUM (Top 3) -->
+                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-4 md:gap-8 mb-16 w-full">
+                            <!-- Populated Dynamically -->
+                        </div>
+
+                        <!-- THE CHALLENGER BOARD (Rank 4 Onwards) -->
+                        <div class="w-full bg-[#1e293b] rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
+                            <div class="px-6 py-4 border-b border-gray-700 bg-[#0f172a]">
+                                <h3 class="text-lg font-bold text-gray-300">👥 Challenger Board</h3>
+                            </div>
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-xs font-bold text-gray-500 uppercase border-b border-gray-700 bg-[#151e2d]">
+                                        <th class="p-4">Rank</th>
+                                        <th class="p-4">Trader Name</th>
+                                        <th class="p-4 hidden md:table-cell">Total Trades</th>
+                                        <th class="p-4 text-right">Weekly Pips</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-challengers" class="text-sm">
+                                    <!-- Populated Dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
@@ -372,6 +388,29 @@
             <div class="flex space-x-3">
                 <button onclick="window.closeRuleModal()" class="flex-1 bg-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-300">Cancel</button>
                 <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 shadow">Confirm ✅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE MODAL -->
+    <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-xl p-8 text-center relative">
+            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            <div class="text-5xl mb-2">👑</div>
+            <h2 class="text-xs font-extrabold tracking-widest text-yellow-500 uppercase mb-1">Certificate of Excellence</h2>
+            <h1 class="text-2xl md:text-3xl font-bold text-white mb-6">Weekly Trading Champion</h1>
+            <p class="text-gray-30s0 text-sm mb-2">This is proudly presented to</p>
+            <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-4 underline decoration-yellow-500">Fx_arjun</h3>
+            <p class="text-gray-400 text-xs leading-relaxed mb-8 px-6">For dominating the markets, capturing the highest weekly Pips, and exhibiting elite discipline in Trade Vault Pro.</p>
+            <div class="flex justify-between items-center px-8 border-t border-gray-700 pt-4">
+                <div class="text-left">
+                    <span class="block text-[10px] text-gray-500 uppercase font-bold">Status</span>
+                    <span class="text-xs text-green-400 font-bold">Verified Winner</span>
+                </div>
+                <div class="text-right">
+                    <span class="block text-[10px] text-gray-500 uppercase font-bold">Awarded By</span>
+                    <span class="text-xs text-yellow-500 font-bold">Fx Arjun 👑</span>
+                </div>
             </div>
         </div>
     </div>
@@ -476,7 +515,6 @@
         let rrImgData = "";
         let currentLoggedInUser = "";
 
-        // Checking LocalStorage for persistent login
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('tradeVaultUser');
             if (savedUser) {
@@ -498,7 +536,6 @@
             }
         });
 
-        // Mobile Sidebar Toggle
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -506,7 +543,6 @@
             overlay.classList.toggle('hidden');
         };
 
-        // Logout function
         window.logout = function() {
             localStorage.removeItem('tradeVaultUser');
             auth.signOut().then(() => {
@@ -547,7 +583,7 @@
 
         async function logVisitorAndEnter(identifier, method) {
             currentLoggedInUser = identifier;
-            localStorage.setItem('tradeVaultUser', identifier); // Saves login session!
+            localStorage.setItem('tradeVaultUser', identifier);
 
             try {
                 await addDoc(collection(db, "visitors"), {
@@ -585,17 +621,19 @@
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('bg-gray-200', 'text-slate-800');
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'activity': 'Visitor Activity Log' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'activity': 'Visitor Activity Log' };
             document.getElementById('header-title').innerText = titles[tabId];
 
             if(tabId === 'mytrades' && calendarInstance) {
                 setTimeout(() => { calendarInstance.render(); }, 100);
             }
+            if(tabId === 'leaderboard') {
+                loadLeaderboardData();
+            }
             if(tabId === 'activity') {
                 loadVisitorActivity();
             }
 
-            // Auto-close sidebar on mobile after clicking a tab
             if (window.innerWidth < 768) {
                 const sidebar = document.getElementById('sidebar');
                 if (!sidebar.classList.contains('-translate-x-full')) {
@@ -639,8 +677,6 @@
                 calendarInstance.removeAllEvents();
 
                 let totalTrades = 0, wins = 0, netPl = 0;
-
-                // Smart Analytics Variables
                 let strategyStats = {};
                 let dayStats = { "Sunday": 0, "Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0 };
                 let biggestWinAmt = 0;
@@ -653,13 +689,11 @@
                     netPl += amt;
                     if(amt >= 0) wins++;
 
-                    // AI: Strategy Performance
                     if(t.strategy) {
                         if(!strategyStats[t.strategy]) strategyStats[t.strategy] = 0;
                         strategyStats[t.strategy] += amt;
                     }
 
-                    // AI: Day Performance
                     if(t.date) {
                         const d = new Date(t.date);
                         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -667,7 +701,6 @@
                         dayStats[dayName] += amt;
                     }
 
-                    // AI: Biggest Win
                     if(amt > biggestWinAmt) biggestWinAmt = amt;
 
                     calendarInstance.addEvent({
@@ -679,7 +712,6 @@
                     });
                 });
 
-                // Update Basic Dashboard Stats
                 document.getElementById('dash-totaltrades').innerText = totalTrades;
                 const netPlEl = document.getElementById('dash-netpl');
                 netPlEl.innerText = (netPl >= 0 ? '+$' : '-$') + Math.abs(netPl).toFixed(2);
@@ -689,7 +721,6 @@
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
 
-                // Update Smart Analytics UI (White Cards)
                 let bestStrategy = "-";
                 let maxStratPL = -Infinity;
                 for(let s in strategyStats) {
@@ -708,6 +739,109 @@
 
             } catch(e) { console.log(e); }
         }
+
+        // Leaderboard Calculation Based on Pips/Points
+        async function loadLeaderboardData() {
+            const podiumEl = document.getElementById('leaderboard-podium');
+            const challengersEl = document.getElementById('leaderboard-challengers');
+            podiumEl.innerHTML = `<div class="text-center text-gray-400 w-full py-6">Loading leaderboard standings...</div>`;
+            challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
+
+            try {
+                const snapshot = await getDocs(collection(db, "trades"));
+                let tradersMap = {};
+
+                snapshot.forEach((docSnap) => {
+                    const t = docSnap.data();
+                    let email = t.userEmail || "Anonymous";
+                    let username = email.split('@')[0];
+
+                    // Calculate Pips/Points from Entry & Exit / TP
+                    let entry = parseFloat(t.entry) || 0;
+                    let exitP = parseFloat(t.exitPrice) || parseFloat(t.tp) || 0;
+                    let points = 0;
+                    if(entry > 0 && exitP > 0) {
+                        points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
+                    }
+
+                    if(!tradersMap[username]) {
+                        tradersMap[username] = { username: username, totalPips: 0, totalTrades: 0 };
+                    }
+                    tradersMap[username].totalPips += points;
+                    tradersMap[username].totalTrades += 1;
+                });
+
+                // Convert map to array & sort by highest Pips
+                let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
+
+                // If no data, add current user or mock demo leaders for full visual impact
+                if(leaderboardArray.length === 0) {
+                    leaderboardArray = [
+                        { username: currentLoggedInUser.split('@')[0] || "Fx_arjun", totalPips: 0, totalTrades: 0 }
+                    ];
+                }
+
+                podiumEl.innerHTML = "";
+                challengersEl.innerHTML = "";
+
+                let top3 = leaderboardArray.slice(0, 3);
+                let rest = leaderboardArray.slice(3);
+
+                // Render Podium (Ranks 1, 2, 3)
+                let rankConfigs = [
+                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-48 md:h-56", width: "w-28 md:w-48", labelColor: "text-gray-400" },
+                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-56 md:h-72", width: "w-32 md:w-56", labelColor: "text-blue-400", isFirst: true },
+                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-40 md:h-48", width: "w-28 md:w-48", labelColor: "text-orange-500" }
+                ];
+
+                // Reorder for visual podium presentation: 2nd, 1st, 3rd
+                let podiumOrder = [top3[1] || { username: "RunnerUp_2", totalPips: 120, totalTrades: 5 }, top3[0] || { username: "Fx_arjun", totalPips: 350, totalTrades: 10 }, top3[2] || { username: "RunnerUp_3", totalPips: 80, totalTrades: 4 }];
+                let activeRanks = [rankConfigs[0], rankConfigs[1], rankConfigs[2]];
+
+                podiumOrder.forEach((trader, idx) => {
+                    let cfg = activeRanks[idx];
+                    let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
+                    
+                    let certBtn = cfg.isFirst ? `<button onclick="window.openCertificateModal('${trader.username}')" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg"><span>📜</span> Certificate</button>` : '';
+
+                    podiumEl.innerHTML += `
+                        <div class="flex flex-col items-center bg-[#1e293b] p-4 md:p-6 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
+                            <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
+                            <h3 class="font-extrabold text-base md:text-xl text-white mt-2 truncate max-w-full">${trader.username}</h3>
+                            <p class="text-green-400 font-black text-sm md:text-lg mt-1">${pipsText}</p>
+                            <span class="text-xs ${cfg.labelColor} font-bold mt-2 uppercase">Rank ${cfg.rank}</span>
+                            ${certBtn}
+                        </div>`;
+                });
+
+                // Render Challenger Board (Rank 4 onwards)
+                if(rest.length === 0) {
+                    challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">No further challengers this week.</td></tr>`;
+                } else {
+                    rest.forEach((trader, i) => {
+                        let rankNum = i + 4;
+                        let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
+                        challengersEl.innerHTML += `
+                            <tr class="border-b border-gray-800 hover:bg-[#253347] transition">
+                                <td class="p-4 text-gray-400 font-bold">#${rankNum}</td>
+                                <td class="p-4 font-medium text-gray-200">${trader.username}</td>
+                                <td class="p-4 text-gray-500 hidden md:table-cell">${trader.totalTrades}</td>
+                                <td class="p-4 text-right text-green-400 font-bold">${pipsText}</td>
+                            </tr>`;
+                    });
+                }
+
+            } catch(e) { console.log(e); }
+        }
+
+        window.openCertificateModal = function(username) {
+            document.getElementById('cert-username').innerText = username;
+            document.getElementById('certificateModal').classList.remove('hidden');
+        };
+
+        window.closeCertificateModal = function() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        };
 
         async function loadVisitorActivity() {
             const tableBody = document.getElementById('visitor-activity-table');
@@ -769,47 +903,39 @@
             const tp = parseFloat(document.getElementById('trade-tp').value) || 0;
             const lotsize = parseFloat(document.getElementById('trade-lotsize').value) || 0.01;
             
-            // Check if user has entered an actual exit price
             const exitPriceInput = document.getElementById('trade-exit-price').value;
             const exitPrice = parseFloat(exitPriceInput);
 
-            // Using Math.abs for RR logic
             const risk = Math.abs(entry - sl);
             const expectedReward = Math.abs(tp - entry);
 
-            // RR Calculation always based on expected setup
             let rr = risk > 0 ? (expectedReward / risk).toFixed(1) : 0;
             document.getElementById('trade-rr-val').value = "1:" + rr;
 
             let actualPoints = 0;
             
-            // Determine actual points based on Buy or Sell direction
             if (direction === 'buy') {
                 if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = exitPrice - entry; // Real points for Buy
+                    actualPoints = exitPrice - entry;
                 } else {
-                    actualPoints = tp - entry; // Expected points for Buy
+                    actualPoints = tp - entry;
                 }
             } else if (direction === 'sell') {
                 if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = entry - exitPrice; // Real points for Sell
+                    actualPoints = entry - exitPrice;
                 } else {
-                    actualPoints = entry - tp; // Expected points for Sell
+                    actualPoints = entry - tp;
                 }
             }
 
-            // Fallback safety if actualPoints becomes NaN
             if (isNaN(actualPoints)) actualPoints = 0;
 
             document.getElementById('trade-pips').value = Math.abs(actualPoints).toFixed(1) + " Pts";
 
-            // Net P/L: Points * lot size * standard 100 contract size
             const netPL = actualPoints * lotsize * 100;
-            
             const plField = document.getElementById('trade-pl');
             plField.value = netPL.toFixed(2);
             
-            // Change color dynamically to Red if loss, Green if profit
             if(netPL >= 0) {
                 plField.classList.remove('text-red-600');
                 plField.classList.add('text-green-600');
@@ -967,14 +1093,9 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
-        // ==========================================
-        // EXPORT FUNCTIONS (EXCEL & PDF)
-        // ==========================================
-
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
             
-            // Step 1: Filter data for Excel (Images removed, strict text/numbers data)
             const excelData = globalTradesCache.map(t => ({
                 Date: t.date || "-",
                 Strategy: t.strategy || "-",
@@ -989,7 +1110,6 @@
                 Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
             }));
 
-            // Step 2: Generate Excel
             const worksheet = XLSX.utils.json_to_sheet(excelData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
@@ -1002,12 +1122,11 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Helper function to maintain image aspect ratio
             const getAspectRatio = (dataUrl) => {
                 return new Promise((resolve) => {
                     const img = new Image();
                     img.onload = () => resolve(img.height / img.width);
-                    img.onerror = () => resolve(0.75); // fallback ratio
+                    img.onerror = () => resolve(0.75);
                     img.src = dataUrl;
                 });
             };
@@ -1021,16 +1140,14 @@
             for (let i = 0; i < globalTradesCache.length; i++) {
                 const t = globalTradesCache[i];
                 
-                // Add new page if space is ending
                 if (yPos > 240) {
                     doc.addPage();
                     yPos = 20;
                 }
                 
-                // Trade Header Info
                 doc.setFontSize(12);
                 doc.setFont("helvetica", "bold");
-                doc.setTextColor(30, 41, 59); // Slate-800 color
+                doc.setTextColor(30, 41, 59);
                 doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
                 
                 yPos += 7;
@@ -1051,8 +1168,7 @@
                 
                 yPos += 10;
                 
-                // DYNAMIC IMAGE SCALING LOGIC
-                let maxImgWidth = 85; // Half of the A4 width
+                let maxImgWidth = 85;
                 let height1 = 0;
                 let height2 = 0;
                 let hasImages = false;
@@ -1062,7 +1178,7 @@
                     doc.text("Chart Screenshot:", 14, yPos);
                     try {
                         const ratio = await getAspectRatio(t.chartImg);
-                        height1 = maxImgWidth * ratio; // Auto-calculate correct height
+                        height1 = maxImgWidth * ratio;
                         doc.addImage(t.chartImg, 14, yPos + 3, maxImgWidth, height1);
                         hasImages = true;
                     } catch(e) { console.log("Chart render error", e); }
@@ -1073,20 +1189,18 @@
                     doc.text("RR Target Box:", 105, yPos);
                     try {
                         const ratio = await getAspectRatio(t.rrImg);
-                        height2 = maxImgWidth * ratio; // Auto-calculate correct height
+                        height2 = maxImgWidth * ratio;
                         doc.addImage(t.rrImg, 105, yPos + 3, maxImgWidth, height2);
                         hasImages = true;
                     } catch(e) { console.log("RR render error", e); }
                 }
                 
-                // Adjust Y position after images
                 if (hasImages) {
                     yPos += Math.max(height1, height2) + 15;
                 } else {
                     yPos += 5;
                 }
                 
-                // Draw a separator line
                 doc.setDrawColor(200, 200, 200);
                 doc.line(14, yPos, 196, yPos);
                 yPos += 10;
