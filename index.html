@@ -145,7 +145,7 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: Performance Insights (Bold & Clean UI) -->
+                    <!-- Performance Insights (Bold & Clean UI) -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 mt-4 md:mt-6 relative z-10">
                         <!-- Best Strategy -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
@@ -859,7 +859,7 @@
                     userEmail: currentLoggedInUser, 
                     amount: parseFloat(plValue), 
                     strategy: document.getElementById('strategy-dropdown').value, 
-                    direction: directionValue, // Added direction!
+                    direction: directionValue, 
                     lotSize: document.getElementById('trade-lotsize').value,
                     entry: document.getElementById('trade-entry').value,
                     sl: document.getElementById('trade-sl').value,
@@ -890,7 +890,6 @@
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
             
-            // Show proper Buy/Sell indicator in report
             const dirLabel = trade.direction === 'sell' ? '🔴 SELL' : '🟢 BUY';
             document.getElementById('rep-direction').innerText = dirLabel;
             
@@ -921,21 +920,6 @@
         };
 
         window.closeTradeReport = function() { document.getElementById('tradeReportModal').classList.add('hidden'); };
-
-        window.downloadExcel = function() {
-            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
-            const worksheet = XLSX.utils.json_to_sheet(globalTradesCache);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
-            XLSX.writeFile(workbook, "TradeVault_Report.xlsx");
-        };
-
-        window.downloadPDF = async function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("Trade Vault - Professional Performance Report", 14, 20);
-            doc.save("TradeVault_Report.pdf");
-        };
 
         window.proceedToRulesStep = function() {
             tempStrategyName = document.getElementById('strategy-name-input').value.trim();
@@ -981,6 +965,119 @@
                 window.backToStrategyStep1();
                 window.switchTab('dashboard');
             } catch (e) { alert("Error: " + e.message); }
+        };
+
+        // ==========================================
+        // EXPORT FUNCTIONS (EXCEL & PDF)
+        // ==========================================
+
+        window.downloadExcel = function() {
+            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
+            
+            // Step 1: Filter data for Excel (Images removed, strict text/numbers data)
+            const excelData = globalTradesCache.map(t => ({
+                Date: t.date || "-",
+                Strategy: t.strategy || "-",
+                Direction: t.direction === 'sell' ? 'SELL' : 'BUY',
+                Lot_Size: t.lotSize || "-",
+                Entry: t.entry || "-",
+                Stop_Loss: t.sl || "-",
+                Take_Profit: t.tp || "-",
+                Exit_Price: t.exitPrice || "-",
+                Exit_Reason: t.exitReason || "-",
+                Net_PL_Amount: t.amount || 0,
+                Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
+            }));
+
+            // Step 2: Generate Excel
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
+            XLSX.writeFile(workbook, "TradeVault_Excel_Data.xlsx");
+        };
+
+        window.downloadPDF = async function() {
+            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("Trade Vault Pro - Detailed Trade Report", 14, 20);
+            
+            let yPos = 30;
+            
+            for (let i = 0; i < globalTradesCache.length; i++) {
+                const t = globalTradesCache[i];
+                
+                // Add new page if space is ending
+                if (yPos > 240) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                // Trade Header Info
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(30, 41, 59); // Slate-800 color
+                doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
+                
+                yPos += 7;
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(0, 0, 0);
+                
+                const dirLabel = t.direction === 'sell' ? 'SELL' : 'BUY';
+                const plText = (t.amount >= 0 ? '+$' : '-$') + Math.abs(t.amount);
+                
+                doc.text(`Direction: ${dirLabel} | Lot Size: ${t.lotSize || '-'} | Net P/L: ${plText}`, 14, yPos);
+                
+                yPos += 6;
+                doc.text(`Entry: ${t.entry || '-'} | SL: ${t.sl || '-'} | TP: ${t.tp || '-'}`, 14, yPos);
+                
+                yPos += 6;
+                doc.text(`Exit Price: ${t.exitPrice || '-'} | Reason: ${t.exitReason || '-'}`, 14, yPos);
+                
+                yPos += 10;
+                
+                // Rendering Uploaded Images inside PDF
+                let imgHeight = 60;
+                let imgWidth = 80;
+                let hasImages = false;
+                
+                if (t.chartImg && t.chartImg.includes("data:image")) {
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Chart Screenshot:", 14, yPos);
+                    try {
+                        doc.addImage(t.chartImg, 14, yPos + 3, imgWidth, imgHeight);
+                        hasImages = true;
+                    } catch(e) { console.log("Chart render error", e); }
+                }
+                
+                if (t.rrImg && t.rrImg.includes("data:image")) {
+                    doc.setFont("helvetica", "bold");
+                    doc.text("RR Target Box:", 105, yPos);
+                    try {
+                        doc.addImage(t.rrImg, 105, yPos + 3, imgWidth, imgHeight);
+                        hasImages = true;
+                    } catch(e) { console.log("RR render error", e); }
+                }
+                
+                // Adjust Y position after images
+                if (hasImages) {
+                    yPos += imgHeight + 15;
+                } else {
+                    yPos += 5;
+                }
+                
+                // Draw a separator line
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, yPos, 196, yPos);
+                yPos += 10;
+            }
+            
+            doc.save("TradeVault_Detailed_Report.pdf");
         };
     </script>
 </body>
