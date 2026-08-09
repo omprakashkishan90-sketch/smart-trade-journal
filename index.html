@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Trade Journal - The Vault Pro Mega Edition</title>
+    <title>Smart Trade Journal - The Vault Pro</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FullCalendar.js -->
@@ -11,7 +11,7 @@
     <!-- SheetJS & jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- HTML2Canvas for Crisp Image Download -->
+    <!-- HTML2Canvas for Crisp Anti-Stretch Download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
@@ -27,26 +27,19 @@
             align-items: center; justify-content: center;
         }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .tab-content.active { display: block; }
         .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; }
         .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
         
         aside::-webkit-scrollbar { width: 4px; }
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        /* Custom scrollbar for Modals and Chat */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-
         .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+        
+        /* Custom scrollbar for Modals and Chat */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
 
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.9) translateY(10px); }
@@ -54,55 +47,46 @@
         }
         .chat-bubble { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* Fixed sizing for export to prevent HTML2Canvas stretching */
+        /* Fixed sizing for export wrapper */
         .export-img-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8fafc;
+            background-color: #f8fafc;
             border-radius: 12px;
-            overflow: hidden;
             width: 100%;
-        }
-        .export-img-wrapper img {
-            max-width: 100%;
-            height: auto;
-            max-height: 250px;
-            object-fit: contain;
+            transition: transform 0.2s;
         }
     </style>
 </head>
-<body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden selection:bg-blue-200 selection:text-blue-900">
+<body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
-    <!-- DUAL LOGIN SCREEN (OG DARK) -->
+    <!-- DUAL LOGIN SCREEN -->
     <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-[100] flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
-        <div class="bg-[#1e293b] p-8 md:p-10 rounded-3xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
-            <svg class="w-16 h-16 text-blue-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
-            <h1 class="text-3xl font-black text-white mb-2 tracking-tight">Trade Vault Pro</h1>
-            <p class="text-gray-400 text-sm mb-8 font-medium">Professional Risk, Journal & Social Network</p>
+        <div class="bg-[#1e293b] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
+            <svg class="w-14 h-14 text-blue-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+            <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
+            <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
-            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-900 font-extrabold py-3.5 px-4 rounded-xl hover:bg-gray-100 transition shadow-lg mb-6 transform hover:-translate-y-1">
+            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
             </button>
 
-            <div class="flex items-center my-6">
-                <div class="flex-grow border-t border-gray-700"></div>
-                <span class="px-4 text-xs text-gray-500 uppercase font-black tracking-widest">Or Master Login</span>
-                <div class="flex-grow border-t border-gray-700"></div>
+            <div class="flex items-center my-4">
+                <div class="flex-grow border-t border-gray-600"></div>
+                <span class="px-3 text-xs text-gray-400 uppercase font-bold">Or Master Login</span>
+                <div class="flex-grow border-t border-gray-600"></div>
             </div>
 
-            <div class="space-y-5 text-left">
+            <div class="space-y-4 text-left">
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Username</label>
-                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3.5 bg-[#0f172a] border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium text-sm transition">
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Username</label>
+                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Password</label>
-                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-[#0f172a] border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium text-sm transition">
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Password</label>
+                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
                 </div>
-                <button onclick="window.handleUserPassLogin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 px-4 rounded-xl transition shadow-[0_4px_20px_rgba(59,130,246,0.3)] mt-2 transform hover:-translate-y-1">
-                    Login Securely 🚀
+                <button onclick="window.handleUserPassLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-lg mt-2 text-sm">
+                    Login with Credentials 🚀
                 </button>
             </div>
         </div>
@@ -111,53 +95,30 @@
     <!-- MAIN APP STRUCTURE -->
     <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500 relative">
         
-        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity" onclick="window.toggleSidebar()"></div>
+        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 hidden md:hidden" onclick="window.toggleSidebar()"></div>
 
-        <!-- Sidebar (OG STYLE) -->
-        <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-            <div class="h-16 flex items-center justify-between px-6 mt-4 border-b border-gray-100 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center shadow-md">
-                        <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
-                    </div>
-                    <div>
-                        <span class="block font-black text-slate-900 leading-tight">Trade Vault</span>
-                        <span class="block text-[9px] font-bold text-blue-500 uppercase tracking-widest">Pro Edition</span>
-                    </div>
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
+            <div class="h-16 flex items-center justify-between px-6 mt-4">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                    <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
                 </div>
-                <button onclick="window.toggleSidebar()" class="md:hidden text-gray-400 hover:text-slate-800 bg-gray-100 p-1.5 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="window.toggleSidebar()" class="md:hidden text-gray-500 hover:text-slate-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <nav class="flex-1 mt-6 px-4 space-y-1.5 overflow-y-auto pb-4">
-                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-xl font-bold transition">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard
+            <nav class="flex-1 mt-6 px-4 space-y-2 overflow-y-auto pb-4">
+                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium">Dashboard</button>
+                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
+                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
+                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
+                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
+                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">
+                    <span>💬 Messages</span>
+                    <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden" id="unread-badge">New</span>
                 </button>
-                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-gray-100 rounded-xl font-semibold transition">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Calendar & Reports
-                </button>
-                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-gray-100 rounded-xl font-semibold transition">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Strategy Vault
-                </button>
-                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-gray-100 rounded-xl font-semibold transition">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Log New Trade
-                </button>
-                
-                <div class="my-3 border-t border-gray-100 mx-4"></div>
-                
-                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-gray-100 rounded-xl font-semibold transition">
-                    <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zm7-10a1 1 0 01.707.293l2 2a1 1 0 010 1.414l-2 2a1 1 0 01-1.414-1.414L14.586 7H10a1 1 0 110-2h4.586l-1.293-1.293A1 1 0 0112 2zM10 18a1 1 0 01-.707-.293l-2-2a1 1 0 111.414-1.414L10 15.586V11a1 1 0 112 0v4.586l1.293-1.293a1 1 0 111.414 1.414l-2 2A1 1 0 0110 18z" clip-rule="evenodd"></path></svg> Leaderboard
-                </button>
-                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-slate-600 hover:bg-gray-100 rounded-xl font-semibold transition">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                        <span>Inbox</span>
-                    </div>
-                    <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full" id="unread-badge">New</span>
-                </button>
-                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center gap-3 px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-xl transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> System Logs
-                </button>
+                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
@@ -168,33 +129,28 @@
                     <button onclick="window.toggleSidebar()" class="mr-3 md:hidden text-slate-800 hover:text-blue-600 focus:outline-none">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h1 class="text-lg md:text-xl font-black text-slate-800 tracking-tight" id="header-title">Dashboard</h1>
+                    <h1 class="text-lg md:text-xl font-semibold text-slate-800 truncate" id="header-title">Dashboard</h1>
                 </div>
                 
                 <div class="flex items-center space-x-3 md:space-x-4">
-                    <span class="text-xs md:text-sm font-bold text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
+                    <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
                     
                     <div class="relative">
                         <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')" title="Account Menu">
                             <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
                         </div>
                         
-                        <!-- OG Dropdown Menu -->
-                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                            <div class="px-5 py-4 bg-gray-50 border-b border-gray-100">
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Account</p>
-                                <p class="text-sm font-black text-slate-800 truncate mt-0.5" id="dropdown-email">Loading...</p>
+                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Account</p>
+                                <p class="text-sm font-bold text-slate-800 truncate" id="dropdown-email">Loading...</p>
                             </div>
-                            <div class="p-2 space-y-1">
-                                <button onclick="window.openAdvancedProfile()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg flex items-center gap-3 transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                    Advanced Profile
-                                </button>
-                                <button onclick="window.logout()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-3 transition border-t border-gray-50 mt-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                    Secure Logout
-                                </button>
-                            </div>
+                            <button onclick="window.openAdvancedProfile()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-gray-100 flex items-center gap-3">
+                                👤 My Profile
+                            </button>
+                            <button onclick="window.logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 border-t border-gray-100">
+                                🚪 Logout
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -202,108 +158,104 @@
 
             <div class="flex-1 overflow-y-auto relative">
                 
-                <!-- 1. DASHBOARD TAB (OG STYLE) -->
+                <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-10">
                     <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
-                        <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Fx_arjun</span></h2>
+                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, <span id="welcome-user-name">Fx_arjun</span></h2>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 -mt-16 relative z-10">
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-                            <h3 class="text-gray-500 font-bold text-[11px] uppercase tracking-widest self-start mb-4">Win Rate</h3>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
+                            <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
                             <div class="circle-chart" id="dash-winrate-circle">
-                                <div class="circle-inner"><span class="text-xl font-black text-slate-800" id="dash-winrate-text">0%</span></div>
+                                <div class="circle-inner"><span class="text-xl font-bold text-slate-800" id="dash-winrate-text">0%</span></div>
                             </div>
                         </div>
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
-                            <h3 class="text-gray-500 font-bold text-[11px] uppercase tracking-widest mb-2">Net P/L (Total)</h3>
-                            <span class="text-4xl font-black text-slate-800 tracking-tight" id="dash-netpl">$0.00</span>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
+                            <h3 class="text-gray-500 font-medium text-sm mb-2">Net P/L (Total)</h3>
+                            <span class="text-3xl font-bold text-slate-800" id="dash-netpl">$0.00</span>
                         </div>
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
-                            <h3 class="text-gray-500 font-bold text-[11px] uppercase tracking-widest mb-2">Total Trades Logged</h3>
-                            <span class="text-4xl font-black text-slate-800 tracking-tight" id="dash-totaltrades">0</span>
-                            <span class="text-[10px] text-green-600 font-bold mt-2 bg-green-50 w-fit px-2 py-1 rounded">Personal Vault Secure ✅</span>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
+                            <h3 class="text-gray-500 font-medium text-sm mb-2">Total Trades Logged</h3>
+                            <span class="text-3xl font-bold text-slate-800" id="dash-totaltrades">0</span>
+                            <span class="text-xs text-green-600 font-medium mt-1">Personal Vault Secure</span>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 mt-4 md:mt-6 relative z-10">
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-blue-100 text-blue-600 p-1 rounded mr-2">🔥</span> Top Strategy
                             </h3>
-                            <span class="text-2xl md:text-3xl font-black text-slate-800 truncate" id="ai-best-strat">-</span>
+                            <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-strat">-</span>
                         </div>
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-indigo-100 text-indigo-600 p-1 rounded mr-2">📅</span> Best Day
                             </h3>
-                            <span class="text-2xl md:text-3xl font-black text-slate-800 truncate" id="ai-best-day">-</span>
+                            <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-day">-</span>
                         </div>
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-green-100 text-green-600 p-1 rounded mr-2">💰</span> Biggest Win
                             </h3>
-                            <span class="text-2xl md:text-3xl font-black text-green-600 truncate" id="ai-biggest-win">$0.00</span>
+                            <span class="text-2xl md:text-3xl font-extrabold text-green-600 truncate" id="ai-biggest-win">$0.00</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. MY TRADES & REPORTS TAB -->
                 <div id="tab-mytrades" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-5xl mx-auto mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 max-w-5xl mx-auto mb-8">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-                            <div>
-                                <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Trading Calendar & Reports</h2>
-                                <p class="text-xs text-gray-500 font-medium mt-1">Review historical execution data and export audits.</p>
-                            </div>
+                            <h2 class="text-lg md:text-xl font-bold text-slate-800">Trading Calendar & Reports</h2>
                             
-                            <!-- OG Export Buttons -->
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-slate-700 shadow transition flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Email</button>
-                                <button onclick="window.downloadExcel()" class="bg-green-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-green-700 shadow transition flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg> Excel</button>
-                                <button onclick="window.downloadPDF()" class="bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-red-700 shadow transition flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> PDF</button>
+                                <button onclick="window.sendWeeklyReportEmail()" class="bg-blue-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-blue-700 shadow">📧 Email</button>
+                                <button onclick="window.downloadExcel()" class="bg-green-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-700 shadow">📥 Excel</button>
+                                <button onclick="window.downloadPDF()" class="bg-red-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-700 shadow">📄 PDF</button>
                             </div>
                         </div>
-                        <div id="calendar" class="min-h-[400px] md:min-h-[550px] text-xs md:text-sm font-medium"></div>
+                        <div id="calendar" class="min-h-[400px] md:min-h-[500px] text-xs md:text-sm"></div>
                     </div>
                 </div>
 
                 <!-- 3. MY STRATEGIES TAB -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div id="strategy-step-1" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-4xl mx-auto">
-                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-6 tracking-tight">Create Strategy Vault</h2>
+                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Strategy Name</label>
-                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + London Session" class="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-xl font-bold focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
+                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
                             </div>
                             <div>
-                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Execution Overview / Logic</label>
-                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-xl border border-gray-800 shadow-inner focus:outline-none" rows="5"></textarea>
+                                <label class="block text-sm font-bold text-slate-800 mb-1">Add Your Strategy / Rules (Overview)</label>
+                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="4"></textarea>
                             </div>
-                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-900 text-white font-bold py-3.5 px-8 rounded-xl hover:bg-blue-600 transition shadow-lg flex items-center justify-center gap-2">Next: Define Strict Rules ➡️</button>
+                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Next: Add Rules ➡️</button>
                         </div>
                     </div>
 
-                    <div id="strategy-step-2" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-4xl mx-auto hidden">
-                        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-                            <h2 class="text-2xl font-black text-slate-800 tracking-tight" id="rule-page-title">Add Rules</h2>
-                            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">Step 2 of 2</span>
+                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="rule-page-title">Add Rules</h2>
+                            <span class="text-xs md:text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Step 2 of 2</span>
                         </div>
-                        <div class="space-y-5">
+                        <div class="space-y-4">
                             <div class="flex flex-col md:flex-row gap-3">
-                                <input id="single-rule-input" type="text" placeholder="e.g. Max Risk 1% per trade" class="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition shadow">+ Add Rule</button>
+                                <input id="single-rule-input" type="text" placeholder="e.g. Rule 1: Max Lot 0.01" class="flex-1 px-4 py-2 border border-gray-300 rounded-md">
+                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-medium px-5 py-2 rounded-md hover:bg-blue-700">+ Add Rule</button>
                             </div>
-                            <div class="border border-gray-200 rounded-xl p-5 bg-slate-50 min-h-[150px] shadow-inner">
-                                <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Enforced Checklist:</h4>
-                                <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700 font-medium">
-                                    <li class="text-gray-400 italic text-center mt-6">No rules added yet...</li>
+                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[120px]">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rules List:</h4>
+                                <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700">
+                                    <li class="text-gray-400 italic">No rules added yet...</li>
                                 </ul>
                             </div>
-                            <div class="flex flex-col md:flex-row justify-between pt-4 gap-3 border-t border-gray-100">
-                                <button onclick="window.backToStrategyStep1()" class="text-gray-500 font-bold px-4 py-3 hover:bg-gray-100 rounded-xl transition">⬅️ Go Back</button>
-                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 hover:bg-green-500 text-white font-black text-lg py-3.5 px-8 rounded-xl shadow-[0_5px_15px_rgba(34,197,94,0.4)] transition hover:-translate-y-0.5">Activate Strategy 🚀</button>
+                            <div class="flex flex-col md:flex-row justify-between pt-4 gap-3">
+                                <button onclick="window.backToStrategyStep1()" class="text-gray-600 font-medium px-4 py-2 border md:border-none rounded-md hover:underline">⬅️ Back</button>
+                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 shadow-lg">Finish & Save Strategy 🚀</button>
                             </div>
                         </div>
                     </div>
@@ -311,225 +263,180 @@
 
                 <!-- 4. LOG TRADE TAB -->
                 <div id="tab-logtrade" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-3xl mx-auto">
-                        <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-                            <div class="bg-blue-600 p-2 rounded-lg"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></div>
-                            <h2 class="text-2xl font-black text-slate-800 tracking-tight">Log Execution</h2>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">1. Chart Screenshot</label>
-                                <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-blue-50 hover:bg-blue-100 transition relative overflow-hidden group">
-                                    <div id="chart-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/70 backdrop-blur-sm p-4 rounded-xl group-hover:bg-white/90 transition">
-                                        <svg class="w-7 h-7 text-blue-500 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                        <p class="text-xs text-blue-900 font-bold" id="chart-file-label">Upload Chart</p>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
+                                        <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <p class="text-xs text-gray-500 font-medium" id="chart-file-label">Upload Chart</p>
                                     </div>
                                     <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label', 'chartImgData')" />
                                 </label>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">2. TradingView RR Box</label>
-                                <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-green-300 rounded-2xl cursor-pointer bg-green-50 hover:bg-green-100 transition relative overflow-hidden group">
-                                    <div id="rr-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/70 backdrop-blur-sm p-4 rounded-xl group-hover:bg-white/90 transition">
-                                        <svg class="w-7 h-7 text-green-500 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        <p class="text-xs text-green-900 font-bold" id="rr-file-label">Upload RR Box</p>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. TradingView RR Box</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
+                                        <svg class="w-6 h-6 text-green-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <p class="text-xs text-gray-500 font-medium" id="rr-file-label">Upload RR Box</p>
                                     </div>
                                     <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label', 'rrImgData')" />
                                 </label>
                             </div>
                         </div>
 
-                        <div class="space-y-6 pt-4 border-t border-gray-100">
-                            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Trade Details & Price Levels</h3>
+                        <div class="space-y-6 pt-4 border-t border-gray-200">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Select Strategy</label>
-                                    <select id="strategy-dropdown" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></select>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Strategy</label>
+                                    <select id="strategy-dropdown" class="w-full px-3 py-2 border border-gray-300 rounded-md"></select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Trade Direction</label>
-                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-black text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                        <option value="buy">🟢 BUY (Long)</option>
-                                        <option value="sell">🔴 SELL (Short)</option>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Trade Direction</label>
+                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-slate-800">
+                                        <option value="buy">🟢 Buy (Long)</option>
+                                        <option value="sell">🔴 Sell (Short)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Lot Size</label>
-                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-black text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Lot Size</label>
+                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-2xl border border-gray-200 shadow-inner">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-gray-200">
                                 <div>
-                                    <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">1. Entry</label>
-                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 border border-blue-300 rounded-xl bg-white text-blue-900 font-black focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                                    <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry</label>
+                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-blue-300 rounded-md bg-blue-50 text-blue-900 font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">2. SL</label>
-                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 border border-red-300 rounded-xl bg-white text-red-700 font-black focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm">
+                                    <label class="block text-xs font-bold text-red-600 uppercase mb-1">2. SL</label>
+                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-md bg-red-50 text-red-700 font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">3. TP (Expected)</label>
-                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 border border-green-300 rounded-xl bg-white text-green-700 font-black focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm">
+                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. TP (Expected)</label>
+                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-md bg-green-50 text-green-700 font-bold">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
                                 <div>
-                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Exit Price (Actual)</label>
-                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 border border-indigo-200 bg-white rounded-xl text-indigo-900 font-black shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Closed at...">
+                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price (Actual)</label>
+                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold" placeholder="Price when closed...">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Exit Reason</label>
-                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP, Stopped out..." class="w-full px-4 py-3 border border-indigo-200 bg-white rounded-xl text-indigo-900 font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Reason</label>
+                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP, Trailed SL, Early exit..." class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-100 pt-6">
-                                <div class="bg-gray-100 p-4 rounded-xl border border-gray-200">
-                                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Calculated RR</label>
-                                    <input id="trade-rr-val" type="text" readonly class="w-full bg-transparent border-none p-0 font-black text-xl text-slate-800" value="1:0">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated RR Ratio</label>
+                                    <input id="trade-rr-val" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="1:0">
                                 </div>
-                                <div class="bg-gray-100 p-4 rounded-xl border border-gray-200">
-                                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Points / Pips</label>
-                                    <input id="trade-pips" type="text" readonly class="w-full bg-transparent border-none p-0 font-black text-xl text-slate-800" value="0 Pts">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Points / Pips</label>
+                                    <input id="trade-pips" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="0 Pts">
                                 </div>
-                                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 ring-1 ring-blue-500">
-                                    <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Net P/L ($)</label>
-                                    <input id="trade-pl" type="number" step="0.01" class="w-full bg-transparent border-none p-0 font-black text-3xl text-green-600" value="0.00">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Net P/L ($)</label>
+                                    <input id="trade-pl" type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-green-600 bg-white" value="0.00">
                                 </div>
                             </div>
 
-                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-900 text-white font-black text-lg py-4 rounded-2xl hover:bg-blue-600 transition shadow-xl mt-4 transform hover:-translate-y-1">
-                                Review & Save to Vault 🚀
+                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4 shadow-lg">
+                                Save Trade & Verify Rules 🚀
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. WEEKLY LEADERBOARD TAB (OG DARK + SMART RESET) -->
-                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-10 pb-12 bg-[#090e17] min-h-full text-white">
-                    <div class="max-w-5xl mx-auto">
-                        <div class="text-center mb-12 relative">
-                            <div class="absolute inset-0 flex justify-center items-center pointer-events-none opacity-20">
-                                <div class="w-full max-w-lg h-32 bg-blue-600 rounded-[100%] mix-blend-lighten filter blur-[80px]"></div>
-                            </div>
-                            <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-3 relative z-10">🏆 WEEKLY <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 neon-text-blue">CHAMPIONS</span></h2>
-                            <p class="text-gray-400 font-medium text-sm md:text-base relative z-10">Ranked by pure technical skill: Weekly Pips Captured</p>
-                            
-                            <!-- Notice about Monday 3AM Reset -->
-                            <div class="mt-4 flex flex-col items-center justify-center relative z-10 space-y-2">
-                                <span class="bg-blue-900/40 text-blue-300 text-[10px] md:text-xs font-bold px-4 py-1.5 rounded-full border border-blue-800/50 shadow-[0_0_15px_rgba(59,130,246,0.3)] animate-pulse">Click on any trader card to spy their journey! 👀</span>
-                                <span class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Auto-resets every Monday at 3:00 AM 🔄</span>
-                            </div>
+                <!-- 5. WEEKLY LEADERBOARD TAB (SMART AUTO-SYNC) -->
+                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
+                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)<br><span class="text-[10px] text-gray-500 mt-1 block uppercase tracking-widest font-bold">Auto-Resets every Monday at 3:00 AM 🔄</span></p>
                         </div>
 
-                        <!-- THE PODIUM (Top 3) -->
-                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-3 md:gap-8 mb-16 w-full relative z-10">
-                            <!-- Populated Dynamically -->
-                        </div>
+                        <!-- THE PODIUM -->
+                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-4 md:gap-8 mb-16 w-full"></div>
 
                         <!-- THE CHALLENGER BOARD -->
-                        <div class="w-full bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden shadow-2xl relative z-10">
-                            <div class="px-8 py-5 border-b border-gray-800 bg-[#0f172a] flex items-center justify-between">
-                                <h3 class="text-lg font-black text-white flex items-center gap-2"><span>👥</span> Challenger Global Board</h3>
+                        <div class="w-full bg-[#1e293b] rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
+                            <div class="px-6 py-4 border-b border-gray-700 bg-[#0f172a]">
+                                <h3 class="text-lg font-bold text-gray-300">👥 Challenger Board</h3>
                             </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse min-w-[600px]">
-                                    <thead>
-                                        <tr class="text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800 bg-[#161f30]">
-                                            <th class="p-5 w-20 text-center">Rank</th>
-                                            <th class="p-5">Trader Identity</th>
-                                            <th class="p-5 text-center hidden sm:table-cell">Total Executions</th>
-                                            <th class="p-5 text-right pr-8">Net Pips</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="leaderboard-challengers" class="text-sm font-medium">
-                                        <!-- Populated Dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-xs font-bold text-gray-500 uppercase border-b border-gray-700 bg-[#151e2d]">
+                                        <th class="p-4">Rank</th>
+                                        <th class="p-4">Trader Name</th>
+                                        <th class="p-4 hidden md:table-cell">Total Trades</th>
+                                        <th class="p-4 text-right">Weekly Pips</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-challengers" class="text-sm"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 6. MESSAGES (INBOX) TAB (OG DARK + RESPONSIVE MOBILE FIX) -->
-                <div id="tab-messages" class="tab-content px-4 md:px-8 py-6 h-full min-h-[600px] bg-[#090e17]">
-                    <div class="max-w-6xl mx-auto h-[calc(100vh-140px)] min-h-[550px] flex flex-col bg-[#111827] rounded-3xl border border-gray-800 shadow-[0_0_50px_rgba(0,0,0,0.3)] overflow-hidden">
+                <!-- 6. MESSAGES (INBOX) TAB (MOBILE RESPONSIVE FIX) -->
+                <div id="tab-messages" class="tab-content px-4 md:px-8 py-6 h-full min-h-[600px] bg-[#0f172a]">
+                    <div class="max-w-6xl mx-auto h-[calc(100vh-140px)] min-h-[550px] flex flex-col bg-[#1e293b] rounded-xl border border-gray-700 shadow-2xl overflow-hidden relative">
                         
-                        <!-- Top Header -->
-                        <div class="bg-gradient-to-r from-[#1e293b] to-[#0f172a] border-b border-gray-800 p-4 md:p-5 flex justify-between items-center shadow-md relative z-10">
-                            <h2 class="text-xl md:text-2xl font-black text-white flex items-center gap-3 tracking-tight">
-                                <span class="bg-blue-600 p-1.5 md:p-2 rounded-xl shadow-lg"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></span>
-                                Vault Messenger
-                            </h2>
-                            <span class="text-[10px] md:text-xs text-green-400 bg-green-900/30 px-3 py-1 md:py-1.5 rounded-full border border-green-800 font-bold uppercase tracking-widest flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Secure</span>
+                        <div class="bg-[#0f172a] border-b border-gray-700 p-4 flex justify-between items-center z-20">
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2"><span>💬</span> Trading Community Chat</h2>
+                            <span class="text-xs text-green-400 bg-green-900/30 px-3 py-1 rounded-full border border-green-800">Secure Network</span>
                         </div>
 
-                        <!-- Split View Container -->
                         <div class="flex flex-1 overflow-hidden h-full relative">
                             
-                            <!-- Left: Contact List (Responsive visibility) -->
-                            <div id="chat-sidebar" class="w-full md:w-[350px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-10 transition-all duration-300">
+                            <!-- Left: Contact List -->
+                            <div id="chat-sidebar" class="w-full md:w-[320px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-10 transition-transform absolute md:relative inset-y-0 left-0">
                                 <div class="p-4 border-b border-gray-800">
-                                    <div class="relative group">
-                                        <input type="text" placeholder="Search network..." class="w-full bg-[#1e293b] text-sm text-white px-5 py-3 rounded-2xl border border-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 pl-11 transition shadow-inner">
-                                        <svg class="w-4 h-4 text-gray-500 group-focus-within:text-blue-500 absolute left-4 top-3.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                    </div>
+                                    <input type="text" placeholder="Search traders..." class="w-full bg-[#1e293b] text-sm text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500">
                                 </div>
-                                <div class="overflow-y-auto flex-1 p-3 space-y-1.5" id="chat-contact-list">
-                                    <!-- Contacts injected by JS -->
-                                    <div class="flex flex-col items-center justify-center h-full text-gray-500 text-sm font-bold uppercase tracking-widest opacity-50">Loading network...</div>
+                                <div class="overflow-y-auto flex-1 p-2 space-y-1" id="chat-contact-list">
+                                    <div class="flex flex-col items-center justify-center h-full text-gray-500 text-sm font-medium">Loading network...</div>
                                 </div>
                             </div>
 
                             <!-- Right: Active Chat Area -->
-                            <div id="chat-main-area" class="hidden md:flex flex-col flex-1 bg-[#090e17] relative w-full h-full">
+                            <div id="chat-main-area" class="hidden md:flex flex-col flex-1 bg-[#090e17] absolute md:relative inset-0 z-20 w-full">
                                 
                                 <div id="chat-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
-                                    <div class="w-24 h-24 bg-[#1e293b] rounded-full flex items-center justify-center mb-6 border border-gray-700 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-                                        <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
-                                    </div>
-                                    <h3 class="text-xl font-black text-white mb-2">Direct Messages</h3>
-                                    <p class="text-gray-500 text-sm max-w-sm font-medium">Select a trader from the Leaderboard or your contact list to initiate a secure connection.</p>
+                                    <h3 class="text-xl font-bold text-white mb-2">Your Direct Messages</h3>
+                                    <p class="text-gray-400 text-sm max-w-sm">Select a trader from the network to initiate a secure connection.</p>
                                 </div>
 
-                                <div id="active-chat-interface" class="hidden flex-col h-full z-20 w-full">
-                                    <!-- Chat Header with Mobile Back Button -->
-                                    <div class="px-4 md:px-6 py-3 bg-[#111827] border-b border-gray-800 flex items-center justify-between shadow-sm">
+                                <div id="active-chat-interface" class="hidden flex-col h-full z-20">
+                                    <div class="px-4 md:px-6 py-4 bg-[#111827] border-b border-gray-800 flex items-center justify-between">
                                         <div class="flex items-center gap-3">
                                             <!-- Mobile Back Button -->
-                                            <button onclick="window.closeActiveChat()" class="md:hidden text-gray-400 hover:text-white p-2 bg-gray-800 rounded-lg mr-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                                            
-                                            <div class="relative">
-                                                <img id="active-chat-avatar" src="" class="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-gray-700 object-cover">
-                                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#111827] rounded-full"></div>
-                                            </div>
+                                            <button onclick="window.closeActiveChat()" class="md:hidden text-gray-400 hover:text-white p-1 mr-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full border border-gray-600 object-cover">
                                             <div>
-                                                <h3 id="active-chat-username" class="text-white font-bold text-sm md:text-base tracking-wide">Trader</h3>
-                                                <p class="text-[10px] text-green-400 font-black uppercase tracking-widest">Online</p>
+                                                <h3 id="active-chat-username" class="text-white font-bold text-sm">Trader Name</h3>
+                                                <p class="text-[10px] uppercase tracking-widest text-green-400 font-bold">Online</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5" id="chat-messages-history">
-                                        <div class="text-center my-4 relative flex justify-center items-center">
-                                            <div class="absolute inset-x-0 h-px bg-gray-800"></div>
-                                            <span class="text-[9px] uppercase font-black text-gray-500 bg-[#090e17] px-4 py-1 rounded-full relative z-10 border border-gray-800">Secure Session Started</span>
-                                        </div>
+                                    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4" id="chat-messages-history">
+                                        <div class="text-center my-4"><span class="text-[10px] uppercase font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full border border-gray-800">Secure Session Started</span></div>
                                     </div>
 
-                                    <!-- Chat Input Area -->
                                     <div class="p-3 md:p-4 bg-[#111827] border-t border-gray-800">
-                                        <div class="flex items-center gap-2 bg-[#1e293b] p-1.5 rounded-2xl border border-gray-700 focus-within:border-blue-500 transition shadow-inner">
-                                            <input type="text" id="chat-input-msg" placeholder="Type message securely..." class="flex-1 bg-transparent text-white text-sm md:text-base px-3 focus:outline-none placeholder-gray-500" onkeypress="if(event.key === 'Enter') window.sendMessage()">
-                                            <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-xl shadow-lg transition flex items-center justify-center">
-                                                <svg class="w-5 h-5 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
-                                            </button>
+                                        <div class="flex items-center gap-2 bg-[#1e293b] p-1.5 rounded-lg border border-gray-700">
+                                            <input type="text" id="chat-input-msg" placeholder="Type your message securely..." class="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder-gray-500 px-2" onkeypress="if(event.key === 'Enter') window.sendMessage()">
+                                            <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md transition font-bold text-sm">Send</button>
                                         </div>
                                     </div>
                                 </div>
@@ -562,7 +469,7 @@
         </main>
     </div>
 
-    <!-- ADVANCED TRADER IDENTITY MODULE (SOCIAL VERSION) -->
+    <!-- ADVANCED TRADER IDENTITY MODULE -->
     <div id="advanced-profile-page" class="fixed inset-0 bg-[#090e17] z-[60] hidden flex-col overflow-y-auto">
         <div class="max-w-4xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
             <button onclick="window.closeAdvancedProfile()" class="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition w-fit group">
@@ -646,8 +553,8 @@
                         </label>
                     </div>
 
-                    <div class="pt-6 border-t border-gray-800">
-                        <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-1">
+                    <div class="pt-6">
+                        <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] transition">
                             Update Identity & Sync Vault 🚀
                         </button>
                         <div class="clear-both"></div>
@@ -657,45 +564,25 @@
         </div>
     </div>
 
-    <!-- PUBLIC TRADER PROFILE MODAL (SOCIAL SPY MODE) -->
+    <!-- PUBLIC TRADER PROFILE MODAL -->
     <div id="publicProfileModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm transition-opacity" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
-            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-2xl z-10 w-8 h-8 flex items-center justify-center bg-gray-800 rounded-full">&times;</button>
-            
-            <div class="p-8 text-center border-b border-gray-800 bg-[#0f172a] relative">
-                <div class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-                    <img id="pp-avatar" src="" class="w-full h-full object-cover bg-gray-800">
-                </div>
+            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl z-10">&times;</button>
+            <div class="p-6 text-center border-b border-gray-800 bg-[#0f172a] relative">
+                <div class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_15px_rgba(59,130,246,0.5)]"><img id="pp-avatar" src="" class="w-full h-full object-cover"></div>
                 <h3 id="pp-username" class="text-2xl font-black text-white tracking-wide">Trader Name</h3>
-                <p id="pp-pips" class="text-green-400 font-black text-lg mt-1 tracking-tight">+0.0 Pts</p>
+                <p id="pp-pips" class="text-green-400 font-bold text-base mt-1">+0.0 Pts This Week</p>
             </div>
-            
-            <div id="pp-private-msg" class="p-10 text-center hidden bg-[#111827]">
+            <div id="pp-private-msg" class="p-10 text-center hidden">
                 <div class="text-5xl mb-4 drop-shadow-lg">🔒</div>
-                <h4 class="text-white font-bold text-xl mb-1">Vault is Private</h4>
-                <p class="text-gray-400 text-sm font-medium">This trader has chosen not to share their journey details.</p>
+                <h4 class="text-white font-bold text-lg mb-1">Vault is Private</h4>
             </div>
-            
-            <div id="pp-public-details" class="p-6 space-y-4 hidden bg-[#111827]">
-                <div class="bg-[#1e293b] p-4 rounded-2xl border border-gray-800">
-                    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-3">
-                        <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Experience</span>
-                        <span id="pp-exp" class="text-white text-xs font-bold bg-gray-800 px-3 py-1 rounded-lg border border-gray-700">1-3 Years</span>
-                    </div>
-                    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-3">
-                        <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Phase</span>
-                        <span id="pp-phase" class="text-blue-400 text-xs font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Profitable?</span>
-                        <span id="pp-prof" class="text-white text-xs font-bold px-3 py-1 rounded-lg">Yes</span>
-                    </div>
-                </div>
+            <div id="pp-public-details" class="p-6 space-y-5 hidden">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3"><span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Trading Experience</span><span id="pp-exp" class="text-white text-sm font-bold bg-gray-800 px-3 py-1 rounded-lg">1-3 Years</span></div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3"><span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Current Phase</span><span id="pp-phase" class="text-blue-400 text-sm font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span></div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3"><span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Profitable?</span><span id="pp-prof" class="text-white text-sm font-bold px-3 py-1 rounded-lg">Yes</span></div>
                 <div class="pt-2">
-                    <button id="pp-connect-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black text-sm py-4 px-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                        Initiate Secure Connection
-                    </button>
+                    <button id="pp-connect-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2">Connect & Chat</button>
                 </div>
             </div>
         </div>
@@ -704,12 +591,14 @@
     <!-- NEW COMPACT DOWNLOADABLE TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
         
-        <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
+        <div class="w-full max-w-[600px] mx-auto flex flex-col gap-3" onclick="event.stopPropagation()">
             
-            <!-- CAPTURE TARGET for HTML2CANVAS (Compact 2-col image layout prevents stretching) -->
-            <div id="capture-trade-report" class="bg-white rounded-[24px] shadow-2xl p-5 md:p-6 relative overflow-hidden flex flex-col gap-3">
+            <!-- CAPTURE TARGET for HTML2CANVAS (Strict fixed styling for anti-stretch) -->
+            <div id="capture-trade-report" class="bg-white rounded-3xl shadow-2xl p-5 relative overflow-hidden flex flex-col gap-3 mx-auto" style="width: 100%; max-width: 600px;">
+                <!-- Close Button (Hidden during capture) -->
                 <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-4 right-4 bg-gray-100 text-gray-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-lg transition z-10">&times;</button>
                 
+                <!-- Header -->
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mt-1">
                     <div class="bg-blue-50 text-blue-600 p-2.5 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -720,24 +609,24 @@
                     </div>
                 </div>
 
-                <!-- SIDE-BY-SIDE IMAGES FIXED for HTML2CANVAS -->
+                <!-- SIDE-BY-SIDE IMAGES (Using Background Image trick for HTML2Canvas anti-stretch) -->
                 <div class="flex flex-row gap-3">
                     <div class="w-1/2 flex flex-col">
-                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">Chart Screenshot</p>
-                        <div class="export-img-wrapper h-36 md:h-48 border border-gray-200 cursor-zoom-in" id="rep-chart-img-container" onclick="window.openLightbox(this.querySelector('img')?.src)">
-                            <span class="text-gray-400 text-xs font-bold">No Image</span>
+                        <p class="text-[9px] font-black text-gray-500 uppercase mb-1 tracking-widest pl-1">Chart Screenshot</p>
+                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in" id="rep-chart-img-container" onclick="window.openLightbox(this.getAttribute('data-src'))">
+                            <!-- Image injected via background-image inline style by JS -->
                         </div>
                     </div>
                     <div class="w-1/2 flex flex-col">
-                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">RR Target Box</p>
-                        <div class="export-img-wrapper h-36 md:h-48 border border-gray-200 cursor-zoom-in" id="rep-rr-img-container" onclick="window.openLightbox(this.querySelector('img')?.src)">
-                            <span class="text-gray-400 text-xs font-bold">No Image</span>
+                        <p class="text-[9px] font-black text-gray-500 uppercase mb-1 tracking-widest pl-1">RR Target Box</p>
+                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in" id="rep-rr-img-container" onclick="window.openLightbox(this.getAttribute('data-src'))">
+                            <!-- Image injected via background-image inline style by JS -->
                         </div>
                     </div>
                 </div>
 
                 <!-- Compact 2x2 Stats Grid -->
-                <div class="grid grid-cols-2 gap-2 mt-2">
+                <div class="grid grid-cols-2 gap-2 mt-1">
                     <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex justify-between items-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Direction</p>
                         <div class="flex items-center gap-1.5">
@@ -767,20 +656,11 @@
             </div>
 
             <!-- CLEAN DOWNLOAD BUTTON -->
-            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-base md:text-lg py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-base py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
                 Download 📸
             </button>
 
         </div>
-    </div>
-
-    <!-- IMAGE LIGHTBOX MODAL (PRO ZOOM FEATURE) -->
-    <div id="imageLightbox" class="fixed inset-0 bg-[#090e17] bg-opacity-95 hidden flex-col items-center justify-center z-[150] p-4 backdrop-blur-xl transition-opacity" onclick="window.closeLightbox()">
-        <button class="absolute top-6 right-6 text-gray-400 hover:text-red-500 font-black text-4xl z-[160] transition transform hover:scale-110 bg-black/50 w-12 h-12 rounded-full flex items-center justify-center">&times;</button>
-        <div class="w-full max-w-7xl h-full p-4 flex items-center justify-center">
-            <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 cursor-zoom-out" onclick="event.stopPropagation()">
-        </div>
-        <div class="absolute bottom-6 text-gray-400 text-xs font-bold bg-black/50 px-4 py-2 rounded-full tracking-widest uppercase">Click anywhere outside to close</div>
     </div>
 
     <!-- RULE VERIFICATION MODAL -->
@@ -797,13 +677,22 @@
 
     <!-- CERTIFICATE MODAL -->
     <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[90] p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-[#111827] border-4 border-yellow-500 rounded-3xl shadow-2xl w-full max-w-xl p-8 text-center relative" onclick="event.stopPropagation()">
-            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
-            <div class="text-6xl mb-4 animate-bounce">👑</div>
-            <h2 class="text-xs font-extrabold tracking-[0.2em] text-yellow-500 uppercase mb-2">Certificate of Excellence</h2>
-            <h1 class="text-3xl font-black text-white mb-6">Weekly Trading Champion</h1>
-            <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-2 border-b border-gray-700 pb-4 inline-block px-8">Fx_arjun</h3>
+        <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-xl p-8 text-center relative" onclick="event.stopPropagation()">
+            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            <div class="text-5xl mb-2">👑</div>
+            <h2 class="text-xs font-extrabold tracking-widest text-yellow-500 uppercase mb-1">Certificate of Excellence</h2>
+            <h1 class="text-2xl md:text-3xl font-bold text-white mb-6">Weekly Trading Champion</h1>
+            <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-4">Fx_arjun</h3>
         </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX MODAL (PRO ZOOM FEATURE) -->
+    <div id="imageLightbox" class="fixed inset-0 bg-[#090e17] bg-opacity-95 hidden flex-col items-center justify-center z-[150] p-4 backdrop-blur-xl transition-opacity" onclick="window.closeLightbox()">
+        <button class="absolute top-6 right-6 text-gray-400 hover:text-red-500 font-black text-4xl z-[160] transition transform hover:scale-110 bg-black/50 w-12 h-12 rounded-full flex items-center justify-center">&times;</button>
+        <div class="w-full max-w-7xl h-full p-4 flex items-center justify-center">
+            <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300" onclick="event.stopPropagation()">
+        </div>
+        <div class="absolute bottom-6 text-gray-400 text-sm font-bold bg-black/50 px-4 py-2 rounded-full tracking-widest uppercase">Click anywhere outside to close</div>
     </div>
 
     <!-- FIREBASE AND APP LOGIC -->
@@ -844,27 +733,36 @@
         let globalTraderStats = {};
         let activeChatEmail = "";
 
-        // HELPER: Get exact timestamp for most recent Monday at 3:00 AM IST.
+        // SMART LEADERBOARD RESET LOGIC (Every Monday 3:00 AM)
         function getMostRecentMonday3AM() {
             const now = new Date();
-            let day = now.getDay(); // 0 is Sunday, 1 is Monday...
+            let day = now.getDay(); 
             let hour = now.getHours();
             
-            // If it's Monday and before 3 AM, we are technically still in the previous week's cycle.
             let daysToSubtract = 0;
             if (day === 1 && hour < 3) {
                 daysToSubtract = 7;
             } else if (day === 0) {
-                daysToSubtract = 6; // Sunday -> Go back 6 days to Monday
+                daysToSubtract = 6;
             } else if (day !== 1) {
-                daysToSubtract = day - 1; // Any other day -> Go back to Monday
+                daysToSubtract = day - 1;
             }
 
             let lastMonday = new Date(now);
             lastMonday.setDate(now.getDate() - daysToSubtract);
-            lastMonday.setHours(3, 0, 0, 0); // 3:00 AM Exact
+            lastMonday.setHours(3, 0, 0, 0); 
             return lastMonday.getTime();
         }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('avatar-dropdown');
+            const avatarDiv = document.querySelector('[title="Account Menu"]');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (!avatarDiv.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('tradeVaultUser');
@@ -1211,14 +1109,28 @@
             challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
 
             try {
+                // FETCH ALL PROFILES FIRST (So everyone shows up even with 0 pips)
                 const profileSnap = await getDocs(collection(db, "profiles"));
                 globalProfilesMap = {};
+                let tradersMap = {};
+
                 profileSnap.forEach(docSnap => {
-                    globalProfilesMap[docSnap.id] = docSnap.data();
+                    let data = docSnap.data();
+                    let email = docSnap.id;
+                    globalProfilesMap[email] = data;
+                    
+                    tradersMap[email] = {
+                        email: email,
+                        username: data.username || email.split('@')[0],
+                        pfp: data.pfp || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+                        totalPips: 0,
+                        totalTrades: 0,
+                        totalPL: 0
+                    };
                 });
 
+                // FETCH TRADES AND MERGE TO MAP
                 const snapshot = await getDocs(collection(db, "trades"));
-                let tradersMap = {};
                 globalTraderStats = {};
                 
                 const weekStartTimestamp = getMostRecentMonday3AM();
@@ -1235,32 +1147,32 @@
                         tradeTime = new Date(t.date).getTime();
                     }
                     
-                    // Skip trades that are older than the current Monday 3:00 AM cycle
-                    if(tradeTime < weekStartTimestamp) return;
-                    
-                    let profile = globalProfilesMap[email] || { username: email.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` };
+                    if(tradeTime >= weekStartTimestamp) {
+                        let entry = parseFloat(t.entry) || 0;
+                        let exitP = parseFloat(t.exitPrice) || parseFloat(t.tp) || 0;
+                        let points = 0;
+                        if(entry > 0 && exitP > 0) {
+                            points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
+                        }
+                        let plAmt = parseFloat(t.amount || 0);
 
-                    let entry = parseFloat(t.entry) || 0;
-                    let exitP = parseFloat(t.exitPrice) || parseFloat(t.tp) || 0;
-                    let points = 0;
-                    if(entry > 0 && exitP > 0) {
-                        points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
+                        if(!tradersMap[email]) {
+                            tradersMap[email] = { 
+                                email: email,
+                                username: email.split('@')[0], 
+                                pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
+                                totalPips: 0, totalTrades: 0, totalPL: 0
+                            };
+                        }
+                        tradersMap[email].totalPips += points;
+                        tradersMap[email].totalTrades += 1;
+                        tradersMap[email].totalPL += plAmt;
                     }
-                    let plAmt = parseFloat(t.amount || 0);
-
-                    if(!tradersMap[email]) {
-                        tradersMap[email] = { 
-                            email: email, username: profile.username || email.split('@')[0], pfp: profile.pfp || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
-                            totalPips: 0, totalTrades: 0, totalPL: 0
-                        };
-                    }
-                    tradersMap[email].totalPips += points;
-                    tradersMap[email].totalTrades += 1;
-                    tradersMap[email].totalPL += plAmt;
                 });
 
                 let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
 
+                // Ensure at least logged in user is there
                 if(leaderboardArray.length === 0) {
                     leaderboardArray = [
                         { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }
@@ -1284,17 +1196,16 @@
                 ];
 
                 let podiumOrder = [
-                    top3[1] || { email: 'fake2', username: "Challenger 2", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[1] || { email: 'fake2', username: "Empty Slot", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
                     top3[0] || { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }, 
-                    top3[2] || { email: 'fake3', username: "Challenger 3", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
+                    top3[2] || { email: 'fake3', username: "Empty Slot", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
                 ];
 
                 podiumOrder.forEach((trader, idx) => {
+                    if (trader.username === "Empty Slot") return;
                     let cfg = rankConfigs[idx];
                     let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
                     
-                    let certBtn = cfg.isFirst ? `<button onclick="event.stopPropagation(); window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg z-20"><span>📜</span> Claim Reward</button>` : '';
-
                     podiumEl.innerHTML += `
                         <div onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer hover:ring-2 hover:ring-blue-500 hover:-translate-y-2 transition-all flex flex-col items-center bg-[#1e293b] p-4 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
                             <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
@@ -1304,7 +1215,6 @@
                             <h3 class="font-extrabold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
                             <p class="text-green-400 font-black text-xs md:text-base mt-0.5">${pipsText}</p>
                             <span class="text-[10px] ${cfg.labelColor} font-bold mt-1 uppercase">Rank ${cfg.rank}</span>
-                            ${certBtn}
                         </div>`;
                 });
 
@@ -1332,6 +1242,7 @@
             } catch(e) { console.log(e); }
         }
 
+        // ====== PUBLIC TRADER PROFILE (SOCIAL SPY) ======
         window.viewTraderProfile = function(email) {
             if(!email || email.includes('fake')) return;
             
@@ -1415,6 +1326,7 @@
             // MOBILE FIX: Hide Sidebar, Show Main Chat Area
             if (window.innerWidth < 768) {
                 document.getElementById('chat-sidebar').classList.add('hidden');
+                document.getElementById('chat-sidebar').classList.remove('flex');
             }
             
             document.getElementById('chat-empty-state').classList.add('hidden');
@@ -1718,34 +1630,46 @@
             const closeBtn = document.getElementById('close-report-btn');
             const downloadBtn = document.getElementById('download-report-btn');
             
-            // Hide buttons so they aren't captured
+            // Temporarily hide UI elements for clean capture
             if (closeBtn) closeBtn.style.display = 'none';
             if (downloadBtn) downloadBtn.style.display = 'none';
             
-            // Use HTML2Canvas to capture cleanly
-            html2canvas(reportEl, { 
-                scale: 2, // High-res capture
-                backgroundColor: '#ffffff',
-                useCORS: true 
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Vault_Execution_${new Date().getTime()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                
-                // Restore buttons
-                if (closeBtn) closeBtn.style.display = 'flex';
-                if (downloadBtn) downloadBtn.style.display = 'flex';
-                
-            }).catch(err => {
-                console.error("Capture error: ", err);
-                if (closeBtn) closeBtn.style.display = 'flex';
-                if (downloadBtn) downloadBtn.style.display = 'flex';
-                alert("Capture failed.");
-            });
+            // ANTI-STRETCH TRICK: Force a desktop-like container width momentarily
+            const originalWidth = reportEl.style.width;
+            const originalMaxWidth = reportEl.style.maxWidth;
+            reportEl.style.width = '700px';
+            reportEl.style.maxWidth = '700px';
+            
+            // Delay to let browser reflow HTML before capturing
+            setTimeout(() => {
+                html2canvas(reportEl, { 
+                    scale: 2, 
+                    backgroundColor: '#ffffff',
+                    useCORS: true 
+                }).then(canvas => {
+                    // Restore original responsive widths immediately
+                    reportEl.style.width = originalWidth;
+                    reportEl.style.maxWidth = originalMaxWidth;
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    if (downloadBtn) downloadBtn.style.display = 'flex';
+                    
+                    const link = document.createElement('a');
+                    link.download = `Trade_Report_${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                }).catch(err => {
+                    console.error("Capture error: ", err);
+                    reportEl.style.width = originalWidth;
+                    reportEl.style.maxWidth = originalMaxWidth;
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    if (downloadBtn) downloadBtn.style.display = 'flex';
+                    alert("Capture failed.");
+                });
+            }, 150);
         };
 
-        // ====== COMPACT OG TRADE REPORT (STRETCH FIX) ======
+        // ====== COMPACT OG TRADE REPORT (Background Image Fixed Stretching) ======
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
@@ -1762,19 +1686,37 @@
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
             plEl.className = "text-xl md:text-2xl font-black " + (trade.amount >= 0 ? "text-green-500" : "text-red-500");
 
-            // Fixed Image Containers with HTML2Canvas Safe CSS
+            // Fixed Image Containers utilizing background-image for HTML2Canvas Anti-Squash
             const chartDiv = document.getElementById('rep-chart-img-container');
             if(trade.chartImg && trade.chartImg.length > 50) {
-                chartDiv.innerHTML = `<img src="${trade.chartImg}" alt="Chart">`;
+                chartDiv.innerHTML = ''; 
+                chartDiv.style.backgroundImage = `url('${trade.chartImg}')`;
+                chartDiv.style.backgroundSize = 'contain';
+                chartDiv.style.backgroundPosition = 'center';
+                chartDiv.style.backgroundRepeat = 'no-repeat';
+                chartDiv.setAttribute('data-src', trade.chartImg);
+                chartDiv.classList.remove('pointer-events-none');
             } else {
+                chartDiv.style.backgroundImage = 'none';
                 chartDiv.innerHTML = `<span class="text-gray-400 text-xs font-bold">No Image</span>`;
+                chartDiv.setAttribute('data-src', '');
+                chartDiv.classList.add('pointer-events-none');
             }
 
             const rrDiv = document.getElementById('rep-rr-img-container');
             if(trade.rrImg && trade.rrImg.length > 50) {
-                rrDiv.innerHTML = `<img src="${trade.rrImg}" alt="RR Target">`;
+                rrDiv.innerHTML = '';
+                rrDiv.style.backgroundImage = `url('${trade.rrImg}')`;
+                rrDiv.style.backgroundSize = 'contain';
+                rrDiv.style.backgroundPosition = 'center';
+                rrDiv.style.backgroundRepeat = 'no-repeat';
+                rrDiv.setAttribute('data-src', trade.rrImg);
+                rrDiv.classList.remove('pointer-events-none');
             } else {
+                rrDiv.style.backgroundImage = 'none';
                 rrDiv.innerHTML = `<span class="text-gray-400 text-xs font-bold">No Image</span>`;
+                rrDiv.setAttribute('data-src', '');
+                rrDiv.classList.add('pointer-events-none');
             }
 
             document.getElementById('tradeReportModal').classList.remove('hidden');
