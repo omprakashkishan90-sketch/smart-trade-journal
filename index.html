@@ -31,7 +31,7 @@
         
         aside::-webkit-scrollbar { width: 4px; }
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .neon-glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
     </style>
 </head>
@@ -108,7 +108,6 @@
                 </div>
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
-                    <!-- Clickable Profile Avatar to open Profile Settings -->
                     <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="window.openProfileModal()" title="Click to Edit Profile & PFP">
                         <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
                     </div>
@@ -813,7 +812,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // Leaderboard Calculation using Custom Profiles & Pips
+        // Leaderboard Calculation using Custom Profiles & Pips with Fallback Support
         async function loadLeaderboardData() {
             const podiumEl = document.getElementById('leaderboard-podium');
             const challengersEl = document.getElementById('leaderboard-challengers');
@@ -821,7 +820,6 @@
             challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
 
             try {
-                // Fetch profiles first to map custom usernames & pfps
                 const profileSnap = await getDocs(collection(db, "profiles"));
                 let profilesMap = {};
                 profileSnap.forEach(docSnap => {
@@ -833,7 +831,7 @@
 
                 snapshot.forEach((docSnap) => {
                     const t = docSnap.data();
-                    let email = t.userEmail || "Anonymous";
+                    let email = t.userEmail || "fxarjun812@gmail.com";
                     
                     let profile = profilesMap[email] || { 
                         username: email.split('@')[0], 
@@ -846,24 +844,27 @@
                     if(entry > 0 && exitP > 0) {
                         points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
                     }
+                    let plAmt = parseFloat(t.amount || 0);
 
                     if(!tradersMap[email]) {
                         tradersMap[email] = { 
-                            username: profile.username, 
-                            pfp: profile.pfp, 
+                            username: profile.username || email.split('@')[0], 
+                            pfp: profile.pfp || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
                             totalPips: 0, 
-                            totalTrades: 0 
+                            totalTrades: 0,
+                            totalPL: 0
                         };
                     }
                     tradersMap[email].totalPips += points;
                     tradersMap[email].totalTrades += 1;
+                    tradersMap[email].totalPL += plAmt;
                 });
 
                 let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
 
                 if(leaderboardArray.length === 0) {
                     leaderboardArray = [
-                        { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0 }
+                        { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }
                     ];
                 }
 
@@ -874,32 +875,34 @@
                 let rest = leaderboardArray.slice(3);
 
                 let rankConfigs = [
-                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-52 md:h-60", width: "w-28 md:w-48", labelColor: "text-gray-400" },
-                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-60 md:h-76", width: "w-32 md:w-56", labelColor: "text-blue-400", isFirst: true },
-                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-44 md:h-52", width: "w-28 md:w-48", labelColor: "text-orange-500" }
+                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-56 md:h-64", width: "w-32 md:w-52", labelColor: "text-gray-400" },
+                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-64 md:h-80", width: "w-36 md:w-60", labelColor: "text-blue-400", isFirst: true },
+                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-48 md:h-56", width: "w-32 md:w-52", labelColor: "text-orange-500" }
                 ];
 
                 let podiumOrder = [
-                    top3[1] || { username: "Challenger 2", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0 }, 
-                    top3[0] || { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0 }, 
-                    top3[2] || { username: "Challenger 3", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0 }
+                    top3[1] || { username: "Challenger 2", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[0] || { username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[2] || { username: "Challenger 3", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
                 ];
 
                 podiumOrder.forEach((trader, idx) => {
                     let cfg = rankConfigs[idx];
                     let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
+                    let growthPct = ((trader.totalPL / 1000) * 100).toFixed(1); // Assuming standard $1000 base vault
+                    let growthText = (growthPct >= 0 ? '+' : '') + growthPct + "% Growth";
                     
                     let certBtn = cfg.isFirst ? `<button onclick="window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg"><span>📜</span> Certificate</button>` : '';
 
                     podiumEl.innerHTML += `
-                        <div class="flex flex-col items-center bg-[#1e293b] p-4 md:p-6 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
+                        <div class="flex flex-col items-center bg-[#1e293b] p-4 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
                             <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
-                            <!-- Custom Profile Picture on Podium -->
-                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-700 overflow-hidden border-2 border-white mb-2 shadow-md">
+                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-700 overflow-hidden border-2 border-white mb-2 shadow-md shrink-0">
                                 <img src="${trader.pfp}" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-extrabold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
                             <p class="text-green-400 font-black text-xs md:text-base mt-0.5">${pipsText}</p>
+                            <p class="text-xs font-semibold text-blue-300 mt-1 bg-blue-950 px-2 py-0.5 rounded-full">${growthText}</p>
                             <span class="text-[10px] ${cfg.labelColor} font-bold mt-1 uppercase">Rank ${cfg.rank}</span>
                             ${certBtn}
                         </div>`;
