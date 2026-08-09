@@ -33,6 +33,10 @@
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+        
+        /* Custom scrollbar for Advanced Profile Page */
+        #advanced-profile-page::-webkit-scrollbar { width: 8px; }
+        #advanced-profile-page::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
@@ -93,24 +97,44 @@
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
                 <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
-                <!-- NOTE: Profile button removed from sidebar! -->
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden w-full">
-            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200">
+        <main class="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
+            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200 relative z-40">
                 <div class="flex items-center">
                     <button onclick="window.toggleSidebar()" class="mr-3 md:hidden text-slate-800 hover:text-blue-600 focus:outline-none">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <h1 class="text-lg md:text-xl font-semibold text-slate-800 truncate" id="header-title">Dashboard</h1>
                 </div>
+                
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
-                    <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="window.switchTab('profile')" title="Go to Profile">
-                        <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                    
+                    <!-- Dropdown Trigger Container -->
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow-md hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')" title="Account Menu">
+                            <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- Sleek Dropdown Menu -->
+                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Account</p>
+                                <p class="text-sm font-bold text-slate-800 truncate" id="dropdown-email">Loading...</p>
+                            </div>
+                            <button onclick="window.openAdvancedProfile()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-3 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                My Profile
+                            </button>
+                            <button onclick="window.logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -178,7 +202,7 @@
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB (Reverted to Light Theme) -->
+                <!-- 3. MY STRATEGIES TAB (Light Theme - Retained exactly as requested) -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
@@ -350,37 +374,7 @@
                     </div>
                 </div>
 
-                <!-- 6. PROFILE SETTINGS TAB (Hidden from sidebar) -->
-                <div id="tab-profile" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 max-w-3xl mx-auto">
-                    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-10">
-                        <div class="flex items-center space-x-4 mb-8 border-b pb-6">
-                            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-blue-600 shadow-md">
-                                <img id="profile-page-avatar" src="" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-extrabold text-slate-800">Trader Profile & Identity</h2>
-                                <p class="text-xs text-gray-500" id="profile-page-email">fxarjun812@gmail.com</p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Custom Trader Name (Leaderboard Display)</label>
-                                <input id="profile-username-input" type="text" placeholder="e.g. Fx_arjun" class="w-full px-4 py-3 border border-gray-300 rounded-xl font-bold text-slate-800 text-base bg-gray-50 focus:bg-white focus:border-blue-500 transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Profile Picture (Image URL / Avatar)</label>
-                                <input id="profile-pfp-input" type="text" placeholder="Paste image link here..." class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-500 transition">
-                                <p class="text-xs text-gray-400 mt-2">Tip: Paste any public image URL or keep your dicebear avatar link.</p>
-                            </div>
-                            <button onclick="window.saveProfileSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4">
-                                Save Profile & Sync Leaderboard 🚀
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 7. VISITOR ACTIVITY LOG TAB -->
+                <!-- 6. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
@@ -402,6 +396,115 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- 100% FULL PAGE OVERLAY: ADVANCED TRADER IDENTITY MODULE -->
+    <div id="advanced-profile-page" class="fixed inset-0 bg-[#090e17] z-[60] hidden flex-col overflow-y-auto">
+        <div class="max-w-4xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
+            
+            <button onclick="window.closeAdvancedProfile()" class="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition w-fit group">
+                <span class="group-hover:-translate-x-1 transition-transform">🔙</span> <span class="font-bold tracking-wide uppercase text-sm">Back to Dashboard</span>
+            </button>
+
+            <div class="bg-[#111827] rounded-3xl shadow-2xl border border-gray-800 overflow-hidden flex-1 mb-8">
+                <!-- Header Area -->
+                <div class="bg-gradient-to-r from-blue-900 to-[#111827] p-8 md:p-10 border-b border-gray-800 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">Trader Identity</h2>
+                        <p class="text-blue-200 text-sm font-medium">Verify your KYC and personal details to claim payouts.</p>
+                    </div>
+                    <div class="hidden md:block w-20 h-20 rounded-full border-4 border-blue-500 overflow-hidden shadow-[0_0_15px_rgba(59,130,246,0.6)]">
+                        <img id="ap-header-avatar" src="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-10 space-y-8">
+                    <!-- Basic Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Custom Trader Name</label>
+                            <input id="ap-username" type="text" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white font-bold focus:border-blue-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Registered Email <span class="text-[10px] text-green-500 ml-2 border border-green-500 px-1 rounded">VERIFIED</span></label>
+                            <input id="ap-email" type="text" readonly class="w-full px-4 py-3 bg-[#0f172a] border border-gray-800 rounded-xl text-gray-400 font-medium cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <!-- Personal Details Matrix -->
+                    <div class="border-t border-gray-800 pt-8">
+                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📋</span> Personal Demographics</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Phone Number</label>
+                                <input id="ap-phone" type="text" placeholder="+1 (555) 000-0000" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Gender</label>
+                                <select id="ap-gender" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other / Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Birthdate</label>
+                                <input id="ap-birthdate" type="date" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Country</label>
+                                <input id="ap-country" type="text" placeholder="e.g., United States" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">State / Region</label>
+                                <input id="ap-state" type="text" placeholder="e.g., New York (NY)" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">City</label>
+                                <!-- Using New York as placeholder for that premium global trader feel -->
+                                <input id="ap-city" type="text" placeholder="New York City" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Full Address</label>
+                                <input id="ap-address" type="text" placeholder="11 Wall Street, Financial District..." class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Zipcode / Postal</label>
+                                <input id="ap-zip" type="text" placeholder="10005" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone for Avatar Upload -->
+                    <div class="border-t border-gray-800 pt-8">
+                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📸</span> Identity Avatar / PFP Upload</h3>
+                        
+                        <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] hover:border-blue-500 transition group relative overflow-hidden">
+                            <!-- Image Preview overlay if selected -->
+                            <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-40"></div>
+                            
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
+                                <svg class="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                <p class="mb-2 text-sm text-gray-300 font-bold" id="ap-dropzone-text"><span class="text-blue-400">Click to upload</span> or drag and drop</p>
+                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            </div>
+                            <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
+                        </label>
+                    </div>
+
+                    <!-- Save Action -->
+                    <div class="pt-6">
+                        <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] transition">
+                            Update Identity & Sync Vault 🚀
+                        </button>
+                        <div class="clear-both"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- RULE VERIFICATION MODAL -->
@@ -539,6 +642,18 @@
         let rrImgData = "";
         let currentLoggedInUser = "";
         let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
+        let tempAdvancedPfpData = "";
+
+        // Hides dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('avatar-dropdown');
+            const avatarDiv = document.querySelector('[title="Account Menu"]');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (!avatarDiv.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('tradeVaultUser');
@@ -547,6 +662,8 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
+                
+                document.getElementById('dropdown-email').innerText = savedUser;
                 
                 loadUserProfileFromFirebase().then(() => {
                     const activityBtn = document.getElementById('btn-activity');
@@ -610,6 +727,7 @@
         async function logVisitorAndEnter(identifier, method) {
             currentLoggedInUser = identifier;
             localStorage.setItem('tradeVaultUser', identifier);
+            document.getElementById('dropdown-email').innerText = identifier;
 
             try {
                 await addDoc(collection(db, "visitors"), {
@@ -646,7 +764,8 @@
                 } else {
                     currentUserProfile = {
                         username: currentLoggedInUser.split('@')[0],
-                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`
+                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`,
+                        phone: "", gender: "Male", country: "", state: "", city: "", address: "", zip: "", birthdate: ""
                     };
                     await setDoc(docRef, currentUserProfile);
                 }
@@ -657,32 +776,95 @@
             document.getElementById('user-display-name').innerText = currentUserProfile.username;
             document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
             document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
-            
-            document.getElementById('profile-username-input').value = currentUserProfile.username;
-            document.getElementById('profile-pfp-input').value = currentUserProfile.pfp;
-            document.getElementById('profile-page-avatar').src = currentUserProfile.pfp;
-            document.getElementById('profile-page-email').innerText = currentLoggedInUser;
         }
 
-        window.saveProfileSettings = async function() {
-            const newName = document.getElementById('profile-username-input').value.trim();
-            const newPfp = document.getElementById('profile-pfp-input').value.trim();
+        // ====== ADVANCED FULL PAGE PROFILE MODULE =======
+        window.openAdvancedProfile = function() {
+            document.getElementById('avatar-dropdown').classList.add('hidden');
+            document.getElementById('advanced-profile-page').classList.remove('hidden');
+            document.getElementById('advanced-profile-page').classList.add('flex');
+            
+            // Populate Advanced Form
+            document.getElementById('ap-email').value = currentLoggedInUser;
+            document.getElementById('ap-username').value = currentUserProfile.username || "";
+            document.getElementById('ap-phone').value = currentUserProfile.phone || "";
+            document.getElementById('ap-gender').value = currentUserProfile.gender || "Male";
+            document.getElementById('ap-country').value = currentUserProfile.country || "";
+            document.getElementById('ap-state').value = currentUserProfile.state || "";
+            document.getElementById('ap-city').value = currentUserProfile.city || "";
+            document.getElementById('ap-address').value = currentUserProfile.address || "";
+            document.getElementById('ap-zip').value = currentUserProfile.zip || "";
+            document.getElementById('ap-birthdate').value = currentUserProfile.birthdate || "";
+            document.getElementById('ap-header-avatar').src = currentUserProfile.pfp;
+            
+            tempAdvancedPfpData = ""; // reset temporary image data
+            
+            const dropzoneText = document.getElementById('ap-dropzone-text');
+            const previewOverlay = document.getElementById('ap-pfp-preview');
+            dropzoneText.innerHTML = `<span class="text-blue-400">Click to upload</span> or drag and drop`;
+            previewOverlay.classList.add('hidden');
+        };
 
+        window.closeAdvancedProfile = function() {
+            document.getElementById('advanced-profile-page').classList.add('hidden');
+            document.getElementById('advanced-profile-page').classList.remove('flex');
+        };
+
+        window.handleAdvancedPfpUpload = function() {
+            const input = document.getElementById('ap-pfp-input-file');
+            const dropzoneText = document.getElementById('ap-dropzone-text');
+            const previewOverlay = document.getElementById('ap-pfp-preview');
+            
+            if(input.files && input.files[0]) {
+                const file = input.files[0];
+                dropzoneText.innerText = "Selected: " + file.name;
+                dropzoneText.className = "mb-2 text-sm text-green-400 font-bold max-w-[200px] truncate";
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempAdvancedPfpData = e.target.result;
+                    previewOverlay.style.backgroundImage = `url('${tempAdvancedPfpData}')`;
+                    previewOverlay.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.saveAdvancedProfile = async function() {
+            const newName = document.getElementById('ap-username').value.trim();
             if(!newName) { alert("Trader name cannot be empty!"); return; }
 
             currentUserProfile.username = newName;
-            if(newPfp) currentUserProfile.pfp = newPfp;
+            currentUserProfile.phone = document.getElementById('ap-phone').value.trim();
+            currentUserProfile.gender = document.getElementById('ap-gender').value;
+            currentUserProfile.country = document.getElementById('ap-country').value.trim();
+            currentUserProfile.state = document.getElementById('ap-state').value.trim();
+            currentUserProfile.city = document.getElementById('ap-city').value.trim();
+            currentUserProfile.address = document.getElementById('ap-address').value.trim();
+            currentUserProfile.zip = document.getElementById('ap-zip').value.trim();
+            currentUserProfile.birthdate = document.getElementById('ap-birthdate').value;
+
+            // Update PFP if a new file was uploaded in dropzone
+            if(tempAdvancedPfpData !== "") {
+                currentUserProfile.pfp = tempAdvancedPfpData;
+            }
 
             try {
                 const docRef = doc(db, "profiles", currentLoggedInUser);
                 await setDoc(docRef, currentUserProfile, { merge: true });
-                alert("Profile updated & synced successfully! 🚀");
+                alert("Identity Profile Updated & Synced to Vault Successfully! 🚀");
+                
+                // Close and refresh UI
+                window.closeAdvancedProfile();
                 loadUserProfileFromFirebase();
-                window.switchTab('dashboard');
+                if(document.getElementById('tab-leaderboard').classList.contains('active')) {
+                    loadLeaderboardData();
+                }
             } catch(e) {
                 alert("Error saving profile: " + e.message);
             }
         };
+        // ================================================
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -698,7 +880,7 @@
                 activeBtn.classList.add('bg-gray-200', 'text-slate-800');
             }
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'Strategy Vault', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'profile': 'Trader Profile', 'activity': 'Visitor Activity Log' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'activity': 'Visitor Activity Log' };
             document.getElementById('header-title').innerText = titles[tabId];
 
             if(tabId === 'mytrades' && calendarInstance) {
@@ -706,9 +888,6 @@
             }
             if(tabId === 'leaderboard') {
                 loadLeaderboardData();
-            }
-            if(tabId === 'profile') {
-                loadUserProfileFromFirebase();
             }
             if(tabId === 'activity') {
                 loadVisitorActivity();
