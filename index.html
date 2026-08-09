@@ -211,7 +211,6 @@
                                 <p class="text-xs text-gray-500 mt-1">Click on any logged trade in the calendar to view full details and attached images.</p>
                             </div>
                             
-                            <!-- RESTORED & ENHANCED PDF/EXCEL EXPORT BUTTONS -->
                             <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
                                 <button onclick="window.sendWeeklyReportEmail()" class="flex items-center gap-2 bg-[#1e293b] text-white text-xs md:text-sm font-bold px-4 py-2.5 rounded-lg hover:bg-slate-700 shadow transition">
                                     <span>📧</span> Email
@@ -230,7 +229,7 @@
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB (Light Theme) -->
+                <!-- 3. MY STRATEGIES TAB -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
@@ -405,7 +404,7 @@
                     </div>
                 </div>
                 
-                <!-- NEW: 6. ADVANCED MESSAGES (INBOX) TAB -->
+                <!-- 6. ADVANCED MESSAGES (INBOX) TAB -->
                 <div id="tab-messages" class="tab-content px-4 md:px-8 py-6 h-full min-h-[600px]">
                     <div class="max-w-6xl mx-auto h-full flex flex-col bg-[#0f172a] rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
                         
@@ -593,7 +592,9 @@
                         <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📸</span> Identity Avatar / PFP Upload</h3>
                         
                         <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] hover:border-blue-500 transition group relative overflow-hidden">
+                            <!-- Image Preview overlay if selected -->
                             <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-40"></div>
+                            
                             <div class="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
                                 <svg class="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                                 <p class="mb-2 text-sm text-gray-300 font-bold" id="ap-dropzone-text"><span class="text-blue-400">Click to upload</span> or drag and drop</p>
@@ -652,7 +653,7 @@
                 
                 <!-- ADVANCED CONNECT BUTTON -->
                 <div class="pt-2">
-                    <button onclick="window.openChat()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center justify-center gap-2">
+                    <button id="pp-connect-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         Connect & Chat
                     </button>
@@ -697,75 +698,68 @@
         </div>
     </div>
 
-    <!-- RESTORED & UPGRADED: DETAILED TRADE REPORT VIEW -->
-    <!-- (Added robust z-index, event.stopPropagation, and large image rendering) -->
+    <!-- RESTORED OG: DETAILED TRADE REPORT VIEW (WITH SIDE-BY-SIDE IMAGES) -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex flex-col z-[100] overflow-y-auto p-4 md:p-10" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl mx-auto p-5 md:p-8 relative my-auto border border-gray-200" onclick="event.stopPropagation()">
-            <button onclick="window.closeTradeReport()" class="absolute top-4 right-4 md:top-6 md:right-6 bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-lg md:text-xl transition shadow-sm">&times;</button>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto p-5 md:p-8 relative my-auto" onclick="event.stopPropagation()">
+            <button onclick="window.closeTradeReport()" class="absolute top-4 right-4 md:top-6 md:right-6 bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-lg md:text-xl transition">&times;</button>
             
-            <div class="flex items-center space-x-3 mb-6 border-b border-gray-100 pb-4 mt-2 md:mt-0">
-                <svg class="w-8 h-8 md:w-10 md:h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <div class="flex items-center space-x-3 mb-6 border-b pb-4 mt-2 md:mt-0">
+                <svg class="w-6 h-6 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight" id="rep-title">Trade Analysis</h2>
-                    <p class="text-sm font-bold text-gray-500" id="rep-date">Date: 2026-08-09</p>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-800" id="rep-title">Trade Analysis</h2>
+                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-09</p>
                 </div>
             </div>
 
-            <!-- RESTORED IMAGE RENDERING -->
+            <!-- THE OG IMAGE LAYOUT IS BACK -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
-                <div class="border border-gray-200 rounded-xl p-3 bg-gray-50 shadow-sm">
-                    <h4 class="text-xs font-bold text-blue-600 uppercase mb-2 tracking-wider flex items-center gap-1"><span>📈</span> Chart Screenshot</h4>
-                    <div class="bg-gray-200 rounded-lg h-56 md:h-72 overflow-hidden border border-gray-300 flex items-center justify-center" id="rep-chart-img">
-                        <span class="text-gray-400 text-sm font-medium">No Image Uploaded</span>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Chart</h4>
+                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-chart-img"><span class="text-gray-400 text-sm">No Image</span></div>
                 </div>
-                <div class="border border-gray-200 rounded-xl p-3 bg-gray-50 shadow-sm">
-                    <h4 class="text-xs font-bold text-green-600 uppercase mb-2 tracking-wider flex items-center gap-1"><span>🎯</span> RR Target Box</h4>
-                    <div class="bg-gray-200 rounded-lg h-56 md:h-72 overflow-hidden border border-gray-300 flex items-center justify-center" id="rep-rr-img">
-                        <span class="text-gray-400 text-sm font-medium">No Image Uploaded</span>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">RR Target Box</h4>
+                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-rr-img"><span class="text-gray-400 text-sm">No Image</span></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-4">
-                <div class="bg-white shadow-sm p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold tracking-wider">Direction</span>
-                    <span class="text-base md:text-xl font-black text-slate-800 mt-1 block" id="rep-direction">-</span>
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Direction</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-direction">-</span>
                 </div>
-                <div class="bg-white shadow-sm p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold tracking-wider">Strategy</span>
-                    <span class="text-base md:text-xl font-black text-slate-800 mt-1 block truncate" id="rep-strat">-</span>
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Strategy</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-strat">-</span>
                 </div>
-                <div class="bg-white shadow-sm p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold tracking-wider">Lot Size</span>
-                    <span class="text-base md:text-xl font-black text-slate-800 mt-1 block" id="rep-lot">-</span>
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Lot Size</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-lot">-</span>
                 </div>
-                <div class="bg-white shadow-sm p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold tracking-wider">Entry / SL / TP</span>
-                    <span class="text-[10px] md:text-xs font-bold text-slate-700 mt-1 block leading-relaxed" id="rep-levels">-</span>
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Entry/SL/TP</span>
+                    <span class="text-[10px] md:text-xs font-bold text-slate-700 mt-1 block" id="rep-levels">-</span>
                 </div>
-                <div class="bg-white shadow-sm p-4 rounded-xl border border-blue-200 bg-blue-50">
-                    <span class="block text-[10px] md:text-xs text-blue-600 uppercase font-bold tracking-wider">Net P/L</span>
-                    <span class="text-xl md:text-2xl font-black text-green-600 mt-1 block" id="rep-pl">-</span>
+                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Net P/L</span>
+                    <span class="text-base md:text-lg font-extrabold text-green-600" id="rep-pl">-</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-8">
-                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-sm flex justify-between items-center">
-                    <span class="block text-xs text-indigo-600 uppercase font-bold tracking-wider">Exit Price</span>
-                    <span class="text-base md:text-xl font-black text-indigo-900" id="rep-exit-price">-</span>
+                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
+                    <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Price</span>
+                    <span class="text-sm md:text-lg font-extrabold text-indigo-900" id="rep-exit-price">-</span>
                 </div>
-                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-sm flex justify-between items-center">
-                    <span class="block text-xs text-indigo-600 uppercase font-bold tracking-wider">Exit Reason</span>
-                    <span class="text-sm md:text-base font-bold text-indigo-900 truncate max-w-[200px]" id="rep-exit-reason">-</span>
+                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
+                    <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Reason</span>
+                    <span class="text-sm md:text-base font-bold text-indigo-900" id="rep-exit-reason">-</span>
                 </div>
             </div>
 
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-inner">
-                <h3 class="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-widest mb-3 flex items-center gap-2"><span>🛡️</span> Strategy Rules Enforced:</h3>
-                <ul id="rep-rules-list" class="space-y-2 text-xs md:text-sm text-slate-700 font-medium">
-                    <li class="italic text-gray-500">No rule checklist recorded.</li>
-                </ul>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-6">
+                <h3 class="text-xs md:text-sm font-bold text-blue-900 uppercase tracking-wide mb-3 flex items-center">Strategy Rules Followed:</h3>
+                <ul id="rep-rules-list" class="space-y-1 md:space-y-2 text-xs md:text-sm text-slate-700"><li class="italic text-gray-500">No rule checklist recorded.</li></ul>
             </div>
         </div>
     </div>
@@ -1056,7 +1050,6 @@
             document.getElementById('header-title').innerText = titles[tabId] || 'Dashboard';
 
             if(tabId === 'mytrades' && calendarInstance) {
-                // Critical fix: Re-render calendar so it doesn't compress
                 setTimeout(() => { calendarInstance.render(); }, 100);
             }
             if(tabId === 'leaderboard') {
@@ -1301,7 +1294,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // ====== PUBLIC TRADER PROFILE (SOCIAL SPY) ======
         window.viewTraderProfile = function(email) {
             if(!email || email.includes('fake')) return;
             
@@ -1336,7 +1328,6 @@
                 document.getElementById('pp-public-details').classList.add('hidden');
             }
 
-            // Bind connect button to open chat UI with this user
             const connectBtn = document.getElementById('pp-connect-btn');
             if(connectBtn) {
                 connectBtn.onclick = function() { window.openChatFromProfile(email, profile.username, profile.pfp); };
@@ -1350,7 +1341,6 @@
             const listEl = document.getElementById('chat-contact-list');
             listEl.innerHTML = "";
             
-            // Generate list from globalProfilesMap (excluding self)
             let contactsCount = 0;
             for(let email in globalProfilesMap) {
                 if(email !== currentLoggedInUser) {
@@ -1390,7 +1380,6 @@
             document.getElementById('active-chat-username').innerText = username;
             document.getElementById('active-chat-avatar').src = pfp;
             
-            // Clear current chat view and add dummy message to simulate history
             const historyEl = document.getElementById('chat-messages-history');
             historyEl.innerHTML = `<div class="text-center my-4"><span class="text-[10px] uppercase tracking-widest font-bold text-gray-500 bg-gray-800 px-3 py-1 rounded-full">Today</span></div>`;
             
@@ -1413,7 +1402,6 @@
             
             const historyEl = document.getElementById('chat-messages-history');
             
-            // Append my message
             historyEl.innerHTML += `
                 <div class="flex justify-end mb-4 chat-bubble">
                     <div class="bg-blue-600 text-white text-sm p-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-[0_4px_15px_rgba(59,130,246,0.3)]">
@@ -1425,7 +1413,6 @@
             input.value = "";
             historyEl.scrollTop = historyEl.scrollHeight;
         };
-        // ===============================================
 
         window.openCertificateModal = function(username) {
             document.getElementById('cert-username').innerText = username;
@@ -1502,7 +1489,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // RESTORED EXPORT & PDF ENGINE
         window.sendWeeklyReportEmail = async function() {
             let totalPl = globalTradesCache.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
             let messageBody = `Weekly Trading Report for ${currentLoggedInUser}\nTotal Trades: ${globalTradesCache.length}\nNet P/L: $${totalPl.toFixed(2)}`;
@@ -1649,7 +1635,6 @@
 
                 alert("Trade saved successfully to your personal vault! ✅");
                 
-                // Clear form
                 chartImgData = ""; rrImgData = "";
                 document.getElementById('chart-file-label').innerText = "Upload Chart Snippet";
                 document.getElementById('rr-file-label').innerText = "Upload RR Box";
@@ -1663,7 +1648,7 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
-        // RESTORED: OPEN DETAILED TRADE REPORT WITH IMAGES
+        // ====== RESTORED: OG TRADE REPORT MODAL ======
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
@@ -1680,33 +1665,21 @@
 
             const plEl = document.getElementById('rep-pl');
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
-            plEl.className = "text-xl md:text-2xl font-black mt-1 block " + (trade.amount >= 0 ? "text-green-600" : "text-red-600");
+            plEl.className = "text-base md:text-lg font-extrabold " + (trade.amount >= 0 ? "text-green-600" : "text-red-600");
 
-            // Restored Image Rendering Engine
-            const chartDiv = document.getElementById('rep-chart-img');
-            if(trade.chartImg && trade.chartImg.length > 50) {
-                chartDiv.innerHTML = `<img src="${trade.chartImg}" class="w-full h-full object-contain bg-white">`;
-            } else {
-                chartDiv.innerHTML = `<span class="text-gray-400 text-sm font-medium">No Image Uploaded</span>`;
-            }
-
-            const rrDiv = document.getElementById('rep-rr-img');
-            if(trade.rrImg && trade.rrImg.length > 50) {
-                rrDiv.innerHTML = `<img src="${trade.rrImg}" class="w-full h-full object-contain bg-white">`;
-            } else {
-                rrDiv.innerHTML = `<span class="text-gray-400 text-sm font-medium">No Image Uploaded</span>`;
-            }
+            // OG Image Rendering (object-cover)
+            document.getElementById('rep-chart-img').innerHTML = trade.chartImg ? `<img src="${trade.chartImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
+            document.getElementById('rep-rr-img').innerHTML = trade.rrImg ? `<img src="${trade.rrImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
 
             const rulesListContainer = document.getElementById('rep-rules-list');
             rulesListContainer.innerHTML = "";
             if(trade.rulesFollowed && trade.rulesFollowed.length > 0) {
                 trade.rulesFollowed.forEach((rule) => {
-                    rulesListContainer.innerHTML += `<li class="flex items-start text-slate-800 font-bold gap-2"><span class="text-green-500">✅</span> ${rule}</li>`;
+                    rulesListContainer.innerHTML += `<li class="flex items-center text-slate-800 font-medium">✅ ${rule}</li>`;
                 });
             } else {
-                rulesListContainer.innerHTML = `<li class="italic text-gray-500 font-medium">No rule checklist recorded for this trade.</li>`;
+                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No rule checklist recorded.</li>`;
             }
-            
             document.getElementById('tradeReportModal').classList.remove('hidden');
         };
 
