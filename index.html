@@ -93,6 +93,7 @@
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
                 <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
+                <button onclick="window.switchTab('profile')" id="btn-profile" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">👤 Profile Settings</button>
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
@@ -108,7 +109,7 @@
                 </div>
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
-                    <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="window.openProfileModal()" title="Click to Edit Profile & PFP">
+                    <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="window.switchTab('profile')" title="Go to Profile">
                         <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
                     </div>
                 </div>
@@ -177,42 +178,53 @@
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB -->
-                <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
-                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-800 mb-1">Add Your Strategy / Rules (Overview)</label>
-                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="4"></textarea>
-                            </div>
-                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Next: Add Rules ➡️</button>
+                <!-- 3. MY STRATEGIES TAB (Cinematic Dark UI Redesign) -->
+                <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">⚡ STRATEGY <span class="text-blue-500 neon-text-blue">VAULT</span></h2>
+                            <p class="text-gray-400 text-sm">Build, code and enforce your rules like a pro prop-firm trader</p>
                         </div>
-                    </div>
 
-                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl hidden">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="rule-page-title">Add Rules</h2>
-                            <span class="text-xs md:text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Step 2 of 2</span>
+                        <!-- Step 1: Strategy Vault Form -->
+                        <div id="strategy-step-1" class="bg-[#1e293b] rounded-2xl shadow-2xl border border-gray-700 p-6 md:p-8">
+                            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><span>🛡️</span> Define New Strategy</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Strategy Name</label>
+                                    <input id="strategy-name-input" type="text" placeholder="e.g. SMC + London Session CHoCH" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-xl text-white font-medium focus:outline-none focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Strategy Overview / Core Logic</label>
+                                    <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#0f172a] text-green-400 font-mono text-sm rounded-xl border border-gray-600 focus:outline-none focus:border-blue-500" rows="4" placeholder="// Write execution rules or overview here..."></textarea>
+                                </div>
+                                <button onclick="window.proceedToRulesStep()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                                    <span>Next: Add Execution Rules</span> <span>➡️</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex flex-col md:flex-row gap-3">
-                                <input id="single-rule-input" type="text" placeholder="e.g. Rule 1: Max Lot 0.01" class="flex-1 px-4 py-2 border border-gray-300 rounded-md">
-                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-medium px-5 py-2 rounded-md hover:bg-blue-700">+ Add Rule</button>
+
+                        <!-- Step 2: Rules Builder -->
+                        <div id="strategy-step-2" class="bg-[#1e293b] rounded-2xl shadow-2xl border border-gray-700 p-6 md:p-8 hidden">
+                            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+                                <h3 class="text-xl font-bold text-white" id="rule-page-title">Add Rules</h3>
+                                <span class="text-xs font-bold text-blue-400 bg-blue-950 px-3 py-1 rounded-full border border-blue-800">Step 2 of 2</span>
                             </div>
-                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[120px]">
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rules List:</h4>
-                                <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700">
-                                    <li class="text-gray-400 italic">No rules added yet...</li>
-                                </ul>
-                            </div>
-                            <div class="flex flex-col md:flex-row justify-between pt-4 gap-3">
-                                <button onclick="window.backToStrategyStep1()" class="text-gray-600 font-medium px-4 py-2 border md:border-none rounded-md hover:underline">⬅️ Back</button>
-                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 shadow-lg">Finish & Save Strategy 🚀</button>
+                            <div class="space-y-5">
+                                <div class="flex flex-col md:flex-row gap-3">
+                                    <input id="single-rule-input" type="text" placeholder="e.g. Rule 1: Max Lot 0.01 per trade" class="flex-1 px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                                    <button onclick="window.addSingleRule()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition shadow">+ Add Rule</button>
+                                </div>
+                                <div class="border border-gray-700 rounded-xl p-4 bg-[#0f172a] min-h-[140px]">
+                                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Enforced Rules Checklist:</h4>
+                                    <ul id="rules-list-container" class="space-y-2 text-sm text-gray-200 font-medium">
+                                        <li class="text-gray-500 italic">No rules added yet...</li>
+                                    </ul>
+                                </div>
+                                <div class="flex flex-col md:flex-row justify-between pt-4 gap-3">
+                                    <button onclick="window.backToStrategyStep1()" class="text-gray-400 hover:text-white font-medium px-4 py-2 text-sm">⬅️ Back</button>
+                                    <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition">Save Complete Strategy 🚀</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -349,7 +361,37 @@
                     </div>
                 </div>
 
-                <!-- 6. VISITOR ACTIVITY LOG TAB -->
+                <!-- 6. PROFILE SETTINGS TAB (Full Page Redesign) -->
+                <div id="tab-profile" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 max-w-3xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-10">
+                        <div class="flex items-center space-x-4 mb-8 border-b pb-6">
+                            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-blue-600 shadow-md">
+                                <img id="profile-page-avatar" src="" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-extrabold text-slate-800">Trader Profile & Identity</h2>
+                                <p class="text-xs text-gray-500" id="profile-page-email">fxarjun812@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Custom Trader Name (Leaderboard Display)</label>
+                                <input id="profile-username-input" type="text" placeholder="e.g. Fx_arjun" class="w-full px-4 py-3 border border-gray-300 rounded-xl font-bold text-slate-800 text-base bg-gray-50 focus:bg-white focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Profile Picture (Image URL / Avatar)</label>
+                                <input id="profile-pfp-input" type="text" placeholder="Paste image link here..." class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-500 transition">
+                                <p class="text-xs text-gray-400 mt-2">Tip: Paste any public image URL or keep your dicebear avatar link.</p>
+                            </div>
+                            <button onclick="window.saveProfileSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4">
+                                Save Profile & Sync Leaderboard 🚀
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
@@ -371,30 +413,6 @@
 
             </div>
         </main>
-    </div>
-
-    <!-- PROFILE SETTINGS MODAL -->
-    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
-            <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <h3 class="text-xl font-bold text-slate-800">👤 Edit Trader Profile</h3>
-                <button onclick="window.closeProfileModal()" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Custom Trader Name</label>
-                    <input id="profile-username-input" type="text" placeholder="e.g. Fx_arjun" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-slate-800">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Profile Picture (Image URL)</label>
-                    <input id="profile-pfp-input" type="text" placeholder="Paste image URL here..." class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
-                    <p class="text-[10px] text-gray-400 mt-1">Tip: You can paste any image link or use your avatar URL.</p>
-                </div>
-                <button onclick="window.saveProfileSettings()" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 shadow mt-2">
-                    Save Profile & Sync Leaderboard 🚀
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- RULE VERIFICATION MODAL -->
@@ -650,17 +668,13 @@
             document.getElementById('user-display-name').innerText = currentUserProfile.username;
             document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
             document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
-        }
-
-        window.openProfileModal = function() {
+            
+            // Populate full profile page tab inputs
             document.getElementById('profile-username-input').value = currentUserProfile.username;
             document.getElementById('profile-pfp-input').value = currentUserProfile.pfp;
-            document.getElementById('profileModal').classList.remove('hidden');
-        };
-
-        window.closeProfileModal = function() {
-            document.getElementById('profileModal').classList.add('hidden');
-        };
+            document.getElementById('profile-page-avatar').src = currentUserProfile.pfp;
+            document.getElementById('profile-page-email').innerText = currentLoggedInUser;
+        }
 
         window.saveProfileSettings = async function() {
             const newName = document.getElementById('profile-username-input').value.trim();
@@ -674,9 +688,9 @@
             try {
                 const docRef = doc(db, "profiles", currentLoggedInUser);
                 await setDoc(docRef, currentUserProfile, { merge: true });
-                alert("Profile updated successfully! 🚀");
-                window.closeProfileModal();
+                alert("Profile updated & synced successfully! 🚀");
                 loadUserProfileFromFirebase();
+                window.switchTab('dashboard');
             } catch(e) {
                 alert("Error saving profile: " + e.message);
             }
@@ -693,7 +707,7 @@
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('bg-gray-200', 'text-slate-800');
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'activity': 'Visitor Activity Log' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'Strategy Vault', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'profile': 'Profile Settings', 'activity': 'Visitor Activity Log' };
             document.getElementById('header-title').innerText = titles[tabId];
 
             if(tabId === 'mytrades' && calendarInstance) {
@@ -701,6 +715,9 @@
             }
             if(tabId === 'leaderboard') {
                 loadLeaderboardData();
+            }
+            if(tabId === 'profile') {
+                loadUserProfileFromFirebase();
             }
             if(tabId === 'activity') {
                 loadVisitorActivity();
@@ -812,7 +829,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // Leaderboard Calculation using Custom Profiles & Pips with Fallback Support
         async function loadLeaderboardData() {
             const podiumEl = document.getElementById('leaderboard-podium');
             const challengersEl = document.getElementById('leaderboard-challengers');
@@ -889,7 +905,7 @@
                 podiumOrder.forEach((trader, idx) => {
                     let cfg = rankConfigs[idx];
                     let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
-                    let growthPct = ((trader.totalPL / 1000) * 100).toFixed(1); // Assuming standard $1000 base vault
+                    let growthPct = ((trader.totalPL / 1000) * 100).toFixed(1);
                     let growthText = (growthPct >= 0 ? '+' : '') + growthPct + "% Growth";
                     
                     let certBtn = cfg.isFirst ? `<button onclick="window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg"><span>📜</span> Certificate</button>` : '';
@@ -939,6 +955,52 @@
 
         window.closeCertificateModal = function() {
             document.getElementById('certificateModal').classList.add('hidden');
+        };
+
+        window.proceedToRulesStep = function() {
+            tempStrategyName = document.getElementById('strategy-name-input').value.trim();
+            tempStrategyDesc = document.getElementById('strategy-code-input').value.trim();
+            if(!tempStrategyName) { alert("Strategy name required!"); return; }
+            document.getElementById('rule-page-title').innerText = "Rules for: " + tempStrategyName;
+            document.getElementById('strategy-step-1').classList.add('hidden');
+            document.getElementById('strategy-step-2').classList.remove('hidden');
+            currentRulesList = [];
+            renderRulesUI();
+        };
+
+        window.backToStrategyStep1 = function() {
+            document.getElementById('strategy-step-2').classList.add('hidden');
+            document.getElementById('strategy-step-1').classList.remove('hidden');
+        };
+
+        window.addSingleRule = function() {
+            const ruleText = document.getElementById('single-rule-input').value.trim();
+            if(!ruleText) return;
+            currentRulesList.push(ruleText);
+            document.getElementById('single-rule-input').value = "";
+            renderRulesUI();
+        };
+
+        function renderRulesUI() {
+            const container = document.getElementById('rules-list-container');
+            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-500 italic">No rules added yet...</li>`; return; }
+            container.innerHTML = "";
+            currentRulesList.forEach((rule, idx) => {
+                container.innerHTML += `<li class="bg-[#0f172a] p-3 rounded-lg border border-gray-700 flex justify-between items-center text-gray-200"><span><strong>Rule ${idx + 1}:</strong> ${rule}</span></li>`;
+            });
+        }
+
+        window.saveCompleteStrategyToDatabase = async function() {
+            if(currentRulesList.length === 0) { alert("Add at least one rule!"); return; }
+            try {
+                await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
+                alert("Strategy saved successfully! 🚀");
+                document.getElementById('strategy-name-input').value = "";
+                document.getElementById('strategy-code-input').value = "";
+                currentRulesList = [];
+                window.backToStrategyStep1();
+                window.switchTab('dashboard');
+            } catch (e) { alert("Error: " + e.message); }
         };
 
         async function loadVisitorActivity() {
@@ -1144,52 +1206,6 @@
         };
 
         window.closeTradeReport = function() { document.getElementById('tradeReportModal').classList.add('hidden'); };
-
-        window.proceedToRulesStep = function() {
-            tempStrategyName = document.getElementById('strategy-name-input').value.trim();
-            tempStrategyDesc = document.getElementById('strategy-code-input').value.trim();
-            if(!tempStrategyName) { alert("Strategy name required!"); return; }
-            document.getElementById('rule-page-title').innerText = "Rules for: " + tempStrategyName;
-            document.getElementById('strategy-step-1').classList.add('hidden');
-            document.getElementById('strategy-step-2').classList.remove('hidden');
-            currentRulesList = [];
-            renderRulesUI();
-        };
-
-        window.backToStrategyStep1 = function() {
-            document.getElementById('strategy-step-2').classList.add('hidden');
-            document.getElementById('strategy-step-1').classList.remove('hidden');
-        };
-
-        window.addSingleRule = function() {
-            const ruleText = document.getElementById('single-rule-input').value.trim();
-            if(!ruleText) return;
-            currentRulesList.push(ruleText);
-            document.getElementById('single-rule-input').value = "";
-            renderRulesUI();
-        };
-
-        function renderRulesUI() {
-            const container = document.getElementById('rules-list-container');
-            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic">No rules added yet...</li>`; return; }
-            container.innerHTML = "";
-            currentRulesList.forEach((rule, idx) => {
-                container.innerHTML += `<li class="bg-white p-2 px-3 rounded border border-gray-200"><strong>Rule ${idx + 1}:</strong> ${rule}</li>`;
-            });
-        }
-
-        window.saveCompleteStrategyToDatabase = async function() {
-            if(currentRulesList.length === 0) { alert("Add at least one rule!"); return; }
-            try {
-                await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
-                alert("Strategy saved successfully! 🚀");
-                document.getElementById('strategy-name-input').value = "";
-                document.getElementById('strategy-code-input').value = "";
-                currentRulesList = [];
-                window.backToStrategyStep1();
-                window.switchTab('dashboard');
-            } catch (e) { alert("Error: " + e.message); }
-        };
 
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
