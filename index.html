@@ -29,21 +29,32 @@
         .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; }
         .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
         
-        /* Custom scrollbar for sidebar */
         aside::-webkit-scrollbar { width: 4px; }
         aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
+        .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+        
+        /* Custom scrollbar for Modals and Chat */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .chat-bubble { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
-    <!-- DUAL LOGIN SCREEN -->
-    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
+    <!-- DUAL LOGIN SCREEN (OG DARK) -->
+    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-[100] flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
         <div class="bg-[#1e293b] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
             <svg class="w-14 h-14 text-blue-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
             <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
             <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
             
-            <!-- Google Sign In Option -->
             <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
@@ -55,7 +66,6 @@
                 <div class="flex-grow border-t border-gray-600"></div>
             </div>
 
-            <!-- Username & Password Option -->
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Username</label>
@@ -75,17 +85,15 @@
     <!-- MAIN APP STRUCTURE -->
     <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500 relative">
         
-        <!-- Mobile Sidebar Overlay -->
         <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 hidden md:hidden" onclick="window.toggleSidebar()"></div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar (OG STYLE) -->
         <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
             <div class="h-16 flex items-center justify-between px-6 mt-4">
                 <div class="flex items-center">
                     <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
                     <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
                 </div>
-                <!-- Close Button for Mobile -->
                 <button onclick="window.toggleSidebar()" class="md:hidden text-gray-500 hover:text-slate-800">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -95,38 +103,58 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
+                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
+                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">
+                    <span>💬 Messages</span>
+                    <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full" id="unread-badge">New</span>
+                </button>
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden w-full">
-            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200">
+        <main class="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
+            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200 relative z-40">
                 <div class="flex items-center">
-                    <!-- Hamburger Menu for Mobile -->
                     <button onclick="window.toggleSidebar()" class="mr-3 md:hidden text-slate-800 hover:text-blue-600 focus:outline-none">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <h1 class="text-lg md:text-xl font-semibold text-slate-800 truncate" id="header-title">Dashboard</h1>
                 </div>
+                
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
-                    <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-400 shrink-0 cursor-pointer" onclick="window.logout()" title="Click to Logout">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                    
+                    <div class="relative">
+                        <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')" title="Account Menu">
+                            <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- OG Dropdown Menu -->
+                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Account</p>
+                                <p class="text-sm font-bold text-slate-800 truncate" id="dropdown-email">Loading...</p>
+                            </div>
+                            <button onclick="window.openAdvancedProfile()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-gray-100 flex items-center gap-3">
+                                👤 My Profile
+                            </button>
+                            <button onclick="window.logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 border-t border-gray-100">
+                                🚪 Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto">
+            <div class="flex-1 overflow-y-auto relative">
                 
-                <!-- 1. DASHBOARD TAB -->
+                <!-- 1. DASHBOARD TAB (OG STYLE) -->
                 <div id="tab-dashboard" class="tab-content active pb-10">
-                    <!-- Top Blue Header -->
                     <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
-                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, Fx_arjun</h2>
+                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, <span id="welcome-user-name">Fx_arjun</span></h2>
                     </div>
                     
-                    <!-- Top 3 KPI Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 -mt-16 relative z-10">
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
                             <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
@@ -145,35 +173,20 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: Performance Insights (Bold & Clean UI) -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 mt-4 md:mt-6 relative z-10">
-                        <!-- Best Strategy -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-blue-100 text-blue-600 p-1 rounded mr-2">🔥</span> Top Strategy
                             </h3>
                             <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-strat">-</span>
                         </div>
-
-                        <!-- Best Day -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-indigo-100 text-indigo-600 p-1 rounded mr-2">📅</span> Best Day
                             </h3>
                             <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-day">-</span>
                         </div>
-
-                        <!-- Biggest Win -->
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <div class="absolute -right-4 -bottom-4 opacity-5">
-                                <svg class="w-24 h-24 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15c0-1.09 1.01-1.85 2.7-1.85c1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61c0 2.31 1.91 3.46 4.7 4.13c2.5.6 3 1.48 3 2.41c0 .69-.49 1.79-2.7 1.79c-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55c0-2.84-2.43-3.81-4.7-4.4z"></path></svg>
-                            </div>
                             <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
                                 <span class="bg-green-100 text-green-600 p-1 rounded mr-2">💰</span> Biggest Win
                             </h3>
@@ -182,11 +195,13 @@
                     </div>
                 </div>
 
-                <!-- 2. MY TRADES & REPORTS TAB -->
+                <!-- 2. MY TRADES & REPORTS TAB (OG Buttons & Setup) -->
                 <div id="tab-mytrades" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 max-w-5xl mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 max-w-5xl mx-auto mb-8">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
                             <h2 class="text-lg md:text-xl font-bold text-slate-800">Trading Calendar & Reports</h2>
+                            
+                            <!-- OG Export Buttons -->
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="window.sendWeeklyReportEmail()" class="bg-blue-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-blue-700 shadow">📧 Email</button>
                                 <button onclick="window.downloadExcel()" class="bg-green-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-700 shadow">📥 Excel</button>
@@ -197,9 +212,9 @@
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB -->
+                <!-- 3. MY STRATEGIES TAB (OG Light Theme) -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
+                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
                         <div class="space-y-6">
                             <div>
@@ -214,7 +229,7 @@
                         </div>
                     </div>
 
-                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl hidden">
+                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto hidden">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="rule-page-title">Add Rules</h2>
                             <span class="text-xs md:text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Step 2 of 2</span>
@@ -238,11 +253,9 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB -->
+                <!-- 4. LOG TRADE TAB (OG Design) -->
                 <div id="tab-logtrade" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl">
-                        
-                        <!-- Dual Image Upload Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl mx-auto">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
@@ -269,7 +282,6 @@
                         <div class="space-y-6 pt-4 border-t border-gray-200">
                             <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
                             
-                            <!-- Strategy, Direction, and Lot Size -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Strategy</label>
@@ -288,7 +300,6 @@
                                 </div>
                             </div>
 
-                            <!-- Entry, SL, TP -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-gray-200">
                                 <div>
                                     <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry</label>
@@ -304,7 +315,6 @@
                                 </div>
                             </div>
 
-                            <!-- Exit Details Row -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
                                 <div>
                                     <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price (Actual)</label>
@@ -316,7 +326,6 @@
                                 </div>
                             </div>
 
-                            <!-- Ratios and Net P/L -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated RR Ratio</label>
@@ -339,7 +348,96 @@
                     </div>
                 </div>
 
-                <!-- 5. VISITOR ACTIVITY LOG TAB -->
+                <!-- 5. WEEKLY LEADERBOARD TAB (OG DARK) -->
+                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
+                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)<br><span class="text-xs text-blue-300 mt-1 block font-bold">Click on any trader to spy their journey! 👀</span></p>
+                        </div>
+
+                        <!-- THE PODIUM (Top 3) -->
+                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-4 md:gap-8 mb-16 w-full">
+                            <!-- Populated Dynamically -->
+                        </div>
+
+                        <!-- THE CHALLENGER BOARD -->
+                        <div class="w-full bg-[#1e293b] rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
+                            <div class="px-6 py-4 border-b border-gray-700 bg-[#0f172a]">
+                                <h3 class="text-lg font-bold text-gray-300">👥 Challenger Board</h3>
+                            </div>
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-xs font-bold text-gray-500 uppercase border-b border-gray-700 bg-[#151e2d]">
+                                        <th class="p-4">Rank</th>
+                                        <th class="p-4">Trader Name</th>
+                                        <th class="p-4 hidden md:table-cell">Total Trades</th>
+                                        <th class="p-4 text-right">Weekly Pips</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-challengers" class="text-sm">
+                                    <!-- Populated Dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 6. MESSAGES (INBOX) TAB (OG DARK) -->
+                <div id="tab-messages" class="tab-content px-4 md:px-8 py-6 h-full min-h-[600px] bg-[#0f172a]">
+                    <div class="max-w-6xl mx-auto h-[calc(100vh-140px)] min-h-[550px] flex flex-col bg-[#1e293b] rounded-xl border border-gray-700 shadow-2xl overflow-hidden">
+                        
+                        <div class="bg-[#0f172a] border-b border-gray-700 p-4 flex justify-between items-center">
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2"><span>💬</span> Trading Community Chat</h2>
+                            <span class="text-xs text-green-400 bg-green-900/30 px-3 py-1 rounded-full border border-green-800">Secure Network</span>
+                        </div>
+
+                        <div class="flex flex-1 overflow-hidden h-full">
+                            
+                            <div class="w-full md:w-[320px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-0">
+                                <div class="p-4 border-b border-gray-800">
+                                    <input type="text" placeholder="Search traders..." class="w-full bg-[#1e293b] text-sm text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500">
+                                </div>
+                                <div class="overflow-y-auto flex-1 p-2 space-y-1" id="chat-contact-list">
+                                    <div class="flex flex-col items-center justify-center h-full text-gray-500 text-sm font-medium">Loading network...</div>
+                                </div>
+                            </div>
+
+                            <div class="hidden md:flex flex-col flex-1 bg-[#090e17] relative" id="chat-main-area">
+                                
+                                <div id="chat-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
+                                    <h3 class="text-xl font-bold text-white mb-2">Your Direct Messages</h3>
+                                    <p class="text-gray-400 text-sm max-w-sm">Select a trader from the Leaderboard or your contact list to initiate a connection.</p>
+                                </div>
+
+                                <div id="active-chat-interface" class="hidden flex-col h-full z-20">
+                                    <div class="px-6 py-4 bg-[#111827] border-b border-gray-800 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full border border-gray-600 object-cover">
+                                            <div>
+                                                <h3 id="active-chat-username" class="text-white font-bold text-sm">Trader Name</h3>
+                                                <p class="text-xs text-green-400">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 overflow-y-auto p-6 space-y-4" id="chat-messages-history">
+                                        <div class="text-center my-4"><span class="text-[10px] uppercase font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full">Today</span></div>
+                                    </div>
+
+                                    <div class="p-4 bg-[#111827] border-t border-gray-800">
+                                        <div class="flex items-center gap-3 bg-[#1e293b] p-2 rounded-lg border border-gray-700">
+                                            <input type="text" id="chat-input-msg" placeholder="Type your message securely..." class="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder-gray-500" onkeypress="if(event.key === 'Enter') window.sendMessage()">
+                                            <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg transition">Send</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
@@ -363,9 +461,148 @@
         </main>
     </div>
 
+    <!-- ADVANCED TRADER IDENTITY MODULE (SOCIAL VERSION) -->
+    <div id="advanced-profile-page" class="fixed inset-0 bg-[#090e17] z-[60] hidden flex-col overflow-y-auto">
+        <div class="max-w-4xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
+            
+            <button onclick="window.closeAdvancedProfile()" class="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition w-fit group">
+                <span class="group-hover:-translate-x-1 transition-transform">🔙</span> <span class="font-bold tracking-wide uppercase text-sm">Back to Dashboard</span>
+            </button>
+
+            <div class="bg-[#111827] rounded-3xl shadow-2xl border border-gray-800 overflow-hidden flex-1 mb-8">
+                <div class="bg-gradient-to-r from-blue-900 to-[#111827] p-8 md:p-10 border-b border-gray-800 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">Trader Identity & Journey</h2>
+                        <p class="text-blue-200 text-sm font-medium">Update your vault and connect with the community.</p>
+                    </div>
+                    <div class="hidden md:block w-20 h-20 rounded-full border-4 border-blue-500 overflow-hidden shadow-[0_0_15px_rgba(59,130,246,0.6)]">
+                        <img id="ap-header-avatar" src="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-10 space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Custom Trader Name</label>
+                            <input id="ap-username" type="text" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white font-bold focus:border-blue-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Registered Email <span class="text-[10px] text-green-500 ml-2 border border-green-500 px-1 rounded">VERIFIED</span></label>
+                            <input id="ap-email" type="text" readonly class="w-full px-4 py-3 bg-[#0f172a] border border-gray-800 rounded-xl text-gray-400 font-medium cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-8">
+                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📈</span> Trading Journey & Status</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Trading Experience</label>
+                                <select id="ap-experience" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                                    <option value="Less than 1 Year">Less than 1 Year</option>
+                                    <option value="1-3 Years">1-3 Years</option>
+                                    <option value="3+ Years">3+ Years Pro</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Current Phase</label>
+                                <select id="ap-phase" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                                    <option value="Learning">Learning</option>
+                                    <option value="Losing">Losing</option>
+                                    <option value="Break Even">Break Even</option>
+                                    <option value="Profitable">Profitable</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Are You Profitable?</label>
+                                <select id="ap-profitable" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-[#1f2937] p-5 rounded-xl border border-gray-700 shadow-inner">
+                            <div>
+                                <h4 class="text-white font-bold text-sm md:text-base mb-1 flex items-center gap-2"><span>🌍</span> Public Leaderboard Profile</h4>
+                                <p class="text-xs text-gray-400">Allow others to view your trading journey metrics when they click your name.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" id="ap-public" class="sr-only peer">
+                              <div class="w-14 h-7 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-500"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-8">
+                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📸</span> Identity Avatar / PFP Upload</h3>
+                        
+                        <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] hover:border-blue-500 transition group relative overflow-hidden">
+                            <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-40"></div>
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
+                                <svg class="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                <p class="mb-2 text-sm text-gray-300 font-bold" id="ap-dropzone-text"><span class="text-blue-400">Click to upload</span> or drag and drop</p>
+                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            </div>
+                            <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
+                        </label>
+                    </div>
+
+                    <div class="pt-6">
+                        <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] transition">
+                            Update Identity & Sync Vault 🚀
+                        </button>
+                        <div class="clear-both"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUBLIC TRADER PROFILE MODAL (SOCIAL SPY MODE WITH OUTSIDE CLICK TO CLOSE) -->
+    <div id="publicProfileModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm transition-opacity" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
+            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl z-10">&times;</button>
+            
+            <div class="p-6 text-center border-b border-gray-800 bg-[#0f172a] relative">
+                <div class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                    <img id="pp-avatar" src="" class="w-full h-full object-cover">
+                </div>
+                <h3 id="pp-username" class="text-2xl font-black text-white tracking-wide">Trader Name</h3>
+                <p id="pp-pips" class="text-green-400 font-bold text-base mt-1">+0.0 Pts This Week</p>
+            </div>
+            
+            <div id="pp-private-msg" class="p-10 text-center hidden">
+                <div class="text-5xl mb-4 drop-shadow-lg">🔒</div>
+                <h4 class="text-white font-bold text-lg mb-1">Vault is Private</h4>
+                <p class="text-gray-400 text-sm">This trader has chosen not to share their journey details with the community.</p>
+            </div>
+            
+            <div id="pp-public-details" class="p-6 space-y-5 hidden">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Trading Experience</span>
+                    <span id="pp-exp" class="text-white text-sm font-bold bg-gray-800 px-3 py-1 rounded-lg">1-3 Years</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Current Phase</span>
+                    <span id="pp-phase" class="text-blue-400 text-sm font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Profitable?</span>
+                    <span id="pp-prof" class="text-white text-sm font-bold px-3 py-1 rounded-lg">Yes</span>
+                </div>
+                <div class="pt-2">
+                    <button id="pp-connect-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        Connect & Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- RULE VERIFICATION MODAL -->
-    <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+    <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100" onclick="event.stopPropagation()">
             <h3 class="text-xl font-bold text-slate-800 mb-2">🛡️ Rules Checklist</h3>
             <p class="text-xs text-gray-500 mb-4">Did you follow your strategy rules for this trade?</p>
             <div id="modal-rules-checklist" class="space-y-3 max-h-48 overflow-y-auto mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200"></div>
@@ -376,61 +613,98 @@
         </div>
     </div>
 
-    <!-- DETAILED TRADE REPORT VIEW -->
-    <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex flex-col z-50 overflow-y-auto p-4 md:p-10">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto p-5 md:p-8 relative my-auto">
+    <!-- CERTIFICATE MODAL -->
+    <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[90] p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-xl p-8 text-center relative" onclick="event.stopPropagation()">
+            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            <div class="text-5xl mb-2">👑</div>
+            <h2 class="text-xs font-extrabold tracking-widest text-yellow-500 uppercase mb-1">Certificate of Excellence</h2>
+            <h1 class="text-2xl md:text-3xl font-bold text-white mb-6">Weekly Trading Champion</h1>
+            <p class="text-gray-300 text-sm mb-2">This is proudly presented to</p>
+            <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-4 underline decoration-yellow-500">Fx_arjun</h3>
+            <p class="text-gray-400 text-xs leading-relaxed mb-8 px-6">For dominating the markets, capturing the highest weekly Pips, and exhibiting elite discipline in Trade Vault Pro.</p>
+            <div class="flex justify-between items-center px-8 border-t border-gray-700 pt-4">
+                <div class="text-left">
+                    <span class="block text-[10px] text-gray-500 uppercase font-bold">Status</span>
+                    <span class="text-xs text-green-400 font-bold">Verified Winner</span>
+                </div>
+                <div class="text-right">
+                    <span class="block text-[10px] text-gray-500 uppercase font-bold">Awarded By</span>
+                    <span class="text-xs text-yellow-500 font-bold">Fx Arjun 👑</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX MODAL (PRO ZOOM FEATURE) -->
+    <div id="imageLightbox" class="fixed inset-0 bg-[#090e17] bg-opacity-95 hidden flex-col items-center justify-center z-[110] p-4 backdrop-blur-xl transition-opacity" onclick="window.closeLightbox()">
+        <button class="absolute top-6 right-6 text-gray-400 hover:text-red-500 font-black text-4xl z-[120] transition transform hover:scale-110 bg-black/50 w-12 h-12 rounded-full flex items-center justify-center">&times;</button>
+        <div class="w-full max-w-7xl h-full p-4 flex items-center justify-center">
+            <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 cursor-zoom-out" onclick="event.stopPropagation()">
+        </div>
+        <div class="absolute bottom-6 text-gray-400 text-sm font-bold bg-black/50 px-4 py-2 rounded-full tracking-widest uppercase">Click anywhere outside to close</div>
+    </div>
+
+    <!-- RESTORED OG: DETAILED TRADE REPORT VIEW (WITH IMAGE CROP FIX & ZOOM) -->
+    <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex flex-col z-[100] overflow-y-auto p-4 md:p-10" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto p-5 md:p-8 relative my-auto border border-gray-200" onclick="event.stopPropagation()">
             <button onclick="window.closeTradeReport()" class="absolute top-4 right-4 md:top-6 md:right-6 bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-lg md:text-xl transition">&times;</button>
             
             <div class="flex items-center space-x-3 mb-6 border-b pb-4 mt-2 md:mt-0">
                 <svg class="w-6 h-6 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <div>
-                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-800" id="rep-title">Trade Analysis</h2>
-                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-07</p>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-800" id="rep-title">Trade Report: Strategy</h2>
+                    <p class="text-xs text-gray-500 font-bold mt-1" id="rep-date">Execution Date: 2026-08-09</p>
                 </div>
             </div>
 
+            <!-- OG IMAGE LAYOUT FIXED: Object-contain prevents cropping, click to zoom added -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
-                <div>
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Chart</h4>
-                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-chart-img"><span class="text-gray-400 text-sm">No Image</span></div>
+                <div class="border border-gray-200 rounded-xl p-3 bg-white shadow-sm hover:shadow-md transition group">
+                    <h4 class="text-xs font-bold text-blue-600 uppercase mb-2 flex items-center gap-2"><span>📈</span> Chart Screenshot</h4>
+                    <div class="bg-[#f8fafc] rounded-lg h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center cursor-zoom-in relative" id="rep-chart-img-container" onclick="window.openLightbox(this.querySelector('img')?.src)">
+                        <span class="text-gray-400 text-sm font-medium">No Image</span>
+                    </div>
                 </div>
-                <div>
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">RR Target Box</h4>
-                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-rr-img"><span class="text-gray-400 text-sm">No Image</span></div>
+                <div class="border border-gray-200 rounded-xl p-3 bg-white shadow-sm hover:shadow-md transition group">
+                    <h4 class="text-xs font-bold text-green-600 uppercase mb-2 flex items-center gap-2"><span>🎯</span> RR Target Box</h4>
+                    <div class="bg-[#f8fafc] rounded-lg h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center cursor-zoom-in relative" id="rep-rr-img-container" onclick="window.openLightbox(this.querySelector('img')?.src)">
+                        <span class="text-gray-400 text-sm font-medium">No Image</span>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-4">
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Direction</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-direction">-</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800 mt-1 block" id="rep-direction">-</span>
                 </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Strategy</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-strat">-</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800 mt-1 block truncate" id="rep-strat">-</span>
                 </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Lot Size</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-lot">-</span>
+                    <span class="text-sm md:text-lg font-extrabold text-slate-800 mt-1 block" id="rep-lot">-</span>
                 </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Entry/SL/TP</span>
-                    <span class="text-[10px] md:text-xs font-bold text-slate-700 mt-1 block" id="rep-levels">-</span>
+                    <span class="text-[10px] md:text-xs font-bold text-slate-700 mt-1 block leading-relaxed" id="rep-levels">-</span>
                 </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
                     <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Net P/L</span>
-                    <span class="text-base md:text-lg font-extrabold text-green-600" id="rep-pl">-</span>
+                    <span class="text-base md:text-lg font-extrabold text-green-600 mt-1 block" id="rep-pl">-</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-8">
-                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
                     <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Price</span>
                     <span class="text-sm md:text-lg font-extrabold text-indigo-900" id="rep-exit-price">-</span>
                 </div>
-                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
                     <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Reason</span>
-                    <span class="text-sm md:text-base font-bold text-indigo-900" id="rep-exit-reason">-</span>
+                    <span class="text-sm md:text-base font-bold text-indigo-900 truncate max-w-[200px]" id="rep-exit-reason">-</span>
                 </div>
             </div>
 
@@ -445,7 +719,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -462,21 +736,34 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        const CORRECT_USER = "fx arjun";
         const CORRECT_PASS = "Xauusd @123";
         const WEB3FORMS_KEY = "A335f7b9-e4d4-4832-97f9-b5c8dc33eaae";
 
         let calendarInstance = null;
         let globalTradesCache = [];
         let strategiesCache = [];
-        let tempStrategyName = "";
-        let tempStrategyDesc = "";
         let currentRulesList = [];
         let chartImgData = "";
         let rrImgData = "";
         let currentLoggedInUser = "";
+        let tempAdvancedPfpData = "";
+        
+        let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
+        let globalProfilesMap = {};
+        let globalTraderStats = {};
+        
+        let activeChatEmail = "";
 
-        // Checking LocalStorage for persistent login
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('avatar-dropdown');
+            const avatarDiv = document.querySelector('[title="Account Menu"]');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (!avatarDiv.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('tradeVaultUser');
             if (savedUser) {
@@ -484,21 +771,23 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-                document.getElementById('user-display-name').innerText = savedUser;
                 
-                const activityBtn = document.getElementById('btn-activity');
-                if(savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun") {
-                    activityBtn.classList.remove('hidden');
-                    activityBtn.classList.add('flex');
-                } else {
-                    activityBtn.classList.add('hidden');
-                    activityBtn.classList.remove('flex');
-                }
-                initApp();
+                document.getElementById('dropdown-email').innerText = savedUser;
+                
+                loadUserProfileFromFirebase().then(() => {
+                    const activityBtn = document.getElementById('btn-activity');
+                    if(savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun") {
+                        activityBtn.classList.remove('hidden');
+                        activityBtn.classList.add('flex');
+                    } else {
+                        activityBtn.classList.add('hidden');
+                        activityBtn.classList.remove('flex');
+                    }
+                    initApp();
+                });
             }
         });
 
-        // Mobile Sidebar Toggle
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -506,7 +795,6 @@
             overlay.classList.toggle('hidden');
         };
 
-        // Logout function
         window.logout = function() {
             localStorage.removeItem('tradeVaultUser');
             auth.signOut().then(() => {
@@ -547,7 +835,8 @@
 
         async function logVisitorAndEnter(identifier, method) {
             currentLoggedInUser = identifier;
-            localStorage.setItem('tradeVaultUser', identifier); // Saves login session!
+            localStorage.setItem('tradeVaultUser', identifier);
+            document.getElementById('dropdown-email').innerText = identifier;
 
             try {
                 await addDoc(collection(db, "visitors"), {
@@ -560,7 +849,8 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-            document.getElementById('user-display-name').innerText = identifier;
+
+            await loadUserProfileFromFirebase();
 
             const activityBtn = document.getElementById('btn-activity');
             if(identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun") {
@@ -574,6 +864,113 @@
             initApp();
         }
 
+        async function loadUserProfileFromFirebase() {
+            try {
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    currentUserProfile = docSnap.data();
+                } else {
+                    currentUserProfile = {
+                        username: currentLoggedInUser.split('@')[0],
+                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`,
+                        experience: "Less than 1 Year", phase: "Learning", isProfitable: "No", isPublic: false
+                    };
+                    await setDoc(docRef, currentUserProfile);
+                }
+            } catch(e) {
+                currentUserProfile = { 
+                    username: currentLoggedInUser.split('@')[0], 
+                    pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`,
+                    experience: "Less than 1 Year", phase: "Learning", isProfitable: "No", isPublic: false 
+                };
+            }
+            
+            currentUserProfile.experience = currentUserProfile.experience || "Less than 1 Year";
+            currentUserProfile.phase = currentUserProfile.phase || "Learning";
+            currentUserProfile.isProfitable = currentUserProfile.isProfitable || "No";
+            currentUserProfile.isPublic = currentUserProfile.isPublic !== undefined ? currentUserProfile.isPublic : false;
+
+            document.getElementById('user-display-name').innerText = currentUserProfile.username;
+            document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
+            document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
+        }
+
+        window.openAdvancedProfile = function() {
+            document.getElementById('avatar-dropdown').classList.add('hidden');
+            document.getElementById('advanced-profile-page').classList.remove('hidden');
+            document.getElementById('advanced-profile-page').classList.add('flex');
+            
+            document.getElementById('ap-email').value = currentLoggedInUser;
+            document.getElementById('ap-username').value = currentUserProfile.username || "";
+            document.getElementById('ap-experience').value = currentUserProfile.experience;
+            document.getElementById('ap-phase').value = currentUserProfile.phase;
+            document.getElementById('ap-profitable').value = currentUserProfile.isProfitable;
+            document.getElementById('ap-public').checked = currentUserProfile.isPublic;
+            
+            document.getElementById('ap-header-avatar').src = currentUserProfile.pfp;
+            
+            tempAdvancedPfpData = "";
+            const dropzoneText = document.getElementById('ap-dropzone-text');
+            const previewOverlay = document.getElementById('ap-pfp-preview');
+            dropzoneText.innerHTML = `<span class="text-blue-400">Click to upload</span> or drag and drop`;
+            previewOverlay.classList.add('hidden');
+        };
+
+        window.closeAdvancedProfile = function() {
+            document.getElementById('advanced-profile-page').classList.add('hidden');
+            document.getElementById('advanced-profile-page').classList.remove('flex');
+        };
+
+        window.handleAdvancedPfpUpload = function() {
+            const input = document.getElementById('ap-pfp-input-file');
+            const dropzoneText = document.getElementById('ap-dropzone-text');
+            const previewOverlay = document.getElementById('ap-pfp-preview');
+            
+            if(input.files && input.files[0]) {
+                const file = input.files[0];
+                dropzoneText.innerText = "Selected: " + file.name;
+                dropzoneText.className = "mb-2 text-sm text-green-400 font-bold max-w-[200px] truncate";
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempAdvancedPfpData = e.target.result;
+                    previewOverlay.style.backgroundImage = `url('${tempAdvancedPfpData}')`;
+                    previewOverlay.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.saveAdvancedProfile = async function() {
+            const newName = document.getElementById('ap-username').value.trim();
+            if(!newName) { alert("Trader name cannot be empty!"); return; }
+
+            currentUserProfile.username = newName;
+            currentUserProfile.experience = document.getElementById('ap-experience').value;
+            currentUserProfile.phase = document.getElementById('ap-phase').value;
+            currentUserProfile.isProfitable = document.getElementById('ap-profitable').value;
+            currentUserProfile.isPublic = document.getElementById('ap-public').checked;
+
+            if(tempAdvancedPfpData !== "") {
+                currentUserProfile.pfp = tempAdvancedPfpData;
+            }
+
+            try {
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                await setDoc(docRef, currentUserProfile, { merge: true });
+                alert("Identity Profile Updated & Synced to Vault Successfully! 🚀");
+                
+                window.closeAdvancedProfile();
+                loadUserProfileFromFirebase();
+                if(document.getElementById('tab-leaderboard').classList.contains('active')) {
+                    loadLeaderboardData();
+                }
+            } catch(e) {
+                alert("Error saving profile: " + e.message);
+            }
+        };
+
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(btn => {
@@ -581,21 +978,38 @@
                 btn.classList.add('text-gray-500');
             });
             document.getElementById('tab-' + tabId).classList.add('active');
+            
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('text-gray-500');
-            activeBtn.classList.add('bg-gray-200', 'text-slate-800');
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-500');
+                activeBtn.classList.add('bg-gray-200', 'text-slate-800');
+            }
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'My Strategies', 'logtrade': 'Log New Trade', 'activity': 'Visitor Activity Log' };
-            document.getElementById('header-title').innerText = titles[tabId];
+            const titles = { 
+                'dashboard': 'Dashboard', 
+                'mytrades': 'My Trades & Reports', 
+                'strategies': 'Strategy Vault', 
+                'logtrade': 'Log New Trade', 
+                'leaderboard': 'Weekly Leaderboard', 
+                'messages': 'Trader Inbox',
+                'activity': 'Visitor Activity Log' 
+            };
+            document.getElementById('header-title').innerText = titles[tabId] || 'Dashboard';
 
             if(tabId === 'mytrades' && calendarInstance) {
                 setTimeout(() => { calendarInstance.render(); }, 100);
+            }
+            if(tabId === 'leaderboard') {
+                loadLeaderboardData();
+            }
+            if(tabId === 'messages') {
+                document.getElementById('unread-badge').classList.add('hidden');
+                loadChatContacts();
             }
             if(tabId === 'activity') {
                 loadVisitorActivity();
             }
 
-            // Auto-close sidebar on mobile after clicking a tab
             if (window.innerWidth < 768) {
                 const sidebar = document.getElementById('sidebar');
                 if (!sidebar.classList.contains('-translate-x-full')) {
@@ -639,8 +1053,6 @@
                 calendarInstance.removeAllEvents();
 
                 let totalTrades = 0, wins = 0, netPl = 0;
-
-                // Smart Analytics Variables
                 let strategyStats = {};
                 let dayStats = { "Sunday": 0, "Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0 };
                 let biggestWinAmt = 0;
@@ -653,13 +1065,11 @@
                     netPl += amt;
                     if(amt >= 0) wins++;
 
-                    // AI: Strategy Performance
                     if(t.strategy) {
                         if(!strategyStats[t.strategy]) strategyStats[t.strategy] = 0;
                         strategyStats[t.strategy] += amt;
                     }
 
-                    // AI: Day Performance
                     if(t.date) {
                         const d = new Date(t.date);
                         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -667,7 +1077,6 @@
                         dayStats[dayName] += amt;
                     }
 
-                    // AI: Biggest Win
                     if(amt > biggestWinAmt) biggestWinAmt = amt;
 
                     calendarInstance.addEvent({
@@ -679,7 +1088,6 @@
                     });
                 });
 
-                // Update Basic Dashboard Stats
                 document.getElementById('dash-totaltrades').innerText = totalTrades;
                 const netPlEl = document.getElementById('dash-netpl');
                 netPlEl.innerText = (netPl >= 0 ? '+$' : '-$') + Math.abs(netPl).toFixed(2);
@@ -689,7 +1097,6 @@
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
                 document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#22c55e 0% ${winRate}%, #e2e8f0 ${winRate}% 100%)`;
 
-                // Update Smart Analytics UI (White Cards)
                 let bestStrategy = "-";
                 let maxStratPL = -Infinity;
                 for(let s in strategyStats) {
@@ -708,6 +1115,307 @@
 
             } catch(e) { console.log(e); }
         }
+
+        async function loadLeaderboardData() {
+            const podiumEl = document.getElementById('leaderboard-podium');
+            const challengersEl = document.getElementById('leaderboard-challengers');
+            podiumEl.innerHTML = `<div class="text-center text-gray-400 w-full py-6">Loading leaderboard standings...</div>`;
+            challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
+
+            try {
+                const profileSnap = await getDocs(collection(db, "profiles"));
+                globalProfilesMap = {};
+                profileSnap.forEach(docSnap => {
+                    globalProfilesMap[docSnap.id] = docSnap.data();
+                });
+
+                const snapshot = await getDocs(collection(db, "trades"));
+                let tradersMap = {};
+                globalTraderStats = {};
+
+                snapshot.forEach((docSnap) => {
+                    const t = docSnap.data();
+                    let email = t.userEmail || "fxarjun812@gmail.com";
+                    
+                    let profile = globalProfilesMap[email] || { 
+                        username: email.split('@')[0], 
+                        pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` 
+                    };
+
+                    let entry = parseFloat(t.entry) || 0;
+                    let exitP = parseFloat(t.exitPrice) || parseFloat(t.tp) || 0;
+                    let points = 0;
+                    if(entry > 0 && exitP > 0) {
+                        points = t.direction === 'sell' ? (entry - exitP) : (exitP - entry);
+                    }
+                    let plAmt = parseFloat(t.amount || 0);
+
+                    if(!tradersMap[email]) {
+                        tradersMap[email] = { 
+                            email: email,
+                            username: profile.username || email.split('@')[0], 
+                            pfp: profile.pfp || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
+                            totalPips: 0, 
+                            totalTrades: 0,
+                            totalPL: 0
+                        };
+                    }
+                    tradersMap[email].totalPips += points;
+                    tradersMap[email].totalTrades += 1;
+                    tradersMap[email].totalPL += plAmt;
+                });
+
+                let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
+
+                if(leaderboardArray.length === 0) {
+                    leaderboardArray = [
+                        { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }
+                    ];
+                }
+                
+                leaderboardArray.forEach(t => {
+                    globalTraderStats[t.email] = { pips: t.totalPips, growth: ((t.totalPL / 1000) * 100).toFixed(1) };
+                });
+
+                podiumEl.innerHTML = "";
+                challengersEl.innerHTML = "";
+
+                let top3 = leaderboardArray.slice(0, 3);
+                let rest = leaderboardArray.slice(3);
+
+                let rankConfigs = [
+                    { rank: 2, emoji: "🥈", border: "border-gray-400", height: "h-56 md:h-64", width: "w-32 md:w-52", labelColor: "text-gray-400" },
+                    { rank: 1, emoji: "🥇", border: "border-blue-500 neon-glow-blue", height: "h-64 md:h-80", width: "w-36 md:w-60", labelColor: "text-blue-400", isFirst: true },
+                    { rank: 3, emoji: "🥉", border: "border-orange-700", height: "h-48 md:h-56", width: "w-32 md:w-52", labelColor: "text-orange-500" }
+                ];
+
+                let podiumOrder = [
+                    top3[1] || { email: 'fake2', username: "Challenger 2", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[0] || { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[2] || { email: 'fake3', username: "Challenger 3", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
+                ];
+
+                podiumOrder.forEach((trader, idx) => {
+                    let cfg = rankConfigs[idx];
+                    let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
+                    let growthPct = ((trader.totalPL / 1000) * 100).toFixed(1);
+                    let growthText = (growthPct >= 0 ? '+' : '') + growthPct + "% Growth";
+                    
+                    let certBtn = cfg.isFirst ? `<button onclick="event.stopPropagation(); window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg z-20"><span>📜</span> Certificate</button>` : '';
+
+                    podiumEl.innerHTML += `
+                        <div onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer hover:ring-2 hover:ring-blue-500 hover:-translate-y-2 transition-all flex flex-col items-center bg-[#1e293b] p-4 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
+                            <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
+                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-700 overflow-hidden border-2 border-white mb-2 shadow-md shrink-0">
+                                <img src="${trader.pfp}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-extrabold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
+                            <p class="text-green-400 font-black text-xs md:text-base mt-0.5">${pipsText}</p>
+                            <p class="text-xs font-semibold text-blue-300 mt-1 bg-blue-950 px-2 py-0.5 rounded-full">${growthText}</p>
+                            <span class="text-[10px] ${cfg.labelColor} font-bold mt-1 uppercase">Rank ${cfg.rank}</span>
+                            ${certBtn}
+                        </div>`;
+                });
+
+                if(rest.length === 0) {
+                    challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">No further challengers this week.</td></tr>`;
+                } else {
+                    rest.forEach((trader, i) => {
+                        let rankNum = i + 4;
+                        let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
+                        challengersEl.innerHTML += `
+                            <tr onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer border-b border-gray-800 hover:bg-[#253347] hover:ring-1 hover:ring-blue-500 transition">
+                                <td class="p-4 text-gray-400 font-bold">#${rankNum}</td>
+                                <td class="p-4 font-medium text-gray-200 flex items-center gap-3">
+                                    <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-600 shrink-0">
+                                        <img src="${trader.pfp}" class="w-full h-full object-cover">
+                                    </div>
+                                    <span>${trader.username}</span>
+                                </td>
+                                <td class="p-4 text-gray-500 hidden md:table-cell">${trader.totalTrades}</td>
+                                <td class="p-4 text-right text-green-400 font-bold">${pipsText}</td>
+                            </tr>`;
+                    });
+                }
+
+            } catch(e) { console.log(e); }
+        }
+
+        window.viewTraderProfile = function(email) {
+            if(!email || email.includes('fake')) return;
+            
+            const profile = globalProfilesMap[email] || { 
+                username: email.split('@')[0], 
+                pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+                isPublic: false
+            };
+            const stats = globalTraderStats[email] || { pips: 0, growth: 0 };
+            
+            document.getElementById('pp-username').innerText = profile.username;
+            document.getElementById('pp-avatar').src = profile.pfp;
+            document.getElementById('pp-pips').innerText = (stats.pips >= 0 ? '+' : '') + parseFloat(stats.pips).toFixed(1) + ' Pts This Week';
+
+            if(profile.isPublic === true) {
+                document.getElementById('pp-private-msg').classList.add('hidden');
+                document.getElementById('pp-public-details').classList.remove('hidden');
+                
+                document.getElementById('pp-exp').innerText = profile.experience || '-';
+                document.getElementById('pp-phase').innerText = profile.phase || '-';
+                
+                const profEl = document.getElementById('pp-prof');
+                if(profile.isProfitable === 'Yes') {
+                    profEl.innerText = 'Yes';
+                    profEl.className = 'text-green-400 text-sm font-bold bg-green-900/30 px-3 py-1 rounded-lg border border-green-800';
+                } else {
+                    profEl.innerText = 'No';
+                    profEl.className = 'text-red-400 text-sm font-bold bg-red-900/30 px-3 py-1 rounded-lg border border-red-800';
+                }
+            } else {
+                document.getElementById('pp-private-msg').classList.remove('hidden');
+                document.getElementById('pp-public-details').classList.add('hidden');
+            }
+
+            const connectBtn = document.getElementById('pp-connect-btn');
+            if(connectBtn) {
+                connectBtn.onclick = function() { window.openChatFromProfile(email, profile.username, profile.pfp); };
+            }
+
+            document.getElementById('publicProfileModal').classList.remove('hidden');
+        };
+
+        function loadChatContacts() {
+            const listEl = document.getElementById('chat-contact-list');
+            listEl.innerHTML = "";
+            
+            let contactsCount = 0;
+            for(let email in globalProfilesMap) {
+                if(email !== currentLoggedInUser) {
+                    contactsCount++;
+                    let p = globalProfilesMap[email];
+                    listEl.innerHTML += `
+                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3 hover:bg-[#253347] rounded-xl cursor-pointer transition border border-transparent hover:border-gray-600">
+                            <div class="relative shrink-0">
+                                <img src="${p.pfp}" class="w-10 h-10 rounded-full object-cover border border-gray-600">
+                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#1e293b] rounded-full"></div>
+                            </div>
+                            <div class="overflow-hidden flex-1">
+                                <h4 class="text-white text-sm font-bold truncate">${p.username}</h4>
+                                <p class="text-xs text-gray-400 truncate">Tap to view conversation</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            if(contactsCount === 0) {
+                listEl.innerHTML = `<div class="text-center p-8 text-gray-500 text-sm italic">No other traders in network yet.</div>`;
+            }
+        }
+
+        window.openChatFromProfile = function(email, username, pfp) {
+            document.getElementById('publicProfileModal').classList.add('hidden');
+            window.switchTab('messages');
+            window.openChatWithUser(email, username, pfp);
+        };
+
+        window.openChatWithUser = function(email, username, pfp) {
+            activeChatEmail = email;
+            document.getElementById('chat-empty-state').classList.add('hidden');
+            document.getElementById('active-chat-interface').classList.remove('hidden');
+            document.getElementById('active-chat-interface').classList.add('flex');
+            
+            document.getElementById('active-chat-username').innerText = username;
+            document.getElementById('active-chat-avatar').src = pfp;
+            
+            const historyEl = document.getElementById('chat-messages-history');
+            historyEl.innerHTML = `<div class="text-center my-4"><span class="text-[10px] uppercase tracking-widest font-bold text-gray-500 bg-gray-800 px-3 py-1 rounded-full">Today</span></div>`;
+            
+            setTimeout(() => {
+                historyEl.innerHTML += `
+                    <div class="flex justify-start mb-4 chat-bubble">
+                        <div class="bg-[#1e293b] text-gray-200 text-sm p-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-md border border-gray-700">
+                            Hey there! I saw you on the Leaderboard. Love your SMC setup, let's connect and share setups! 📈
+                            <span class="block text-[10px] text-gray-500 mt-2 text-right">09:12 AM</span>
+                        </div>
+                    </div>`;
+                historyEl.scrollTop = historyEl.scrollHeight;
+            }, 300);
+        };
+
+        window.sendMessage = function() {
+            const input = document.getElementById('chat-input-msg');
+            const msg = input.value.trim();
+            if(!msg || !activeChatEmail) return;
+            
+            const historyEl = document.getElementById('chat-messages-history');
+            
+            historyEl.innerHTML += `
+                <div class="flex justify-end mb-4 chat-bubble">
+                    <div class="bg-blue-600 text-white text-sm p-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-[0_4px_15px_rgba(59,130,246,0.3)]">
+                        ${msg}
+                        <span class="block text-[10px] text-blue-200 mt-2 text-right">Just now ✓</span>
+                    </div>
+                </div>`;
+                
+            input.value = "";
+            historyEl.scrollTop = historyEl.scrollHeight;
+        };
+
+        window.openCertificateModal = function(username) {
+            document.getElementById('cert-username').innerText = username;
+            document.getElementById('certificateModal').classList.remove('hidden');
+        };
+
+        window.closeCertificateModal = function() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        };
+
+        let tempStrategyName = "";
+        let tempStrategyDesc = "";
+        window.proceedToRulesStep = function() {
+            tempStrategyName = document.getElementById('strategy-name-input').value.trim();
+            tempStrategyDesc = document.getElementById('strategy-code-input').value.trim();
+            if(!tempStrategyName) { alert("Strategy name required!"); return; }
+            document.getElementById('rule-page-title').innerText = "Rules for: " + tempStrategyName;
+            document.getElementById('strategy-step-1').classList.add('hidden');
+            document.getElementById('strategy-step-2').classList.remove('hidden');
+            currentRulesList = [];
+            renderRulesUI();
+        };
+
+        window.backToStrategyStep1 = function() {
+            document.getElementById('strategy-step-2').classList.add('hidden');
+            document.getElementById('strategy-step-1').classList.remove('hidden');
+        };
+
+        window.addSingleRule = function() {
+            const ruleText = document.getElementById('single-rule-input').value.trim();
+            if(!ruleText) return;
+            currentRulesList.push(ruleText);
+            document.getElementById('single-rule-input').value = "";
+            renderRulesUI();
+        };
+
+        function renderRulesUI() {
+            const container = document.getElementById('rules-list-container');
+            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic">No rules added yet...</li>`; return; }
+            container.innerHTML = "";
+            currentRulesList.forEach((rule, idx) => {
+                container.innerHTML += `<li class="bg-gray-50 p-2 px-3 rounded border border-gray-200"><strong>Rule ${idx + 1}:</strong> ${rule}</li>`;
+            });
+        }
+
+        window.saveCompleteStrategyToDatabase = async function() {
+            if(currentRulesList.length === 0) { alert("Add at least one rule!"); return; }
+            try {
+                await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
+                alert("Strategy saved successfully! 🚀");
+                document.getElementById('strategy-name-input').value = "";
+                document.getElementById('strategy-code-input').value = "";
+                currentRulesList = [];
+                window.backToStrategyStep1();
+                window.switchTab('dashboard');
+            } catch (e) { alert("Error: " + e.message); }
+        };
 
         async function loadVisitorActivity() {
             const tableBody = document.getElementById('visitor-activity-table');
@@ -769,47 +1477,39 @@
             const tp = parseFloat(document.getElementById('trade-tp').value) || 0;
             const lotsize = parseFloat(document.getElementById('trade-lotsize').value) || 0.01;
             
-            // Check if user has entered an actual exit price
             const exitPriceInput = document.getElementById('trade-exit-price').value;
             const exitPrice = parseFloat(exitPriceInput);
 
-            // Using Math.abs for RR logic
             const risk = Math.abs(entry - sl);
             const expectedReward = Math.abs(tp - entry);
 
-            // RR Calculation always based on expected setup
             let rr = risk > 0 ? (expectedReward / risk).toFixed(1) : 0;
             document.getElementById('trade-rr-val').value = "1:" + rr;
 
             let actualPoints = 0;
             
-            // Determine actual points based on Buy or Sell direction
             if (direction === 'buy') {
                 if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = exitPrice - entry; // Real points for Buy
+                    actualPoints = exitPrice - entry;
                 } else {
-                    actualPoints = tp - entry; // Expected points for Buy
+                    actualPoints = tp - entry;
                 }
             } else if (direction === 'sell') {
                 if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = entry - exitPrice; // Real points for Sell
+                    actualPoints = entry - exitPrice;
                 } else {
-                    actualPoints = entry - tp; // Expected points for Sell
+                    actualPoints = entry - tp;
                 }
             }
 
-            // Fallback safety if actualPoints becomes NaN
             if (isNaN(actualPoints)) actualPoints = 0;
 
             document.getElementById('trade-pips').value = Math.abs(actualPoints).toFixed(1) + " Pts";
 
-            // Net P/L: Points * lot size * standard 100 contract size
             const netPL = actualPoints * lotsize * 100;
-            
             const plField = document.getElementById('trade-pl');
             plField.value = netPL.toFixed(2);
             
-            // Change color dynamically to Red if loss, Green if profit
             if(netPL >= 0) {
                 plField.classList.remove('text-red-600');
                 plField.classList.add('text-green-600');
@@ -859,7 +1559,7 @@
                     userEmail: currentLoggedInUser, 
                     amount: parseFloat(plValue), 
                     strategy: document.getElementById('strategy-dropdown').value, 
-                    direction: directionValue, // Added direction!
+                    direction: directionValue, 
                     lotSize: document.getElementById('trade-lotsize').value,
                     entry: document.getElementById('trade-entry').value,
                     sl: document.getElementById('trade-sl').value,
@@ -886,11 +1586,27 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
+        // NEW: OPEN FULL-SCREEN LIGHTBOX
+        window.openLightbox = function(imageSrc) {
+            if(!imageSrc || imageSrc.includes('undefined')) return;
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+        };
+
+        window.closeLightbox = function() {
+            const lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+        };
+
+        // ====== RESTORED OG TRADE REPORT WITH OBJECT-CONTAIN & LIGHTBOX ======
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
             
-            // Show proper Buy/Sell indicator in report
             const dirLabel = trade.direction === 'sell' ? '🔴 SELL' : '🟢 BUY';
             document.getElementById('rep-direction').innerText = dirLabel;
             
@@ -905,8 +1621,24 @@
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
             plEl.className = "text-base md:text-lg font-extrabold " + (trade.amount >= 0 ? "text-green-600" : "text-red-600");
 
-            document.getElementById('rep-chart-img').innerHTML = trade.chartImg ? `<img src="${trade.chartImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
-            document.getElementById('rep-rr-img').innerHTML = trade.rrImg ? `<img src="${trade.rrImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
+            // EXACT OG Style but with object-contain to prevent crop and click to zoom
+            const chartDiv = document.getElementById('rep-chart-img');
+            if(trade.chartImg && trade.chartImg.length > 50) {
+                chartDiv.innerHTML = `<img src="${trade.chartImg}" class="w-full h-full object-contain bg-white hover:scale-105 transition duration-300">`;
+                chartDiv.classList.remove('pointer-events-none');
+            } else {
+                chartDiv.innerHTML = `<span class="text-gray-400 text-sm">No Image</span>`;
+                chartDiv.classList.add('pointer-events-none');
+            }
+
+            const rrDiv = document.getElementById('rep-rr-img');
+            if(trade.rrImg && trade.rrImg.length > 50) {
+                rrDiv.innerHTML = `<img src="${trade.rrImg}" class="w-full h-full object-contain bg-white hover:scale-105 transition duration-300">`;
+                rrDiv.classList.remove('pointer-events-none');
+            } else {
+                rrDiv.innerHTML = `<span class="text-gray-400 text-sm">No Image</span>`;
+                rrDiv.classList.add('pointer-events-none');
+            }
 
             const rulesListContainer = document.getElementById('rep-rules-list');
             rulesListContainer.innerHTML = "";
@@ -915,72 +1647,129 @@
                     rulesListContainer.innerHTML += `<li class="flex items-center text-slate-800 font-medium">✅ ${rule}</li>`;
                 });
             } else {
-                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No specific rules were checked for this trade.</li>`;
+                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No rule checklist recorded.</li>`;
             }
             document.getElementById('tradeReportModal').classList.remove('hidden');
         };
 
-        window.closeTradeReport = function() { document.getElementById('tradeReportModal').classList.add('hidden'); };
+        window.closeTradeReport = function() { 
+            document.getElementById('tradeReportModal').classList.add('hidden'); 
+        };
 
         window.downloadExcel = function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
-            const worksheet = XLSX.utils.json_to_sheet(globalTradesCache);
+            
+            const excelData = globalTradesCache.map(t => ({
+                Date: t.date || "-",
+                Strategy: t.strategy || "-",
+                Direction: t.direction === 'sell' ? 'SELL' : 'BUY',
+                Lot_Size: t.lotSize || "-",
+                Entry: t.entry || "-",
+                Stop_Loss: t.sl || "-",
+                Take_Profit: t.tp || "-",
+                Exit_Price: t.exitPrice || "-",
+                Exit_Reason: t.exitReason || "-",
+                Net_PL_Amount: t.amount || 0,
+                Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
-            XLSX.writeFile(workbook, "TradeVault_Report.xlsx");
+            XLSX.writeFile(workbook, "TradeVault_Excel_Data.xlsx");
         };
 
         window.downloadPDF = async function() {
+            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("Trade Vault - Professional Performance Report", 14, 20);
-            doc.save("TradeVault_Report.pdf");
-        };
-
-        window.proceedToRulesStep = function() {
-            tempStrategyName = document.getElementById('strategy-name-input').value.trim();
-            tempStrategyDesc = document.getElementById('strategy-code-input').value.trim();
-            if(!tempStrategyName) { alert("Strategy name required!"); return; }
-            document.getElementById('rule-page-title').innerText = "Rules for: " + tempStrategyName;
-            document.getElementById('strategy-step-1').classList.add('hidden');
-            document.getElementById('strategy-step-2').classList.remove('hidden');
-            currentRulesList = [];
-            renderRulesUI();
-        };
-
-        window.backToStrategyStep1 = function() {
-            document.getElementById('strategy-step-2').classList.add('hidden');
-            document.getElementById('strategy-step-1').classList.remove('hidden');
-        };
-
-        window.addSingleRule = function() {
-            const ruleText = document.getElementById('single-rule-input').value.trim();
-            if(!ruleText) return;
-            currentRulesList.push(ruleText);
-            document.getElementById('single-rule-input').value = "";
-            renderRulesUI();
-        };
-
-        function renderRulesUI() {
-            const container = document.getElementById('rules-list-container');
-            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic">No rules added yet...</li>`; return; }
-            container.innerHTML = "";
-            currentRulesList.forEach((rule, idx) => {
-                container.innerHTML += `<li class="bg-white p-2 px-3 rounded border border-gray-200"><strong>Rule ${idx + 1}:</strong> ${rule}</li>`;
-            });
-        }
-
-        window.saveCompleteStrategyToDatabase = async function() {
-            if(currentRulesList.length === 0) { alert("Add at least one rule!"); return; }
-            try {
-                await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
-                alert("Strategy saved successfully! 🚀");
-                document.getElementById('strategy-name-input').value = "";
-                document.getElementById('strategy-code-input').value = "";
-                currentRulesList = [];
-                window.backToStrategyStep1();
-                window.switchTab('dashboard');
-            } catch (e) { alert("Error: " + e.message); }
+            
+            const getAspectRatio = (dataUrl) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img.height / img.width);
+                    img.onerror = () => resolve(0.75);
+                    img.src = dataUrl;
+                });
+            };
+            
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("Trade Vault Pro - Detailed Trade Report", 14, 20);
+            
+            let yPos = 30;
+            
+            for (let i = 0; i < globalTradesCache.length; i++) {
+                const t = globalTradesCache[i];
+                
+                if (yPos > 240) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(30, 41, 59);
+                doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
+                
+                yPos += 7;
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(0, 0, 0);
+                
+                const dirLabel = t.direction === 'sell' ? 'SELL' : 'BUY';
+                const plText = (t.amount >= 0 ? '+$' : '-$') + Math.abs(t.amount);
+                
+                doc.text(`Direction: ${dirLabel} | Lot Size: ${t.lotSize || '-'} | Net P/L: ${plText}`, 14, yPos);
+                
+                yPos += 6;
+                doc.text(`Entry: ${t.entry || '-'} | SL: ${t.sl || '-'} | TP: ${t.tp || '-'}`, 14, yPos);
+                
+                yPos += 6;
+                doc.text(`Exit Price: ${t.exitPrice || '-'} | Reason: ${t.exitReason || '-'}`, 14, yPos);
+                
+                yPos += 10;
+                
+                let maxImgWidth = 85;
+                let height1 = 0;
+                let height2 = 0;
+                let hasImages = false;
+                
+                if (t.chartImg && t.chartImg.includes("data:image")) {
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Chart Screenshot:", 14, yPos);
+                    try {
+                        const ratio = await getAspectRatio(t.chartImg);
+                        height1 = maxImgWidth * ratio;
+                        doc.addImage(t.chartImg, 14, yPos + 3, maxImgWidth, height1);
+                        hasImages = true;
+                    } catch(e) { console.log("Chart render error", e); }
+                }
+                
+                if (t.rrImg && t.rrImg.includes("data:image")) {
+                    doc.setFont("helvetica", "bold");
+                    doc.text("RR Target Box:", 105, yPos);
+                    try {
+                        const ratio = await getAspectRatio(t.rrImg);
+                        height2 = maxImgWidth * ratio;
+                        doc.addImage(t.rrImg, 105, yPos + 3, maxImgWidth, height2);
+                        hasImages = true;
+                    } catch(e) { console.log("RR render error", e); }
+                }
+                
+                if (hasImages) {
+                    yPos += Math.max(height1, height2) + 15;
+                } else {
+                    yPos += 5;
+                }
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, yPos, 196, yPos);
+                yPos += 10;
+            }
+            
+            doc.save("TradeVault_Detailed_Report.pdf");
         };
     </script>
 </body>
