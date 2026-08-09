@@ -3,426 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Trade Journal - The Vault Pro</title>
-    <!-- Tailwind CSS -->
+    <title>Trade Vault Pro - Master Network</title>
+    
+    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FullCalendar.js -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <!-- SheetJS & jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- HTML2Canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
+        body { background-color: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
         .circle-chart {
             width: 100px; height: 100px; border-radius: 50%;
             background: conic-gradient(#1e293b 0% 0%, #e2e8f0 0% 100%);
             display: flex; align-items: center; justify-content: center;
-            transition: background 0.5s ease;
+            transition: background 0.8s ease-in-out;
         }
         .circle-inner {
             width: 80px; height: 80px; border-radius: 50%;
             background-color: white; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
+        
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fc-event { cursor: pointer; text-align: center; font-weight: bold; padding: 3px 6px; border: none !important; border-radius: 6px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .fc-event:hover { transform: scale(1.05); z-index: 50; }
         .fc-daygrid-day:hover { background-color: #f8fafc; cursor: pointer; }
         
-        aside::-webkit-scrollbar { width: 4px; }
-        aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        /* Custom scrollbar for Modals and Chat */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
         ::-webkit-scrollbar-track { background: transparent; }
 
-        .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .chat-bubble { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        /* Anti-Stretch Capture Box */
+        .export-img-wrapper {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
     </style>
 </head>
-<body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
+<body class="selection:bg-blue-200 selection:text-blue-900">
 
-    <!-- DUAL LOGIN SCREEN -->
-    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-[100] flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
-        <div class="bg-[#1e293b] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
-            <svg class="w-14 h-14 text-blue-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
-            <h1 class="text-2xl font-bold text-white mb-1">Trade Vault Pro</h1>
-            <p class="text-gray-400 text-sm mb-6">Professional Risk & Journal Suite</p>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-[100] flex flex-col items-center justify-center transition-opacity duration-700 overflow-y-auto p-4">
+        <div class="bg-[#1e293b] p-8 md:p-10 rounded-[24px] shadow-2xl text-center max-w-md w-full border border-gray-700 relative z-10">
+            <svg class="w-14 h-14 text-blue-500 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+            <h1 class="text-3xl font-black text-white mb-2 tracking-tight">Trade Vault Pro</h1>
+            <p class="text-gray-400 text-sm mb-8 font-medium">Global Trading Network & Analytics</p>
             
-            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition shadow-lg mb-6">
+            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white text-slate-900 font-extrabold py-3.5 px-4 rounded-xl hover:bg-gray-100 transition shadow-lg mb-6">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Sign in with Google</span>
             </button>
 
-            <div class="flex items-center my-4">
-                <div class="flex-grow border-t border-gray-600"></div>
-                <span class="px-3 text-xs text-gray-400 uppercase font-bold">Or Master Login</span>
-                <div class="flex-grow border-t border-gray-600"></div>
+            <div class="flex items-center my-6">
+                <div class="flex-grow border-t border-gray-700"></div>
+                <span class="px-4 text-[10px] text-gray-500 uppercase font-black tracking-widest">Or Master Login</span>
+                <div class="flex-grow border-t border-gray-700"></div>
             </div>
 
             <div class="space-y-4 text-left">
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Username</label>
-                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Username</label>
+                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3.5 bg-[#090e17] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 text-sm transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Password</label>
-                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-[#0f172a] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 font-medium text-sm">
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Password</label>
+                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-[#090e17] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 text-sm transition">
                 </div>
-                <button onclick="window.handleUserPassLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-lg mt-2 text-sm">
-                    Login with Credentials 🚀
+                <button onclick="window.handleUserPassLogin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 px-4 rounded-xl transition mt-2">
+                    Initialize Vault 🚀
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP STRUCTURE -->
+    <!-- MAIN APP UI -->
     <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500 relative">
         
-        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 hidden md:hidden" onclick="window.toggleSidebar()"></div>
+        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-40 hidden md:hidden backdrop-blur-sm" onclick="window.toggleSidebar()"></div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar (OG STYLE) -->
         <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
-            <div class="h-16 flex items-center justify-between px-6 mt-4">
-                <div class="flex items-center">
-                    <svg class="w-8 h-8 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
-                    <span class="ml-3 font-bold text-slate-800 text-lg">Trade Vault</span>
+            <div class="h-16 flex items-center justify-between px-6 mt-4 pb-2">
+                <div class="flex items-center gap-3">
+                    <svg class="w-7 h-7 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                    <div>
+                        <span class="block font-black text-slate-900 leading-none">Trade Vault</span>
+                        <span class="block text-[9px] font-bold text-blue-600 uppercase tracking-widest mt-0.5">Pro Network</span>
+                    </div>
                 </div>
-                <button onclick="window.toggleSidebar()" class="md:hidden text-gray-500 hover:text-slate-800">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="window.toggleSidebar()" class="md:hidden text-gray-400 hover:text-slate-800 bg-gray-100 p-1.5 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <nav class="flex-1 mt-6 px-4 space-y-2 overflow-y-auto pb-4">
-                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center px-4 py-3 bg-gray-200 text-slate-800 rounded-lg font-medium">Dashboard</button>
-                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Trades & Reports</button>
-                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
-                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
-                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
-                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">
-                    <span>💬 Messages</span>
+            
+            <nav class="flex-1 mt-6 px-4 space-y-1.5 overflow-y-auto pb-6">
+                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4 py-3 bg-gray-200 text-slate-800 rounded-xl font-bold transition">
+                    Dashboard
                 </button>
-                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
+                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-xl font-bold transition">
+                    My Trades & Reports
+                </button>
+                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-xl font-bold transition">
+                    Strategy Rules
+                </button>
+                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-xl font-bold transition">
+                    Log New Trade <span class="ml-auto bg-green-100 text-green-700 text-[9px] font-black px-2 py-0.5 rounded">PRO</span>
+                </button>
+                
+                <div class="my-4 border-t border-gray-100 mx-2"></div>
+                
+                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-xl font-bold transition">
+                    🏆 Global Leaderboard
+                </button>
+                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-xl font-bold transition">
+                    <span>💬 Vault Inbox</span>
+                    <span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden" id="unread-badge">New</span>
+                </button>
+                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center gap-3 px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-xl transition">
+                    📊 System Logs
+                </button>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
-            <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200 relative z-40">
+            <header class="h-16 bg-white flex items-center justify-between px-6 md:px-8 border-b border-gray-200 relative z-40 shadow-sm">
                 <div class="flex items-center">
-                    <button onclick="window.toggleSidebar()" class="mr-3 md:hidden text-slate-800 hover:text-blue-600 focus:outline-none">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <button onclick="window.toggleSidebar()" class="mr-4 md:hidden text-slate-800 hover:text-blue-600 bg-gray-100 p-1.5 rounded-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h1 class="text-lg md:text-xl font-semibold text-slate-800 truncate" id="header-title">Dashboard</h1>
+                    <h1 class="text-xl font-black text-slate-800 tracking-tight" id="header-title">Dashboard</h1>
                 </div>
                 
-                <div class="flex items-center space-x-3 md:space-x-4">
-                    <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden md:block">
+                        <span class="block text-sm font-black text-slate-800" id="user-display-name">Trader</span>
+                    </div>
                     
                     <div class="relative">
-                        <div class="w-9 h-9 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')" title="Account Menu">
-                            <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
+                        <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden border border-gray-300 shrink-0 cursor-pointer shadow hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')">
+                            <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=trader" alt="Profile" class="w-full h-full object-cover">
                         </div>
                         
-                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50">
-                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                                <p class="text-xs text-gray-500 font-bold uppercase">Account</p>
-                                <p class="text-sm font-bold text-slate-800 truncate" id="dropdown-email">Loading...</p>
+                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Account</p>
+                                <p class="text-sm font-black text-slate-800 truncate" id="dropdown-email">Loading...</p>
                             </div>
-                            <button onclick="window.openAdvancedProfile()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-gray-100 flex items-center gap-3">
-                                👤 My Profile
-                            </button>
-                            <button onclick="window.logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 border-t border-gray-100">
-                                🚪 Logout
-                            </button>
+                            <div class="p-1">
+                                <button onclick="window.openAdvancedProfile()" class="w-full text-left px-3 py-2.5 text-sm font-bold text-slate-600 hover:bg-gray-100 rounded-lg transition">👤 My Profile</button>
+                                <button onclick="window.logout()" class="w-full text-left px-3 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg transition">🚪 Logout</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto relative">
+            <div class="flex-1 overflow-y-auto relative bg-[#f0f2f5]">
                 
                 <!-- 1. DASHBOARD TAB -->
-                <div id="tab-dashboard" class="tab-content active pb-10">
-                    <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
-                        <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, <span id="welcome-user-name">Fx_arjun</span></h2>
+                <div id="tab-dashboard" class="tab-content active pb-12">
+                    <div class="bg-[#1e2433] h-48 px-6 md:px-10 pt-8 relative z-0">
+                        <h2 class="text-3xl font-black text-white tracking-tight">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Trader</span></h2>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 -mt-16 relative z-10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-6 md:px-10 -mt-16 relative z-10">
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-                            <h3 class="text-gray-500 font-medium text-sm self-start mb-4">Win Rate</h3>
-                            <div class="circle-chart" id="dash-winrate-circle">
-                                <div class="circle-inner"><span class="text-xl font-bold text-slate-800" id="dash-winrate-text">0%</span></div>
+                            <h3 class="text-gray-500 font-bold text-[10px] uppercase tracking-widest self-start mb-4">Win Rate</h3>
+                            <div class="circle-chart shadow-inner" id="dash-winrate-circle">
+                                <div class="circle-inner"><span class="text-xl font-black text-slate-800" id="dash-winrate-text">0%</span></div>
                             </div>
                         </div>
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
-                            <h3 class="text-gray-500 font-medium text-sm mb-2">Net P/L (Total)</h3>
-                            <span class="text-3xl font-bold text-slate-800" id="dash-netpl">$0.00</span>
+                            <h3 class="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-2">Net P/L (Total)</h3>
+                            <span class="text-4xl font-black text-slate-800 tracking-tight" id="dash-netpl">$0.00</span>
                         </div>
                         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
-                            <h3 class="text-gray-500 font-medium text-sm mb-2">Total Trades Logged</h3>
-                            <span class="text-3xl font-bold text-slate-800" id="dash-totaltrades">0</span>
-                            <span class="text-xs text-green-600 font-medium mt-1">Personal Vault Secure</span>
+                            <h3 class="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-2">Total Executions</h3>
+                            <span class="text-4xl font-black text-slate-800 tracking-tight" id="dash-totaltrades">0</span>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 mt-4 md:mt-6 relative z-10">
-                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
-                                <span class="bg-blue-100 text-blue-600 p-1 rounded mr-2">🔥</span> Top Strategy
-                            </h3>
-                            <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-strat">-</span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-6 md:px-10 mt-5 relative z-10">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden">
+                            <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1">🔥</span> Top Strategy</h3>
+                            <span class="text-2xl font-black text-slate-800 truncate" id="ai-best-strat">-</span>
                         </div>
-                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
-                                <span class="bg-indigo-100 text-indigo-600 p-1 rounded mr-2">📅</span> Best Day
-                            </h3>
-                            <span class="text-2xl md:text-3xl font-extrabold text-slate-800 truncate" id="ai-best-day">-</span>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden">
+                            <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1">📅</span> Best Day</h3>
+                            <span class="text-2xl font-black text-slate-800 truncate" id="ai-best-day">-</span>
                         </div>
-                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden group">
-                            <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 flex items-center">
-                                <span class="bg-green-100 text-green-600 p-1 rounded mr-2">💰</span> Biggest Win
-                            </h3>
-                            <span class="text-2xl md:text-3xl font-extrabold text-green-600 truncate" id="ai-biggest-win">$0.00</span>
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden">
+                            <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1">💰</span> Biggest Win</h3>
+                            <span class="text-2xl font-black text-green-600 truncate" id="ai-biggest-win">$0.00</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. MY TRADES & REPORTS TAB -->
-                <div id="tab-mytrades" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-                            <h2 class="text-lg md:text-xl font-bold text-slate-800">Trading Calendar & Reports</h2>
-                            
+                <!-- 2. MY TRADES & CALENDAR TAB -->
+                <div id="tab-mytrades" class="tab-content px-4 md:px-8 py-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-5xl mx-auto mb-8">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+                            <div>
+                                <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Trading Calendar & Reports</h2>
+                                <p class="text-xs text-gray-500 font-medium mt-1">Click any trade in the calendar to view its visual report.</p>
+                            </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="window.sendWeeklyReportEmail()" class="bg-blue-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-blue-700 shadow">📧 Email</button>
-                                <button onclick="window.downloadExcel()" class="bg-green-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-green-700 shadow">📥 Excel</button>
-                                <button onclick="window.downloadPDF()" class="bg-red-600 text-white text-xs md:text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-700 shadow">📄 PDF</button>
+                                <button onclick="window.sendWeeklyReportEmail()" class="bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-blue-700 shadow transition">📧 Email</button>
+                                <button onclick="window.downloadExcel()" class="bg-green-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-green-700 shadow transition">📥 Excel</button>
+                                <button onclick="window.downloadPDF()" class="bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-red-700 shadow transition">📄 PDF</button>
                             </div>
                         </div>
-                        <div id="calendar" class="min-h-[400px] md:min-h-[500px] text-xs md:text-sm"></div>
+                        <div id="calendar" class="min-h-[400px] md:min-h-[550px] text-xs md:text-sm font-medium"></div>
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB -->
-                <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto">
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
+                <!-- 3. STRATEGY VAULT TAB -->
+                <div id="tab-strategies" class="tab-content px-4 md:px-8 py-8">
+                    <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-4xl mx-auto">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">Create Strategy Vault</h2>
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Strategy Name</label>
-                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + CHoCH" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Strategy Name</label>
+                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + London" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold text-slate-800 mb-1">Add Your Strategy / Rules (Overview)</label>
-                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-md border border-gray-600" rows="4"></textarea>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Execution Overview</label>
+                                <textarea id="strategy-code-input" class="w-full px-4 py-3 bg-[#1e293b] text-green-400 font-mono text-sm rounded-lg border border-transparent shadow-inner focus:outline-none" rows="5"></textarea>
                             </div>
-                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-800 text-white font-medium py-2 px-6 rounded-md hover:bg-slate-700">Next: Add Rules ➡️</button>
+                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-900 text-white font-bold py-3.5 px-8 rounded-lg transition shadow-md">Next: Define Rules ➡️</button>
                         </div>
                     </div>
 
-                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl mx-auto hidden">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="rule-page-title">Add Rules</h2>
-                            <span class="text-xs md:text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Step 2 of 2</span>
+                    <div id="strategy-step-2" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-4xl mx-auto hidden">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                            <h2 class="text-2xl font-black text-slate-800 tracking-tight" id="rule-page-title">Add Rules</h2>
+                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Step 2 of 2</span>
                         </div>
-                        <div class="space-y-4">
+                        <div class="space-y-5">
                             <div class="flex flex-col md:flex-row gap-3">
-                                <input id="single-rule-input" type="text" placeholder="e.g. Rule 1: Max Lot 0.01" class="flex-1 px-4 py-2 border border-gray-300 rounded-md">
-                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-medium px-5 py-2 rounded-md hover:bg-blue-700">+ Add Rule</button>
+                                <input id="single-rule-input" type="text" placeholder="e.g. Max Risk 1% per trade" class="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-700 transition shadow">+ Add Rule</button>
                             </div>
-                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[120px]">
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rules List:</h4>
-                                <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700">
-                                    <li class="text-gray-400 italic">No rules added yet...</li>
+                            <div class="border border-gray-200 rounded-lg p-5 bg-slate-50 min-h-[150px] shadow-inner">
+                                <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Checklist:</h4>
+                                <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700 font-medium">
+                                    <li class="text-gray-400 italic text-center mt-6">No rules added yet...</li>
                                 </ul>
                             </div>
-                            <div class="flex flex-col md:flex-row justify-between pt-4 gap-3">
-                                <button onclick="window.backToStrategyStep1()" class="text-gray-600 font-medium px-4 py-2 border md:border-none rounded-md hover:underline">⬅️ Back</button>
-                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 shadow-lg">Finish & Save Strategy 🚀</button>
+                            <div class="flex flex-col md:flex-row justify-between pt-4 gap-3 border-t border-gray-100">
+                                <button onclick="window.backToStrategyStep1()" class="text-gray-500 font-bold px-4 py-2 hover:bg-gray-100 rounded-lg transition">⬅️ Back</button>
+                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-green-600 hover:bg-green-500 text-white font-black py-3.5 px-8 rounded-lg shadow-lg transition">Activate Strategy 🚀</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB -->
-                <div id="tab-logtrade" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl mx-auto">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- 4. LOG TRADE TAB (PRO WITH ASSET) -->
+                <div id="tab-logtrade" class="tab-content px-4 md:px-8 py-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-10 max-w-3xl mx-auto">
+                        <div class="mb-6 pb-4 border-b border-gray-100">
+                            <h2 class="text-2xl font-black text-slate-800 tracking-tight">Log Execution</h2>
+                        </div>
+                        
+                        <!-- NEW: ASSET SELECTION -->
+                        <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chart Screenshot</label>
-                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
-                                        <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                        <p class="text-xs text-gray-500 font-medium" id="chart-file-label">Upload Chart</p>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Asset / Pair</label>
+                                <input id="trade-asset" type="text" value="XAUUSD" placeholder="e.g. XAUUSD, EURUSD" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Strategy Applied</label>
+                                <select id="strategy-dropdown" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                            <div>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">1. Chart Screenshot</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 transition relative overflow-hidden group">
+                                    <div id="chart-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/70 backdrop-blur-sm p-3 rounded-lg group-hover:bg-white/90">
+                                        <p class="text-xs text-blue-600 font-bold" id="chart-file-label">Upload Chart</p>
                                     </div>
                                     <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label', 'chartImgData')" />
                                 </label>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. TradingView RR Box</label>
-                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center">
-                                        <svg class="w-6 h-6 text-green-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        <p class="text-xs text-gray-500 font-medium" id="rr-file-label">Upload RR Box</p>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">2. RR Target Box</label>
+                                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-green-50 transition relative overflow-hidden group">
+                                    <div id="rr-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/70 backdrop-blur-sm p-3 rounded-lg group-hover:bg-white/90">
+                                        <p class="text-xs text-green-600 font-bold" id="rr-file-label">Upload RR Box</p>
                                     </div>
                                     <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label', 'rrImgData')" />
                                 </label>
                             </div>
                         </div>
 
-                        <div class="space-y-6 pt-4 border-t border-gray-200">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2">Trade Details & Price Levels</h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-5 border-t border-gray-100 pt-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Strategy</label>
-                                    <select id="strategy-dropdown" class="w-full px-3 py-2 border border-gray-300 rounded-md"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Trade Direction</label>
-                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-slate-800">
-                                        <option value="buy">🟢 Buy (Long)</option>
-                                        <option value="sell">🔴 Sell (Short)</option>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Trade Direction</label>
+                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl font-black text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="buy">🟢 BUY (Long)</option>
+                                        <option value="sell">🔴 SELL (Short)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Lot Size</label>
-                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Lot Size</label>
+                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl font-black text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-gray-200">
                                 <div>
-                                    <label class="block text-xs font-bold text-blue-600 uppercase mb-1">1. Entry</label>
-                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-blue-300 rounded-md bg-blue-50 text-blue-900 font-bold">
+                                    <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1.5">Entry</label>
+                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-blue-300 rounded-lg bg-white text-blue-900 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-red-600 uppercase mb-1">2. SL</label>
-                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-md bg-red-50 text-red-700 font-bold">
+                                    <label class="block text-[10px] font-black text-red-600 uppercase tracking-widest mb-1.5">SL</label>
+                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-red-300 rounded-lg bg-white text-red-700 font-bold focus:outline-none focus:ring-1 focus:ring-red-500">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-green-600 uppercase mb-1">3. TP (Expected)</label>
-                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-md bg-green-50 text-green-700 font-bold">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                                <div>
-                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Price (Actual)</label>
-                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold" placeholder="Price when closed...">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-indigo-600 uppercase mb-1">Exit Reason</label>
-                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP, Trailed SL, Early exit..." class="w-full px-3 py-2 border border-indigo-300 rounded-md text-indigo-900 font-bold">
+                                    <label class="block text-[10px] font-black text-green-600 uppercase tracking-widest mb-1.5">TP (Expected)</label>
+                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 border border-green-300 rounded-lg bg-white text-green-700 font-bold focus:outline-none focus:ring-1 focus:ring-green-500">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50 p-4 rounded-xl border border-indigo-100">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated RR Ratio</label>
-                                    <input id="trade-rr-val" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="1:0">
+                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1.5">Exit Price (Actual)</label>
+                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-lg font-bold text-indigo-900 focus:outline-none" placeholder="Closed at...">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Points / Pips</label>
-                                    <input id="trade-pips" type="text" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-bold text-slate-800" value="0 Pts">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Net P/L ($)</label>
-                                    <input id="trade-pl" type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md font-bold text-green-600 bg-white" value="0.00">
+                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1.5">Exit Reason</label>
+                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP..." class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-lg font-bold text-indigo-900 focus:outline-none">
                                 </div>
                             </div>
 
-                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-800 text-white font-medium py-3 rounded-md hover:bg-slate-700 mt-4 shadow-lg">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-100 pt-5">
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <label class="block text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Calculated RR</label>
+                                    <input id="trade-rr-val" type="text" readonly class="w-full bg-transparent border-none p-0 font-bold text-slate-800 focus:ring-0" value="1:0">
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <label class="block text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Points / Pips</label>
+                                    <input id="trade-pips" type="text" readonly class="w-full bg-transparent border-none p-0 font-bold text-slate-800 focus:ring-0" value="0 Pts">
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 ring-1 ring-blue-400">
+                                    <label class="block text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Net P/L ($)</label>
+                                    <input id="trade-pl" type="number" step="0.01" class="w-full bg-transparent border-none p-0 font-black text-xl text-green-600 focus:ring-0" value="0.00">
+                                </div>
+                            </div>
+
+                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-900 text-white font-black text-lg py-4 rounded-xl hover:bg-blue-600 transition shadow-lg mt-4">
                                 Save Trade & Verify Rules 🚀
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. WEEKLY LEADERBOARD TAB (OG DARK) -->
-                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
+                <!-- 5. WEEKLY LEADERBOARD TAB (SMART RESET & AUTO-POPULATE) -->
+                <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-8 pb-12 bg-[#090e17] min-h-full text-white">
                     <div class="max-w-4xl mx-auto">
                         <div class="text-center mb-10">
-                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
-                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)<br><span class="text-xs text-blue-300 mt-1 block font-bold">Auto-resets every Sunday at 3:00 AM 🔄</span></p>
+                            <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
+                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)</p>
+                            <span class="inline-block mt-3 bg-blue-900/40 text-blue-300 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-800/50">Auto-resets every Sunday at 3:00 AM 🔄</span>
                         </div>
 
-                        <!-- THE PODIUM (Top 3) -->
-                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-4 md:gap-8 mb-16 w-full"></div>
+                        <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-3 md:gap-6 mb-16 w-full relative z-10"></div>
 
-                        <!-- THE CHALLENGER BOARD -->
-                        <div class="w-full bg-[#1e293b] rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
-                            <div class="px-6 py-4 border-b border-gray-700 bg-[#0f172a]">
-                                <h3 class="text-lg font-bold text-gray-300">👥 Global Network Board</h3>
+                        <div class="w-full bg-[#111827] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl relative z-10">
+                            <div class="px-6 py-4 border-b border-gray-800 bg-[#0f172a]">
+                                <h3 class="text-lg font-black text-white flex items-center gap-2"><span>👥</span> Global Network Board</h3>
                             </div>
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="text-xs font-bold text-gray-500 uppercase border-b border-gray-700 bg-[#151e2d]">
-                                        <th class="p-4">Rank</th>
-                                        <th class="p-4">Trader Name</th>
-                                        <th class="p-4 hidden md:table-cell">Total Trades</th>
-                                        <th class="p-4 text-right">Weekly Pips</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="leaderboard-challengers" class="text-sm"></tbody>
-                            </table>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse min-w-[600px]">
+                                    <thead>
+                                        <tr class="text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800 bg-[#161f30]">
+                                            <th class="p-4 w-16 text-center">Rank</th>
+                                            <th class="p-4">Trader Identity</th>
+                                            <th class="p-4 text-center hidden sm:table-cell">Trades</th>
+                                            <th class="p-4 text-right pr-6">Weekly Pips</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderboard-challengers" class="text-sm font-medium"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 6. MESSAGES (INBOX) TAB (OG DARK + MOBILE FIX) -->
-                <div id="tab-messages" class="tab-content px-4 md:px-8 py-6 h-full min-h-[600px] bg-[#0f172a]">
-                    <div class="max-w-6xl mx-auto h-[calc(100vh-140px)] min-h-[550px] flex flex-col bg-[#1e293b] rounded-xl border border-gray-700 shadow-2xl overflow-hidden relative">
+                <!-- 6. MESSAGES (INBOX) TAB -->
+                <div id="tab-messages" class="tab-content px-0 md:px-8 py-0 md:py-6 h-full min-h-[600px] bg-[#090e17]">
+                    <div class="w-full md:max-w-5xl mx-auto h-[calc(100vh-64px)] md:h-[calc(100vh-140px)] min-h-[550px] flex flex-col md:bg-[#111827] md:rounded-2xl md:border border-gray-800 overflow-hidden relative">
                         
-                        <div class="bg-[#0f172a] border-b border-gray-700 p-4 flex justify-between items-center z-10 relative">
-                            <h2 class="text-lg font-bold text-white flex items-center gap-2"><span>💬</span> Trading Community Chat</h2>
-                            <span class="text-xs text-green-400 bg-green-900/30 px-3 py-1 rounded-full border border-green-800">Secure Network</span>
+                        <div class="bg-[#0f172a] border-b border-gray-800 p-4 flex justify-between items-center z-10">
+                            <h2 class="text-lg font-black text-white flex items-center gap-2"><span>💬</span> Trading Community Chat</h2>
+                            <span class="text-[10px] text-green-400 bg-green-900/30 px-2 py-1 rounded border border-green-800 font-bold uppercase tracking-widest">Secure</span>
                         </div>
 
                         <div class="flex flex-1 overflow-hidden h-full relative">
-                            
-                            <!-- Left: Contact List -->
-                            <div id="chat-sidebar" class="w-full md:w-[320px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-10 transition-transform absolute md:relative inset-y-0 left-0">
-                                <div class="p-4 border-b border-gray-800">
-                                    <input type="text" placeholder="Search traders..." class="w-full bg-[#1e293b] text-sm text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500">
+                            <!-- Sidebar -->
+                            <div id="chat-sidebar" class="w-full md:w-[320px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-10 absolute md:relative inset-y-0 left-0">
+                                <div class="p-3 border-b border-gray-800 bg-[#0f172a]">
+                                    <input type="text" placeholder="Search network..." class="w-full bg-[#1e293b] text-sm text-white px-4 py-2.5 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500">
                                 </div>
-                                <div class="overflow-y-auto flex-1 p-2 space-y-1" id="chat-contact-list">
-                                    <div class="flex flex-col items-center justify-center h-full text-gray-500 text-sm font-medium">Loading network...</div>
+                                <div class="overflow-y-auto flex-1 p-2 space-y-1 bg-[#0b1120]" id="chat-contact-list">
+                                    <div class="flex flex-col items-center justify-center h-full text-gray-500 text-xs font-bold uppercase tracking-widest opacity-50">Loading network...</div>
                                 </div>
                             </div>
 
-                            <!-- Right: Active Chat Area -->
+                            <!-- Main Chat Area -->
                             <div id="chat-main-area" class="hidden md:flex flex-col flex-1 bg-[#090e17] absolute md:relative inset-0 z-20 w-full h-full">
-                                
                                 <div id="chat-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
-                                    <h3 class="text-xl font-bold text-white mb-2">Your Direct Messages</h3>
-                                    <p class="text-gray-400 text-sm max-w-sm">Select a trader from the Leaderboard or your contact list to initiate a connection.</p>
+                                    <h3 class="text-xl font-black text-white mb-2">Direct Messages</h3>
+                                    <p class="text-gray-500 text-sm">Select a trader from the network to initiate a secure connection.</p>
                                 </div>
 
                                 <div id="active-chat-interface" class="hidden flex-col h-full z-20 w-full">
-                                    <div class="px-4 md:px-6 py-4 bg-[#111827] border-b border-gray-800 flex items-center justify-between">
+                                    <div class="px-4 py-3 bg-[#111827] border-b border-gray-800 flex items-center justify-between">
                                         <div class="flex items-center gap-3">
-                                            <!-- Mobile Back Button -->
-                                            <button onclick="window.closeActiveChat()" class="md:hidden text-gray-400 hover:text-white p-1 mr-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full border border-gray-600 object-cover">
+                                            <button onclick="window.closeActiveChat()" class="md:hidden text-gray-400 hover:text-white p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                                            <img id="active-chat-avatar" src="" class="w-9 h-9 rounded-full border border-gray-600 object-cover">
                                             <div>
                                                 <h3 id="active-chat-username" class="text-white font-bold text-sm">Trader Name</h3>
-                                                <p class="text-xs text-green-400">Online</p>
+                                                <p class="text-[9px] text-green-400 font-bold uppercase">Online</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4" id="chat-messages-history">
-                                        <div class="text-center my-4"><span class="text-[10px] uppercase font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full border border-gray-800">Secure Session Started</span></div>
+                                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chat-messages-history">
+                                        <div class="text-center my-4 relative flex justify-center items-center">
+                                            <div class="absolute inset-x-0 h-px bg-gray-800"></div>
+                                            <span class="text-[9px] uppercase font-bold text-gray-500 bg-[#090e17] px-3 py-1 rounded-full relative z-10 border border-gray-800">Secure Session</span>
+                                        </div>
                                     </div>
 
-                                    <div class="p-3 md:p-4 bg-[#111827] border-t border-gray-800">
-                                        <div class="flex items-center gap-2 bg-[#1e293b] p-1.5 rounded-lg border border-gray-700">
-                                            <input type="text" id="chat-input-msg" placeholder="Type your message securely..." class="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder-gray-500 px-2" onkeypress="if(event.key === 'Enter') window.sendMessage()">
-                                            <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md transition font-bold text-sm">Send</button>
+                                    <div class="p-3 bg-[#111827] border-t border-gray-800">
+                                        <div class="flex items-center gap-2 bg-[#1e293b] p-1 rounded-lg border border-gray-700 focus-within:border-blue-500">
+                                            <input type="text" id="chat-input-msg" placeholder="Type message..." class="flex-1 bg-transparent text-white text-sm px-3 focus:outline-none py-1.5" onkeypress="if(event.key === 'Enter') window.sendMessage()">
+                                            <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-md font-bold text-sm transition">Send</button>
                                         </div>
                                     </div>
                                 </div>
@@ -433,19 +478,18 @@
 
                 <!-- 7. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
-                        <p class="text-xs text-gray-500 mb-6">Track who is logging in via Google or master credentials.</p>
-                        <div class="overflow-x-auto">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-4xl mx-auto">
+                        <h2 class="text-xl font-black text-slate-800 mb-2">📊 Security Logs</h2>
+                        <div class="overflow-x-auto border border-gray-100 rounded-lg mt-4">
                             <table class="w-full text-left border-collapse min-w-[500px]">
                                 <thead>
-                                    <tr class="bg-gray-100 text-xs font-bold text-gray-600 uppercase border-b">
-                                        <th class="p-3">Email / Name</th>
-                                        <th class="p-3">Login Time</th>
-                                        <th class="p-3">Method / Status</th>
+                                    <tr class="bg-gray-50 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-200">
+                                        <th class="p-3">Identity</th>
+                                        <th class="p-3">Timestamp</th>
+                                        <th class="p-3">Protocol</th>
                                     </tr>
                                 </thead>
-                                <tbody id="visitor-activity-table" class="divide-y divide-gray-200 text-sm"></tbody>
+                                <tbody id="visitor-activity-table" class="divide-y divide-gray-100 text-sm font-medium"></tbody>
                             </table>
                         </div>
                     </div>
@@ -457,231 +501,170 @@
 
     <!-- ADVANCED TRADER IDENTITY MODULE -->
     <div id="advanced-profile-page" class="fixed inset-0 bg-[#090e17] z-[60] hidden flex-col overflow-y-auto">
-        <div class="max-w-4xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
-            <button onclick="window.closeAdvancedProfile()" class="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition w-fit group">
-                <span class="group-hover:-translate-x-1 transition-transform">🔙</span> <span class="font-bold tracking-wide uppercase text-sm">Back to Dashboard</span>
-            </button>
-
-            <div class="bg-[#111827] rounded-3xl shadow-2xl border border-gray-800 overflow-hidden flex-1 mb-8">
-                <div class="bg-gradient-to-r from-blue-900 to-[#111827] p-8 md:p-10 border-b border-gray-800 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">Trader Identity & Journey</h2>
-                        <p class="text-blue-200 text-sm font-medium">Update your vault and connect with the community.</p>
-                    </div>
-                    <div class="hidden md:block w-20 h-20 rounded-full border-4 border-blue-500 overflow-hidden shadow-[0_0_15px_rgba(59,130,246,0.6)]">
-                        <img id="ap-header-avatar" src="" class="w-full h-full object-cover">
-                    </div>
+        <div class="max-w-3xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
+            <button onclick="window.closeAdvancedProfile()" class="text-gray-400 hover:text-white flex items-center gap-2 mb-6 transition w-fit font-bold text-sm">🔙 Back to Dashboard</button>
+            <div class="bg-[#111827] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden flex-1 mb-8">
+                <div class="bg-[#1e293b] p-6 md:p-8 border-b border-gray-800">
+                    <h2 class="text-2xl font-black text-white tracking-tight">Trader Identity & Journey</h2>
                 </div>
-
-                <div class="p-6 md:p-10 space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-6 md:p-8 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Custom Trader Name</label>
-                            <input id="ap-username" type="text" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white font-bold focus:border-blue-500 focus:outline-none transition">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Trader Name</label>
+                            <input id="ap-username" type="text" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-lg text-white font-bold focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Registered Email <span class="text-[10px] text-green-500 ml-2 border border-green-500 px-1 rounded">VERIFIED</span></label>
-                            <input id="ap-email" type="text" readonly class="w-full px-4 py-3 bg-[#0f172a] border border-gray-800 rounded-xl text-gray-400 font-medium cursor-not-allowed">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Registered Email</label>
+                            <input id="ap-email" type="text" readonly class="w-full px-4 py-3 bg-[#0f172a] border border-gray-800 rounded-lg text-gray-400 font-medium">
                         </div>
                     </div>
-
-                    <div class="border-t border-gray-800 pt-8">
-                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📈</span> Trading Journey & Status</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Trading Experience</label>
-                                <select id="ap-experience" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
-                                    <option value="Less than 1 Year">Less than 1 Year</option>
-                                    <option value="1-3 Years">1-3 Years</option>
-                                    <option value="3+ Years">3+ Years Pro</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Current Phase</label>
-                                <select id="ap-phase" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
-                                    <option value="Learning">Learning</option>
-                                    <option value="Losing">Losing</option>
-                                    <option value="Break Even">Break Even</option>
-                                    <option value="Profitable">Profitable</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Are You Profitable?</label>
-                                <select id="ap-profitable" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none transition">
-                                    <option value="No">No</option>
-                                    <option value="Yes">Yes</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between bg-[#1f2937] p-5 rounded-xl border border-gray-700 shadow-inner">
-                            <div>
-                                <h4 class="text-white font-bold text-sm md:text-base mb-1 flex items-center gap-2"><span>🌍</span> Public Leaderboard Profile</h4>
-                                <p class="text-xs text-gray-400">Allow others to view your trading journey metrics when they click your name.</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" id="ap-public" class="sr-only peer">
-                              <div class="w-14 h-7 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-500"></div>
-                            </label>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 border-t border-gray-800 pt-6">
+                        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Experience</label><select id="ap-experience" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-lg text-white text-sm focus:outline-none"><option>Less than 1 Year</option><option>1-3 Years</option><option>3+ Years Pro</option></select></div>
+                        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Phase</label><select id="ap-phase" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-lg text-white text-sm focus:outline-none"><option>Learning</option><option>Losing</option><option>Break Even</option><option>Profitable</option></select></div>
+                        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Profitable?</label><select id="ap-profitable" class="w-full px-4 py-3 bg-[#1f2937] border border-gray-700 rounded-lg text-white text-sm focus:outline-none"><option>No</option><option>Yes</option></select></div>
                     </div>
-
-                    <div class="border-t border-gray-800 pt-8">
-                        <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📸</span> Identity Avatar / PFP Upload</h3>
-                        <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] hover:border-blue-500 transition group relative overflow-hidden">
+                    <div class="flex items-center justify-between bg-[#1f2937] p-4 rounded-lg border border-gray-700">
+                        <div><h4 class="text-white font-bold text-sm">Public Leaderboard Profile</h4><p class="text-[10px] text-gray-400">Allow others to view your stats.</p></div>
+                        <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ap-public" class="sr-only peer"><div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div></label>
+                    </div>
+                    <div class="border-t border-gray-800 pt-6">
+                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] transition relative overflow-hidden">
                             <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-40"></div>
                             <div class="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
-                                <svg class="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                <p class="mb-2 text-sm text-gray-300 font-bold" id="ap-dropzone-text"><span class="text-blue-400">Click to upload</span> or drag and drop</p>
-                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                <p class="mb-1 text-sm text-blue-400 font-bold" id="ap-dropzone-text">Click to upload Avatar</p>
                             </div>
                             <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
                         </label>
                     </div>
-
-                    <div class="pt-6">
-                        <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] transition">
-                            Update Identity & Sync Vault 🚀
-                        </button>
-                        <div class="clear-both"></div>
-                    </div>
+                    <div class="pt-4 border-t border-gray-800"><button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto float-right bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg transition">Sync Vault 🚀</button><div class="clear-both"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- PUBLIC TRADER PROFILE MODAL -->
-    <div id="publicProfileModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm transition-opacity" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
-            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl z-10 bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center">&times;</button>
-            <div class="p-6 text-center border-b border-gray-800 bg-[#0f172a] relative">
-                <div class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_15px_rgba(59,130,246,0.5)]"><img id="pp-avatar" src="" class="w-full h-full object-cover"></div>
-                <h3 id="pp-username" class="text-2xl font-black text-white tracking-wide">Trader Name</h3>
-                <p id="pp-pips" class="text-green-400 font-bold text-base mt-1">+0.0 Pts This Week</p>
+    <div id="publicProfileModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-[#1e293b] rounded-2xl shadow-2xl border border-gray-700 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
+            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-white font-bold text-xl z-10">&times;</button>
+            <div class="p-6 text-center border-b border-gray-800 bg-[#0f172a]">
+                <div class="w-20 h-20 mx-auto rounded-full border-2 border-blue-500 overflow-hidden mb-3"><img id="pp-avatar" src="" class="w-full h-full object-cover"></div>
+                <h3 id="pp-username" class="text-xl font-black text-white">Trader</h3>
+                <p id="pp-pips" class="text-green-400 font-bold text-sm">+0.0 Pts This Week</p>
             </div>
-            <div id="pp-private-msg" class="p-10 text-center hidden bg-[#111827]">
-                <div class="text-5xl mb-4 drop-shadow-lg">🔒</div>
-                <h4 class="text-white font-bold text-xl mb-1">Vault is Private</h4>
-                <p class="text-gray-400 text-sm">This trader has chosen not to share their journey details.</p>
-            </div>
-            <div id="pp-public-details" class="p-6 space-y-5 hidden bg-[#111827]">
-                <div class="bg-[#1e293b] p-4 rounded-2xl border border-gray-800">
-                    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-3"><span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Trading Experience</span><span id="pp-exp" class="text-white text-xs font-bold bg-gray-800 px-3 py-1 rounded-lg">1-3 Years</span></div>
-                    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-3"><span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Current Phase</span><span id="pp-phase" class="text-blue-400 text-xs font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Profitable?</span><span id="pp-prof" class="text-white text-xs font-bold px-3 py-1 rounded-lg">Yes</span></div>
-                </div>
-                <div class="pt-2">
-                    <button id="pp-connect-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2">Connect & Chat</button>
-                </div>
+            <div id="pp-private-msg" class="p-8 text-center hidden"><h4 class="text-white font-bold text-lg">Vault is Private 🔒</h4></div>
+            <div id="pp-public-details" class="p-5 space-y-4 hidden">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2"><span class="text-gray-400 text-xs font-bold uppercase">Experience</span><span id="pp-exp" class="text-white text-xs font-bold bg-gray-800 px-2 py-1 rounded">1-3 Years</span></div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2"><span class="text-gray-400 text-xs font-bold uppercase">Phase</span><span id="pp-phase" class="text-blue-400 text-xs font-bold bg-blue-900/30 px-2 py-1 rounded">Learning</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-400 text-xs font-bold uppercase">Profitable?</span><span id="pp-prof" class="text-white text-xs font-bold px-2 py-1 rounded">Yes</span></div>
+                <div class="pt-2"><button id="pp-connect-btn" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg transition">Connect & Chat</button></div>
             </div>
         </div>
     </div>
 
-    <!-- CLEAN OG DOWNLOADABLE TRADE REPORT MODAL -->
+    <!-- CLEAN DOWNLOADABLE TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
         
-        <div class="w-full max-w-[800px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
+        <div class="w-full max-w-[700px] mx-auto flex flex-col gap-3" onclick="event.stopPropagation()">
             
             <!-- CAPTURE TARGET -->
-            <div id="capture-trade-report" class="bg-white rounded-3xl shadow-2xl p-6 md:p-8 relative overflow-hidden flex flex-col gap-4 mx-auto" style="width: 100%; max-width: 800px;">
-                <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-4 right-4 bg-gray-100 text-gray-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-lg transition z-10">&times;</button>
+            <div id="capture-trade-report" class="bg-white rounded-2xl shadow-2xl p-5 relative overflow-hidden flex flex-col gap-3 mx-auto" style="width: 100%; max-width: 700px;">
+                <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-4 right-4 bg-gray-100 text-gray-500 hover:bg-red-500 hover:text-white w-7 h-7 rounded-full flex items-center justify-center font-black text-sm transition z-10">&times;</button>
                 
                 <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mt-1">
-                    <div class="bg-blue-50 text-blue-600 p-2.5 rounded-xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <div class="pr-8">
-                        <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight leading-tight" id="rep-title">Trade Report: Strategy</h2>
-                        <p class="text-[10px] font-bold text-gray-400 mt-0.5" id="rep-date">Execution Date: 2026-08-09</p>
-                    </div>
-                </div>
-
-                <!-- SIDE-BY-SIDE IMAGES (Object Contain Fix) -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <p class="text-[9px] font-black text-gray-500 uppercase mb-1 tracking-widest pl-1">Chart Screenshot</p>
-                        <div class="bg-white rounded-xl overflow-hidden border border-gray-200 flex items-center justify-center h-48 md:h-64 shadow-sm">
-                            <img id="rep-chart-img" src="" class="w-full h-full object-contain p-1 hidden cursor-zoom-in" onclick="window.openLightbox(this.src)">
-                            <span id="rep-chart-noimg" class="text-gray-400 text-xs font-bold">No Image</span>
+                    <div class="bg-blue-50 text-blue-600 p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
+                    <div class="flex-1 flex justify-between items-center pr-6">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-black text-slate-800 tracking-tight leading-tight" id="rep-title">Trade Report: Strategy</h2>
+                            <p class="text-[10px] font-bold text-gray-400 mt-0.5 uppercase tracking-widest" id="rep-date">Execution Date: 2026-08-09</p>
                         </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <p class="text-[9px] font-black text-gray-500 uppercase mb-1 tracking-widest pl-1">RR Target Box</p>
-                        <div class="bg-white rounded-xl overflow-hidden border border-gray-200 flex items-center justify-center h-48 md:h-64 shadow-sm">
-                            <img id="rep-rr-img" src="" class="w-full h-full object-contain p-1 hidden cursor-zoom-in" onclick="window.openLightbox(this.src)">
-                            <span id="rep-rr-noimg" class="text-gray-400 text-xs font-bold">No Image</span>
+                        <div class="text-right">
+                            <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Asset</span>
+                            <span class="block text-base font-black text-blue-600" id="rep-asset">XAUUSD</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Clean Stats Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
-                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 md:p-4 flex flex-col justify-center">
+                <!-- SIDE-BY-SIDE IMAGES (Fixed IMG Tags for HTML2Canvas) -->
+                <div class="flex flex-row gap-3 w-full">
+                    <div class="w-1/2 flex flex-col">
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">Chart Screenshot</p>
+                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-chart-img').src)">
+                            <img id="rep-chart-img" src="" class="w-full h-full object-contain p-1 absolute inset-0 hidden">
+                            <span id="rep-chart-noimg" class="text-gray-400 text-xs font-bold absolute inset-0 flex items-center justify-center">No Image</span>
+                        </div>
+                    </div>
+                    <div class="w-1/2 flex flex-col">
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">RR Target Box</p>
+                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-rr-img').src)">
+                            <img id="rep-rr-img" src="" class="w-full h-full object-contain p-1 absolute inset-0 hidden">
+                            <span id="rep-rr-noimg" class="text-gray-400 text-xs font-bold absolute inset-0 flex items-center justify-center">No Image</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Direction</p>
                         <div class="flex items-center gap-1.5">
                             <div id="rep-dir-dot" class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                            <span class="text-sm md:text-base font-black text-slate-800 uppercase" id="rep-direction">BUY</span>
+                            <span class="text-sm font-black text-slate-800 uppercase" id="rep-direction">BUY</span>
                         </div>
                     </div>
-                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 md:p-4 flex flex-col justify-center">
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Strategy</p>
-                        <span class="text-sm md:text-base font-black text-slate-800 truncate" id="rep-strat">-</span>
+                        <span class="text-sm font-black text-slate-800 truncate" id="rep-strat">-</span>
                     </div>
-                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 md:p-4 flex flex-col justify-center">
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Lot Size</p>
-                        <span class="text-sm md:text-base font-black text-slate-800" id="rep-lot">-</span>
+                        <span class="text-sm font-black text-slate-800" id="rep-lot">-</span>
                     </div>
-                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 md:p-4 flex flex-col justify-center">
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Entry/SL/TP</p>
-                        <span class="text-[10px] md:text-xs font-bold text-slate-600 leading-tight" id="rep-levels">-</span>
+                        <span class="text-[10px] font-bold text-slate-600 leading-tight" id="rep-levels">-</span>
                     </div>
                 </div>
 
-                <!-- Full Width Net PL -->
-                <div class="bg-gray-50 border border-gray-100 rounded-xl p-4 flex justify-between items-center mt-1">
-                     <p class="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Final Net P/L</p>
-                     <span class="text-2xl md:text-3xl font-black text-green-500" id="rep-pl">-</span>
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 flex justify-between items-center mt-1">
+                     <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Final Net P/L</p>
+                     <span class="text-xl md:text-2xl font-black text-green-500" id="rep-pl">-</span>
                 </div>
             </div>
 
             <!-- CLEAN DOWNLOAD BUTTON -->
-            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-base md:text-lg py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                Download 📸
+            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-black text-sm py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1">
+                Download Report 📸
             </button>
-
         </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX MODAL -->
+    <div id="imageLightbox" class="fixed inset-0 bg-[#090e17] bg-opacity-95 hidden flex-col items-center justify-center z-[150] p-4 backdrop-blur-sm transition-opacity" onclick="window.closeLightbox()">
+        <button class="absolute top-4 right-4 text-gray-400 hover:text-white font-black text-3xl z-[160] transition">&times;</button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-lg" onclick="event.stopPropagation()">
     </div>
 
     <!-- RULE VERIFICATION MODAL -->
     <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-[120] p-4" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100" onclick="event.stopPropagation()">
-            <h3 class="text-xl font-bold text-slate-800 mb-2">🛡️ Rules Checklist</h3>
-            <div id="modal-rules-checklist" class="space-y-3 max-h-48 overflow-y-auto mb-6 p-3 bg-gray-50 rounded-lg"></div>
+            <h3 class="text-lg font-bold text-slate-800 mb-4">🛡️ Rules Verification</h3>
+            <div id="modal-rules-checklist" class="space-y-3 max-h-48 overflow-y-auto mb-6 p-2 bg-gray-50 rounded-lg"></div>
             <div class="flex space-x-3">
-                <button onclick="window.closeRuleModal()" class="flex-1 bg-gray-200 text-gray-700 font-medium py-2 rounded-lg">Cancel</button>
-                <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg">Confirm ✅</button>
+                <button onclick="window.closeRuleModal()" class="flex-1 bg-gray-200 text-gray-700 font-bold py-2.5 rounded-lg">Cancel</button>
+                <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-lg shadow-md">Confirm ✅</button>
             </div>
         </div>
     </div>
 
     <!-- CERTIFICATE MODAL -->
     <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[90] p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-xl p-8 text-center relative" onclick="event.stopPropagation()">
-            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
-            <div class="text-5xl mb-2">👑</div>
-            <h2 class="text-xs font-extrabold tracking-widest text-yellow-500 uppercase mb-1">Certificate of Excellence</h2>
-            <h1 class="text-2xl md:text-3xl font-bold text-white mb-6">Weekly Trading Champion</h1>
-            <h3 id="cert-username" class="text-2xl font-black text-blue-400 mb-4">Fx_arjun</h3>
+        <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-lg p-8 text-center relative" onclick="event.stopPropagation()">
+            <button onclick="window.closeCertificateModal()" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            <div class="text-5xl mb-4 drop-shadow-md">🏆</div>
+            <h2 class="text-[10px] font-black tracking-[0.2em] text-yellow-500 uppercase mb-2">Certificate of Excellence</h2>
+            <h1 class="text-2xl font-black text-white mb-6">Weekly Champion</h1>
+            <h3 id="cert-username" class="text-xl font-black text-blue-400 border-b border-gray-700 pb-2 inline-block px-6">Fx_arjun</h3>
         </div>
-    </div>
-
-    <!-- IMAGE LIGHTBOX MODAL -->
-    <div id="imageLightbox" class="fixed inset-0 bg-[#090e17] bg-opacity-95 hidden flex-col items-center justify-center z-[150] p-4 backdrop-blur-xl transition-opacity" onclick="window.closeLightbox()">
-        <button class="absolute top-6 right-6 text-gray-400 hover:text-red-500 font-black text-4xl z-[160] transition transform hover:scale-110 bg-black/50 w-12 h-12 rounded-full flex items-center justify-center">&times;</button>
-        <div class="w-full max-w-7xl h-full p-4 flex items-center justify-center">
-            <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 cursor-zoom-out" onclick="event.stopPropagation()">
-        </div>
-        <div class="absolute bottom-6 text-gray-400 text-xs font-bold bg-black/50 px-4 py-2 rounded-full tracking-widest uppercase">Click outside to close</div>
     </div>
 
     <!-- FIREBASE AND APP LOGIC -->
@@ -722,23 +705,16 @@
         let globalTraderStats = {};
         let activeChatEmail = "";
 
-        // ==============================================
-        // THE SMART LEADERBOARD RESET LOGIC (SUNDAY 3 AM)
-        // ==============================================
+        // SUNDAY 3:00 AM LOGIC
         function getMostRecentSunday3AM() {
             const now = new Date();
             let day = now.getDay(); 
             let hour = now.getHours();
-            
             let daysToSubtract = day;
-            if (day === 0 && hour < 3) {
-                daysToSubtract = 7;
-            }
-
+            if (day === 0 && hour < 3) { daysToSubtract = 7; }
             let lastSunday = new Date(now);
             lastSunday.setDate(now.getDate() - daysToSubtract);
             lastSunday.setHours(3, 0, 0, 0); 
-            
             return lastSunday.getTime();
         }
 
@@ -841,9 +817,6 @@
             initApp();
         }
 
-        // ==============================================
-        // AUTO-INJECT ALL USERS (Fix for empty leaderboards)
-        // ==============================================
         async function loadUserProfileFromFirebase() {
             try {
                 const docRef = doc(db, "profiles", currentLoggedInUser);
@@ -889,7 +862,7 @@
             tempAdvancedPfpData = "";
             const dropzoneText = document.getElementById('ap-dropzone-text');
             const previewOverlay = document.getElementById('ap-pfp-preview');
-            dropzoneText.innerHTML = `<span class="text-blue-400">Click to upload</span> or drag and drop`;
+            dropzoneText.innerHTML = `Click to upload Avatar`;
             previewOverlay.classList.add('hidden');
         };
 
@@ -906,7 +879,7 @@
             if(input.files && input.files[0]) {
                 const file = input.files[0];
                 dropzoneText.innerText = "Selected: " + file.name;
-                dropzoneText.className = "mb-2 text-sm text-green-400 font-bold max-w-[200px] truncate";
+                dropzoneText.className = "mb-1 text-sm text-green-400 font-bold max-w-[200px] truncate";
                 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -960,9 +933,9 @@
                 'mytrades': 'My Trades & Reports', 
                 'strategies': 'Strategy Vault', 
                 'logtrade': 'Log New Trade', 
-                'leaderboard': 'Weekly Leaderboard', 
-                'messages': 'Trader Inbox',
-                'activity': 'Visitor Activity Log' 
+                'leaderboard': 'Global Leaderboard', 
+                'messages': 'Vault Inbox',
+                'activity': 'System Logs' 
             };
             document.getElementById('header-title').innerText = titles[tabId] || 'Dashboard';
 
@@ -1087,9 +1060,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // ==============================================
-        // ADVANCED LEADERBOARD WITH MONDAY 3AM RESET
-        // ==============================================
+        // ALL USERS LEADERBOARD
         async function loadLeaderboardData() {
             const podiumEl = document.getElementById('leaderboard-podium');
             const challengersEl = document.getElementById('leaderboard-challengers');
@@ -1097,7 +1068,7 @@
             challengersEl.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Loading challengers...</td></tr>`;
 
             try {
-                // FETCH ALL PROFILES FIRST
+                // Get all users first
                 const profileSnap = await getDocs(collection(db, "profiles"));
                 globalProfilesMap = {};
                 let tradersMap = {};
@@ -1117,7 +1088,6 @@
                     };
                 });
 
-                // FETCH TRADES AND MERGE
                 const snapshot = await getDocs(collection(db, "trades"));
                 globalTraderStats = {};
                 
@@ -1145,9 +1115,7 @@
 
                         if(!tradersMap[email]) {
                             tradersMap[email] = { 
-                                email: email,
-                                username: email.split('@')[0], 
-                                pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
+                                email: email, username: email.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, 
                                 totalPips: 0, totalTrades: 0, totalPL: 0
                             };
                         }
@@ -1160,9 +1128,7 @@
                 let leaderboardArray = Object.values(tradersMap).sort((a, b) => b.totalPips - a.totalPips);
 
                 if(leaderboardArray.length === 0) {
-                    leaderboardArray = [
-                        { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }
-                    ];
+                    leaderboardArray = [{ email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }];
                 }
                 
                 leaderboardArray.forEach(t => {
@@ -1182,29 +1148,26 @@
                 ];
 
                 let podiumOrder = [
-                    top3[1] || { email: 'fake2', username: "Empty Slot", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
+                    top3[1] || { email: 'empty2', username: "-", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=2", totalPips: 0, totalTrades: 0, totalPL: 0 }, 
                     top3[0] || { email: currentLoggedInUser, username: currentUserProfile.username, pfp: currentUserProfile.pfp, totalPips: 0, totalTrades: 0, totalPL: 0 }, 
-                    top3[2] || { email: 'fake3', username: "Empty Slot", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
+                    top3[2] || { email: 'empty3', username: "-", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=3", totalPips: 0, totalTrades: 0, totalPL: 0 }
                 ];
 
                 podiumOrder.forEach((trader, idx) => {
-                    if (trader.username === "Empty Slot") return; 
+                    if (trader.username === "-") return; 
                     
                     let cfg = rankConfigs[idx];
                     let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
                     
-                    let certBtn = cfg.isFirst ? `<button onclick="event.stopPropagation(); window.openCertificateModal('${trader.username}')" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] md:text-xs font-bold py-1.5 px-3 rounded-full flex items-center gap-1 transition shadow-lg z-20"><span>📜</span> Certificate</button>` : '';
-
                     podiumEl.innerHTML += `
                         <div onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer hover:ring-2 hover:ring-blue-500 hover:-translate-y-2 transition-all flex flex-col items-center bg-[#1e293b] p-4 rounded-t-xl border-t-4 ${cfg.border} ${cfg.width} ${cfg.height} justify-end relative ${cfg.isFirst ? 'z-10' : ''}">
                             <div class="text-3xl md:text-5xl absolute -top-6 md:-top-8">${cfg.emoji}</div>
                             <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-700 overflow-hidden border-2 border-white mb-2 shadow-md shrink-0">
                                 <img src="${trader.pfp}" class="w-full h-full object-cover">
                             </div>
-                            <h3 class="font-extrabold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
-                            <p class="text-green-400 font-black text-xs md:text-base mt-0.5">${pipsText}</p>
+                            <h3 class="font-bold text-sm md:text-lg text-white truncate max-w-full">${trader.username}</h3>
+                            <p class="text-green-400 font-bold text-xs md:text-base mt-0.5">${pipsText}</p>
                             <span class="text-[10px] ${cfg.labelColor} font-bold mt-1 uppercase">Rank ${cfg.rank}</span>
-                            ${certBtn}
                         </div>`;
                 });
 
@@ -1218,12 +1181,12 @@
                             <tr onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer border-b border-gray-800 hover:bg-[#253347] hover:ring-1 hover:ring-blue-500 transition">
                                 <td class="p-4 text-gray-400 font-bold">#${rankNum}</td>
                                 <td class="p-4 font-medium text-gray-200 flex items-center gap-3">
-                                    <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-600 shrink-0">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-600 shrink-0">
                                         <img src="${trader.pfp}" class="w-full h-full object-cover">
                                     </div>
                                     <span>${trader.username}</span>
                                 </td>
-                                <td class="p-4 text-gray-500 hidden md:table-cell">${trader.totalTrades}</td>
+                                <td class="p-4 text-gray-500 hidden md:table-cell text-center">${trader.totalTrades}</td>
                                 <td class="p-4 text-right text-green-400 font-bold">${pipsText}</td>
                             </tr>`;
                     });
@@ -1233,7 +1196,7 @@
         }
 
         window.viewTraderProfile = function(email) {
-            if(!email || email.includes('fake')) return;
+            if(!email || email.includes('empty')) return;
             
             const profile = globalProfilesMap[email] || { 
                 username: email.split('@')[0], 
@@ -1256,10 +1219,10 @@
                 const profEl = document.getElementById('pp-prof');
                 if(profile.isProfitable === 'Yes') {
                     profEl.innerText = 'Yes';
-                    profEl.className = 'text-green-400 text-sm font-bold bg-green-900/30 px-3 py-1 rounded-lg border border-green-800';
+                    profEl.className = 'text-green-400 text-xs font-bold bg-green-900/30 px-2 py-1 rounded';
                 } else {
                     profEl.innerText = 'No';
-                    profEl.className = 'text-red-400 text-sm font-bold bg-red-900/30 px-3 py-1 rounded-lg border border-red-800';
+                    profEl.className = 'text-red-400 text-xs font-bold bg-red-900/30 px-2 py-1 rounded';
                 }
             } else {
                 document.getElementById('pp-private-msg').classList.remove('hidden');
@@ -1274,7 +1237,7 @@
             document.getElementById('publicProfileModal').classList.remove('hidden');
         };
 
-        // ====== MOBILE RESPONSIVE CHAT LOGIC ======
+        // ALL USERS INBOX
         function loadChatContacts() {
             const listEl = document.getElementById('chat-contact-list');
             listEl.innerHTML = "";
@@ -1285,21 +1248,21 @@
                     contactsCount++;
                     let p = globalProfilesMap[email];
                     listEl.innerHTML += `
-                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3 hover:bg-[#253347] rounded-xl cursor-pointer transition border border-transparent hover:border-gray-600">
+                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3 hover:bg-[#1e293b] rounded-lg cursor-pointer transition border border-transparent hover:border-gray-700">
                             <div class="relative shrink-0">
                                 <img src="${p.pfp}" class="w-10 h-10 rounded-full object-cover border border-gray-600">
-                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#1e293b] rounded-full"></div>
+                                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-[#0b1120] rounded-full"></div>
                             </div>
                             <div class="overflow-hidden flex-1">
                                 <h4 class="text-white text-sm font-bold truncate">${p.username}</h4>
-                                <p class="text-xs text-gray-400 truncate">Tap to view conversation</p>
+                                <p class="text-xs text-gray-500 truncate mt-0.5">Tap to chat</p>
                             </div>
                         </div>
                     `;
                 }
             }
             if(contactsCount === 0) {
-                listEl.innerHTML = `<div class="text-center p-8 text-gray-500 text-sm italic">No other traders in network yet.</div>`;
+                listEl.innerHTML = `<div class="text-center p-8 text-gray-600 text-sm font-bold uppercase tracking-widest mt-10">Network Empty.</div>`;
             }
         }
 
@@ -1312,15 +1275,15 @@
         window.openChatWithUser = function(email, username, pfp) {
             activeChatEmail = email;
             
-            // MOBILE FIX: Hide Sidebar, Show Main Chat Area
             if (window.innerWidth < 768) {
                 document.getElementById('chat-sidebar').classList.add('hidden');
                 document.getElementById('chat-sidebar').classList.remove('flex');
-                document.getElementById('chat-main-area').classList.remove('hidden');
-                document.getElementById('chat-main-area').classList.add('flex');
             }
             
             document.getElementById('chat-empty-state').classList.add('hidden');
+            document.getElementById('chat-main-area').classList.remove('hidden');
+            document.getElementById('chat-main-area').classList.add('flex');
+            
             document.getElementById('active-chat-interface').classList.remove('hidden');
             document.getElementById('active-chat-interface').classList.add('flex');
             
@@ -1328,14 +1291,14 @@
             document.getElementById('active-chat-avatar').src = pfp;
             
             const historyEl = document.getElementById('chat-messages-history');
-            historyEl.innerHTML = `<div class="text-center my-4"><span class="text-[10px] uppercase font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full">Today</span></div>`;
+            historyEl.innerHTML = `<div class="text-center my-4"><span class="text-[10px] uppercase font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full border border-gray-800">Secure Session Started</span></div>`;
             
             setTimeout(() => {
                 historyEl.innerHTML += `
                     <div class="flex justify-start mb-4 chat-bubble">
-                        <div class="bg-[#1e293b] text-gray-200 text-sm p-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-md border border-gray-700">
-                            Hey there! I saw you on the Leaderboard. Love your SMC setup, let's connect and share setups! 📈
-                            <span class="block text-[10px] text-gray-500 mt-2 text-right">09:12 AM</span>
+                        <div class="bg-[#1e293b] text-gray-200 text-sm p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] border border-gray-700">
+                            Hey there! Let's connect and share setups! 📈
+                            <span class="block text-[10px] text-gray-500 mt-1 text-right">09:12 AM</span>
                         </div>
                     </div>`;
                 historyEl.scrollTop = historyEl.scrollHeight;
@@ -1361,9 +1324,9 @@
             
             historyEl.innerHTML += `
                 <div class="flex justify-end mb-4 chat-bubble">
-                    <div class="bg-blue-600 text-white text-sm p-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-[0_4px_15px_rgba(59,130,246,0.3)]">
+                    <div class="bg-blue-600 text-white text-sm p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-md">
                         ${msg}
-                        <span class="block text-[10px] text-blue-200 mt-2 text-right">Just now ✓</span>
+                        <span class="block text-[9px] text-blue-200 mt-1 text-right">Just now ✓</span>
                     </div>
                 </div>`;
                 
@@ -1408,18 +1371,21 @@
 
         function renderRulesUI() {
             const container = document.getElementById('rules-list-container');
-            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic">No rules added yet...</li>`; return; }
+            if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-gray-400 italic font-medium text-center mt-6">No rules added yet...</li>`; return; }
             container.innerHTML = "";
             currentRulesList.forEach((rule, idx) => {
-                container.innerHTML += `<li class="bg-gray-50 p-2 px-3 rounded border border-gray-200"><strong>Rule ${idx + 1}:</strong> ${rule}</li>`;
+                container.innerHTML += `<li class="bg-white p-3 rounded-lg border border-gray-200 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded">${idx + 1}</span>
+                    <span class="font-medium text-sm text-slate-700">${rule}</span>
+                </li>`;
             });
         }
 
         window.saveCompleteStrategyToDatabase = async function() {
-            if(currentRulesList.length === 0) { alert("Add at least one rule!"); return; }
+            if(currentRulesList.length === 0) { alert("Add at least one execution rule!"); return; }
             try {
                 await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
-                alert("Strategy saved successfully! 🚀");
+                alert("Vault Strategy Secured! 🚀");
                 document.getElementById('strategy-name-input').value = "";
                 document.getElementById('strategy-code-input').value = "";
                 currentRulesList = [];
@@ -1430,47 +1396,30 @@
 
         async function loadVisitorActivity() {
             const tableBody = document.getElementById('visitor-activity-table');
-            tableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-400">Loading activity logs...</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-gray-400 font-bold uppercase tracking-widest">Scanning network access logs...</td></tr>`;
             try {
                 const snapshot = await getDocs(collection(db, "visitors"));
                 tableBody.innerHTML = "";
                 snapshot.forEach((docSnap) => {
                     const v = docSnap.data();
                     tableBody.innerHTML += `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3 font-medium text-slate-800">${v.username}</td>
-                            <td class="p-3 text-gray-600">${v.loginTime}</td>
-                            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded ${v.status.includes('Master') || v.status.includes('Google') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
+                        <tr class="border-b border-gray-100 hover:bg-slate-50 transition">
+                            <td class="p-4 font-bold text-slate-800">${v.username}</td>
+                            <td class="p-4 text-gray-500 text-xs font-medium">${v.loginTime}</td>
+                            <td class="p-4"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded ${v.status.includes('Master') || v.status.includes('Google') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${v.status}</span></td>
                         </tr>`;
                 });
             } catch(e) { console.log(e); }
         }
 
-        window.sendWeeklyReportEmail = async function() {
-            let totalPl = globalTradesCache.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
-            let messageBody = `Weekly Trading Report for ${currentLoggedInUser}\nTotal Trades: ${globalTradesCache.length}\nNet P/L: $${totalPl.toFixed(2)}`;
-
-            const formData = new FormData();
-            formData.append("access_key", WEB3FORMS_KEY);
-            formData.append("subject", "Trade Vault - Weekly Performance Report");
-            formData.append("email", "fxarjun812@gmail.com");
-            formData.append("message", messageBody);
-
-            try {
-                const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
-                const data = await response.json();
-                if(data.success) { alert("Weekly report sent successfully via Web3Forms! 📧"); }
-                else { alert("Error: " + data.message); }
-            } catch(e) { alert("Network error: " + e.message); }
-        };
-
+        // NEW ASSET FIELD SUPPORT
         window.previewImage = function(inputId, labelId, varName) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(labelId);
             if(input.files && input.files[0]) {
                 const file = input.files[0];
                 label.innerText = "Attached: " + file.name;
-                label.className = "text-xs text-green-600 font-bold mt-1 truncate max-w-[150px]";
+                label.className = "text-[10px] text-blue-800 bg-blue-50 px-2 py-1 rounded font-bold mt-1.5 truncate max-w-[150px]";
                 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -1500,17 +1449,11 @@
             let actualPoints = 0;
             
             if (direction === 'buy') {
-                if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = exitPrice - entry;
-                } else {
-                    actualPoints = tp - entry;
-                }
+                if (exitPriceInput !== "" && !isNaN(exitPrice)) { actualPoints = exitPrice - entry; } 
+                else { actualPoints = tp - entry; }
             } else if (direction === 'sell') {
-                if (exitPriceInput !== "" && !isNaN(exitPrice)) {
-                    actualPoints = entry - exitPrice;
-                } else {
-                    actualPoints = entry - tp;
-                }
+                if (exitPriceInput !== "" && !isNaN(exitPrice)) { actualPoints = entry - exitPrice; } 
+                else { actualPoints = entry - tp; }
             }
 
             if (isNaN(actualPoints)) actualPoints = 0;
@@ -1539,13 +1482,13 @@
             if(matchedStrat && matchedStrat.rules && matchedStrat.rules.length > 0) {
                 matchedStrat.rules.forEach((rule, idx) => {
                     container.innerHTML += `
-                        <label class="flex items-center space-x-3 cursor-pointer p-2 bg-white rounded border border-gray-200">
+                        <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white rounded-lg border border-gray-200 shadow-sm hover:border-blue-400 transition">
                             <input type="checkbox" value="${rule}" class="rule-checkbox w-4 h-4 text-blue-600 rounded" checked />
-                            <span class="text-sm text-slate-700 font-medium">Rule ${idx + 1}: ${rule}</span>
+                            <span class="text-sm text-slate-800 font-medium">Rule ${idx + 1}: ${rule}</span>
                         </label>`;
                 });
             } else {
-                container.innerHTML = `<p class="text-sm text-gray-500 italic">No specific rules found for this strategy. You can proceed!</p>`;
+                container.innerHTML = `<div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200 text-center"><p class="text-xs text-yellow-700 font-bold">No specific rules found. You can proceed!</p></div>`;
             }
             document.getElementById('ruleVerificationModal').classList.remove('hidden');
         };
@@ -1558,8 +1501,11 @@
             const followedRules = [];
             checkboxes.forEach(cb => followedRules.push(cb.value));
 
+            // NEW ASSET FIELD CAPTURE
+            const assetValue = document.getElementById('trade-asset') ? document.getElementById('trade-asset').value.trim() || 'XAUUSD' : 'XAUUSD';
+
             const plValue = document.getElementById('trade-pl').value;
-            if(!plValue) { alert("P/L required!"); return; }
+            if(!plValue) { alert("P/L calculation required!"); return; }
 
             const directionValue = document.getElementById('trade-direction').value;
             const exitPriceValue = document.getElementById('trade-exit-price').value || "";
@@ -1569,6 +1515,7 @@
                 await addDoc(collection(db, "trades"), { 
                     userEmail: currentLoggedInUser, 
                     amount: parseFloat(plValue), 
+                    asset: assetValue,
                     strategy: document.getElementById('strategy-dropdown').value, 
                     direction: directionValue, 
                     lotSize: document.getElementById('trade-lotsize').value,
@@ -1584,7 +1531,7 @@
                     timestamp: new Date() 
                 });
 
-                alert("Trade saved successfully to your personal vault! ✅");
+                alert("Execution logged securely to the Vault! ✅");
                 
                 chartImgData = ""; rrImgData = "";
                 document.getElementById('chart-file-label').innerText = "Upload Chart";
@@ -1594,12 +1541,11 @@
 
                 await loadUserDataFromFirebase();
                 window.switchTab('dashboard');
-            } catch (e) { alert("Error: " + e.message); }
+            } catch (e) { alert("Error saving log: " + e.message); }
         };
 
-        // NEW: OPEN FULL-SCREEN LIGHTBOX
         window.openLightbox = function(imageSrc) {
-            if(!imageSrc || imageSrc.includes('undefined')) return;
+            if(!imageSrc || imageSrc.includes('undefined') || imageSrc === window.location.href) return;
             const lightbox = document.getElementById('imageLightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             lightboxImg.src = imageSrc;
@@ -1613,37 +1559,38 @@
             lightbox.classList.remove('flex');
         };
 
-        // ====== SMART HTML2CANVAS DOWNLOADER (Anti-Stretch) ======
+        // ANTI-STRETCH DOWNLOADER
         window.downloadReportImage = function() {
             const reportEl = document.getElementById('capture-trade-report');
             const closeBtn = document.getElementById('close-report-btn');
             const downloadBtn = document.getElementById('download-report-btn');
             
-            // Hide buttons temporarily so they don't appear in the downloaded image
             if (closeBtn) closeBtn.style.display = 'none';
             if (downloadBtn) downloadBtn.style.display = 'none';
             
-            // ANTI-STRETCH TRICK: Force a desktop-like container width momentarily
             const originalWidth = reportEl.style.width;
             const originalMaxWidth = reportEl.style.maxWidth;
-            reportEl.style.width = '800px';
-            reportEl.style.maxWidth = '800px';
+            const originalMargin = reportEl.style.margin;
             
-            // Delay to let browser reflow HTML before capturing
+            reportEl.style.width = '700px';
+            reportEl.style.maxWidth = '700px';
+            reportEl.style.margin = '0 auto';
+            
             setTimeout(() => {
                 html2canvas(reportEl, { 
                     scale: 2, 
                     backgroundColor: '#ffffff',
                     useCORS: true 
                 }).then(canvas => {
-                    // Restore original responsive widths immediately
                     reportEl.style.width = originalWidth;
                     reportEl.style.maxWidth = originalMaxWidth;
+                    reportEl.style.margin = originalMargin;
+                    
                     if (closeBtn) closeBtn.style.display = 'flex';
                     if (downloadBtn) downloadBtn.style.display = 'block';
                     
                     const link = document.createElement('a');
-                    link.download = `Trade_Report_${new Date().getTime()}.png`;
+                    link.download = `Vault_Execution_${new Date().getTime()}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     
@@ -1651,6 +1598,7 @@
                     console.error("Capture error: ", err);
                     reportEl.style.width = originalWidth;
                     reportEl.style.maxWidth = originalMaxWidth;
+                    reportEl.style.margin = originalMargin;
                     if (closeBtn) closeBtn.style.display = 'flex';
                     if (downloadBtn) downloadBtn.style.display = 'block';
                     alert("Capture failed.");
@@ -1658,10 +1606,12 @@
             }, 100);
         };
 
-        // ====== RESTORED OG TRADE REPORT WITH OBJECT-CONTAIN & LIGHTBOX ======
+        // OG TRADE REPORT FIX (IMAGES + ASSET)
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
+            
+            document.getElementById('rep-asset').innerText = trade.asset || 'XAUUSD';
             
             const isBuy = trade.direction === 'buy';
             document.getElementById('rep-direction').innerText = isBuy ? 'BUY' : 'SELL';
@@ -1675,7 +1625,7 @@
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
             plEl.className = "text-xl md:text-2xl font-black " + (trade.amount >= 0 ? "text-green-500" : "text-red-500");
 
-            // EXACT OG Style but with object-contain to prevent crop and click to zoom
+            // Fixed Image Tags that are hidden/shown based on content
             const chartImg = document.getElementById('rep-chart-img');
             const chartNoImg = document.getElementById('rep-chart-noimg');
             if(trade.chartImg && trade.chartImg.length > 50) {
@@ -1704,11 +1654,12 @@
             rulesListContainer.innerHTML = "";
             if(trade.rulesFollowed && trade.rulesFollowed.length > 0) {
                 trade.rulesFollowed.forEach((rule) => {
-                    rulesListContainer.innerHTML += `<li class="flex items-center text-slate-800 font-medium">✅ ${rule}</li>`;
+                    rulesListContainer.innerHTML += `<li class="flex items-start gap-2 bg-white p-2.5 rounded border border-gray-100"><span class="bg-blue-100 text-blue-600 rounded-full p-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></span><span class="text-sm font-bold text-slate-700">${rule}</span></li>`;
                 });
             } else {
-                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No rule checklist recorded.</li>`;
+                rulesListContainer.innerHTML = `<li class="italic text-gray-400 text-sm">No rule checklist recorded.</li>`;
             }
+
             document.getElementById('tradeReportModal').classList.remove('hidden');
             document.getElementById('tradeReportModal').classList.add('flex');
         };
@@ -1723,6 +1674,7 @@
             
             const excelData = globalTradesCache.map(t => ({
                 Date: t.date || "-",
+                Asset: t.asset || "XAUUSD",
                 Strategy: t.strategy || "-",
                 Direction: t.direction === 'sell' ? 'SELL' : 'BUY',
                 Lot_Size: t.lotSize || "-",
@@ -1738,11 +1690,13 @@
             const worksheet = XLSX.utils.json_to_sheet(excelData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
-            XLSX.writeFile(workbook, "TradeVault_Excel_Data.xlsx");
+            XLSX.writeFile(workbook, "Vault_Audit.xlsx");
         };
 
         window.downloadPDF = async function() {
             if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
+            
+            alert("Generating PDF Report...");
             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1758,22 +1712,19 @@
             
             doc.setFontSize(18);
             doc.setFont("helvetica", "bold");
-            doc.text("Trade Vault Pro - Detailed Trade Report", 14, 20);
+            doc.text("Trade Vault Pro - Master Audit", 14, 20);
             
             let yPos = 30;
             
             for (let i = 0; i < globalTradesCache.length; i++) {
                 const t = globalTradesCache[i];
                 
-                if (yPos > 240) {
-                    doc.addPage();
-                    yPos = 20;
-                }
+                if (yPos > 240) { doc.addPage(); yPos = 20; }
                 
                 doc.setFontSize(12);
                 doc.setFont("helvetica", "bold");
                 doc.setTextColor(30, 41, 59);
-                doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
+                doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Asset: ${t.asset || 'XAUUSD'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
                 
                 yPos += 7;
                 doc.setFontSize(10);
@@ -1806,7 +1757,7 @@
                         height1 = maxImgWidth * ratio;
                         doc.addImage(t.chartImg, 14, yPos + 3, maxImgWidth, height1);
                         hasImages = true;
-                    } catch(e) { console.log("Chart render error", e); }
+                    } catch(e) { console.log(e); }
                 }
                 
                 if (t.rrImg && t.rrImg.includes("data:image")) {
@@ -1817,21 +1768,36 @@
                         height2 = maxImgWidth * ratio;
                         doc.addImage(t.rrImg, 105, yPos + 3, maxImgWidth, height2);
                         hasImages = true;
-                    } catch(e) { console.log("RR render error", e); }
+                    } catch(e) { console.log(e); }
                 }
                 
-                if (hasImages) {
-                    yPos += Math.max(height1, height2) + 15;
-                } else {
-                    yPos += 5;
-                }
+                if (hasImages) yPos += Math.max(height1, height2) + 15;
+                else yPos += 5;
                 
                 doc.setDrawColor(200, 200, 200);
                 doc.line(14, yPos, 196, yPos);
                 yPos += 10;
             }
             
-            doc.save("TradeVault_Detailed_Report.pdf");
+            doc.save("Vault_Audit.pdf");
+        };
+
+        window.sendWeeklyReportEmail = async function() {
+            let totalPl = globalTradesCache.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+            let messageBody = `Weekly Trading Report for ${currentLoggedInUser}\nTotal Trades: ${globalTradesCache.length}\nNet P/L: $${totalPl.toFixed(2)}`;
+
+            const formData = new FormData();
+            formData.append("access_key", WEB3FORMS_KEY);
+            formData.append("subject", "Trade Vault - Performance Report");
+            formData.append("email", "fxarjun812@gmail.com");
+            formData.append("message", messageBody);
+
+            try {
+                const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
+                const data = await response.json();
+                if(data.success) alert("Report sent to Inbox! 📧");
+                else alert("Error: " + data.message);
+            } catch(e) { alert("Network error: " + e.message); }
         };
     </script>
 </body>
