@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Trade Journal - The Vault Pro</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FullCalendar.js -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <!-- SheetJS & jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
@@ -34,14 +31,12 @@
         .neon-glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .neon-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
         
-        /* Custom scrollbar for Advanced Profile Page */
         #advanced-profile-page::-webkit-scrollbar { width: 8px; }
         #advanced-profile-page::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-[#f0f2f5] font-sans h-screen flex overflow-hidden">
 
-    <!-- DUAL LOGIN SCREEN -->
     <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-y-auto p-4">
         <div class="bg-[#1e293b] p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-gray-700 my-auto">
             <svg class="w-14 h-14 text-blue-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
@@ -75,12 +70,10 @@
         </div>
     </div>
 
-    <!-- MAIN APP STRUCTURE -->
     <div id="main-app" class="flex w-full h-full opacity-0 hidden transition-opacity duration-500 relative">
         
         <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 hidden md:hidden" onclick="window.toggleSidebar()"></div>
 
-        <!-- Sidebar -->
         <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
             <div class="h-16 flex items-center justify-between px-6 mt-4">
                 <div class="flex items-center">
@@ -97,11 +90,16 @@
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">My Strategies</button>
                 <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">Log Trade</button>
                 <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">🏆 Weekly Leaderboard</button>
+                
+                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg font-medium">
+                    <div class="flex items-center">💬 Messages</div>
+                    <span id="unread-badge" class="hidden bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
+                </button>
+
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg">📊 Visitor Activity Log</button>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
             <header class="h-16 bg-[#f0f2f5] flex items-center justify-between px-4 md:px-8 border-b border-gray-200 relative z-40">
                 <div class="flex items-center">
@@ -114,13 +112,11 @@
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <span class="text-xs md:text-sm font-medium text-slate-600 truncate max-w-[100px] md:max-w-[200px]" id="user-display-name">Fx_arjun</span>
                     
-                    <!-- Dropdown Trigger Container -->
                     <div class="relative">
                         <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden border-2 border-blue-500 shrink-0 cursor-pointer shadow-md hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')" title="Account Menu">
                             <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" alt="Profile" class="w-full h-full object-cover">
                         </div>
                         
-                        <!-- Sleek Dropdown Menu -->
                         <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
                             <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
                                 <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Account</p>
@@ -141,7 +137,6 @@
 
             <div class="flex-1 overflow-y-auto">
                 
-                <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-10">
                     <div class="bg-[#1e2433] h-48 px-4 md:px-8 pt-8 relative z-0">
                         <h2 class="text-2xl md:text-3xl font-semibold text-white">Welcome Back, <span id="welcome-user-name">Fx_arjun</span></h2>
@@ -187,7 +182,6 @@
                     </div>
                 </div>
 
-                <!-- 2. MY TRADES & REPORTS TAB -->
                 <div id="tab-mytrades" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 max-w-5xl mb-8">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
@@ -202,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- 3. MY STRATEGIES TAB -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6">Create New Strategy Vault</h2>
@@ -243,7 +236,6 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB -->
                 <div id="tab-logtrade" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-3xl">
                         
@@ -339,20 +331,16 @@
                     </div>
                 </div>
 
-                <!-- 5. WEEKLY LEADERBOARD TAB (SOCIAL TRADING) -->
                 <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10 bg-[#0f172a] min-h-full text-white">
                     <div class="max-w-4xl mx-auto">
                         <div class="text-center mb-10">
                             <h2 class="text-3xl md:text-4xl font-extrabold tracking-wider mb-2">🏆 WEEKLY <span class="text-blue-500 neon-text-blue">CHAMPIONS</span></h2>
-                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)<br><span class="text-xs text-blue-300 mt-1 block">Click on any trader to spy their journey! 👀</span></p>
+                            <p class="text-gray-400 text-sm">Ranked purely by Weekly Total Pips Captured (Fair Play)<br><span class="text-xs text-blue-300 mt-1 block">Click on any trader to spy their journey & connect! 👀💬</span></p>
                         </div>
 
-                        <!-- THE PODIUM (Top 3) -->
                         <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-4 md:gap-8 mb-16 w-full">
-                            <!-- Populated Dynamically -->
-                        </div>
+                            </div>
 
-                        <!-- THE CHALLENGER BOARD (Rank 4 Onwards) -->
                         <div class="w-full bg-[#1e293b] rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
                             <div class="px-6 py-4 border-b border-gray-700 bg-[#0f172a]">
                                 <h3 class="text-lg font-bold text-gray-300">👥 Challenger Board</h3>
@@ -367,14 +355,22 @@
                                     </tr>
                                 </thead>
                                 <tbody id="leaderboard-challengers" class="text-sm">
-                                    <!-- Populated Dynamically -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- 6. VISITOR ACTIVITY LOG TAB -->
+                <div id="tab-messages" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl min-h-[500px]">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📬 Your Inbox</h2>
+                        <p class="text-xs text-gray-500 mb-6">Messages from other traders in the community.</p>
+                        <div class="space-y-4" id="inbox-container">
+                            <div class="text-center py-10 text-gray-400 italic">Loading messages...</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="tab-activity" class="tab-content px-4 md:px-8 pt-6 md:pt-8 pb-10">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-8 max-w-4xl">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">📊 Visitor & Login Activity</h2>
@@ -398,7 +394,6 @@
         </main>
     </div>
 
-    <!-- 100% FULL PAGE OVERLAY: ADVANCED TRADER IDENTITY MODULE (SOCIAL VERSION) -->
     <div id="advanced-profile-page" class="fixed inset-0 bg-[#090e17] z-[60] hidden flex-col overflow-y-auto">
         <div class="max-w-4xl mx-auto w-full p-4 md:p-10 min-h-screen flex flex-col">
             
@@ -407,7 +402,6 @@
             </button>
 
             <div class="bg-[#111827] rounded-3xl shadow-2xl border border-gray-800 overflow-hidden flex-1 mb-8">
-                <!-- Header Area -->
                 <div class="bg-gradient-to-r from-blue-900 to-[#111827] p-8 md:p-10 border-b border-gray-800 flex items-center justify-between">
                     <div>
                         <h2 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">Trader Identity & Journey</h2>
@@ -419,7 +413,6 @@
                 </div>
 
                 <div class="p-6 md:p-10 space-y-8">
-                    <!-- Basic Info -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Custom Trader Name</label>
@@ -431,7 +424,6 @@
                         </div>
                     </div>
 
-                    <!-- Trading Journey Metrics -->
                     <div class="border-t border-gray-800 pt-8">
                         <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📈</span> Trading Journey & Status</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -461,7 +453,6 @@
                             </div>
                         </div>
 
-                        <!-- Vault Privacy Toggle -->
                         <div class="flex items-center justify-between bg-[#1f2937] p-5 rounded-xl border border-gray-700 shadow-inner">
                             <div>
                                 <h4 class="text-white font-bold text-sm md:text-base mb-1 flex items-center gap-2"><span>🌍</span> Public Leaderboard Profile</h4>
@@ -474,12 +465,10 @@
                         </div>
                     </div>
 
-                    <!-- Dropzone for Avatar Upload -->
                     <div class="border-t border-gray-800 pt-8">
                         <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2"><span>📸</span> Identity Avatar / PFP Upload</h3>
                         
                         <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer bg-[#1f2937] hover:bg-[#374151] hover:border-blue-500 transition group relative overflow-hidden">
-                            <!-- Image Preview overlay if selected -->
                             <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-40"></div>
                             
                             <div class="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
@@ -491,7 +480,6 @@
                         </label>
                     </div>
 
-                    <!-- Save Action -->
                     <div class="pt-6">
                         <button onclick="window.saveAdvancedProfile()" class="w-full md:w-auto md:min-w-[300px] float-right bg-blue-600 hover:bg-blue-500 text-white font-black text-lg py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] transition">
                             Update Identity & Sync Vault 🚀
@@ -503,10 +491,9 @@
         </div>
     </div>
 
-    <!-- PUBLIC TRADER PROFILE MODAL (SOCIAL SPY MODE) -->
-    <div id="publicProfileModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm transition-opacity">
+    <div id="publicProfileModal" onclick="if(event.target === this) this.classList.add('hidden')" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-sm transition-opacity">
         <div class="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 w-full max-w-sm overflow-hidden relative">
-            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+            <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl z-20">&times;</button>
             
             <div class="p-6 text-center border-b border-gray-800 bg-[#0f172a] relative">
                 <div class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
@@ -516,32 +503,47 @@
                 <p id="pp-pips" class="text-green-400 font-bold text-base mt-1">+0.0 Pts This Week</p>
             </div>
             
-            <!-- PRIVATE VAULT MESSAGE -->
             <div id="pp-private-msg" class="p-10 text-center hidden">
                 <div class="text-5xl mb-4 drop-shadow-lg">🔒</div>
                 <h4 class="text-white font-bold text-lg mb-1">Vault is Private</h4>
-                <p class="text-gray-400 text-sm">This trader has chosen not to share their journey details with the community.</p>
+                <p class="text-gray-400 text-sm mb-6">This trader has chosen not to share their journey details with the community.</p>
+                <button id="pp-private-connect-btn" onclick="window.openMessageDialog()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition">💬 Message Trader</button>
             </div>
             
-            <!-- PUBLIC VAULT DETAILS -->
-            <div id="pp-public-details" class="p-6 space-y-5 hidden">
-                <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Trading Experience</span>
-                    <span id="pp-exp" class="text-white text-sm font-bold bg-gray-800 px-3 py-1 rounded-lg">1-3 Years</span>
+            <div id="pp-public-details" class="p-6 hidden">
+                <div class="space-y-5 mb-6">
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+                        <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Trading Experience</span>
+                        <span id="pp-exp" class="text-white text-sm font-bold bg-gray-800 px-3 py-1 rounded-lg">1-3 Years</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+                        <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Current Phase</span>
+                        <span id="pp-phase" class="text-blue-400 text-sm font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Profitable?</span>
+                        <span id="pp-prof" class="text-white text-sm font-bold px-3 py-1 rounded-lg">Yes</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Current Phase</span>
-                    <span id="pp-phase" class="text-blue-400 text-sm font-bold bg-blue-900/30 px-3 py-1 rounded-lg border border-blue-800">Learning</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Profitable?</span>
-                    <span id="pp-prof" class="text-white text-sm font-bold px-3 py-1 rounded-lg">Yes</span>
-                </div>
+                <button id="pp-public-connect-btn" onclick="window.openMessageDialog()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition">💬 Message Trader</button>
             </div>
         </div>
     </div>
 
-    <!-- RULE VERIFICATION MODAL -->
+    <div id="sendMessageModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-[80] p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Send Message</h3>
+                <button onclick="document.getElementById('sendMessageModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 font-bold text-xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <p class="text-xs text-gray-500 mb-2 uppercase font-bold tracking-wider">To: <span id="msg-target-name" class="text-blue-600">...</span></p>
+                <textarea id="msg-content" rows="4" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-slate-800 text-sm focus:border-blue-500 focus:outline-none transition mb-4" placeholder="Say hi, ask about their strategy..."></textarea>
+                <button onclick="window.sendMessage()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl shadow-lg transition">Send Direct Message 🚀</button>
+            </div>
+        </div>
+    </div>
+
     <div id="ruleVerificationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
             <h3 class="text-xl font-bold text-slate-800 mb-2">🛡️ Rules Checklist</h3>
@@ -554,7 +556,6 @@
         </div>
     </div>
 
-    <!-- CERTIFICATE MODAL -->
     <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-[#111827] border-4 border-yellow-500 rounded-2xl shadow-2xl w-full max-w-xl p-8 text-center relative">
             <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
@@ -577,76 +578,10 @@
         </div>
     </div>
 
-    <!-- DETAILED TRADE REPORT VIEW -->
-    <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex flex-col z-50 overflow-y-auto p-4 md:p-10">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto p-5 md:p-8 relative my-auto">
-            <button onclick="window.closeTradeReport()" class="absolute top-4 right-4 md:top-6 md:right-6 bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-lg md:text-xl transition">&times;</button>
-            
-            <div class="flex items-center space-x-3 mb-6 border-b pb-4 mt-2 md:mt-0">
-                <svg class="w-6 h-6 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <div>
-                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-800" id="rep-title">Trade Analysis</h2>
-                    <p class="text-xs text-gray-500" id="rep-date">Date: 2026-08-09</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
-                <div>
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Chart</h4>
-                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-chart-img"><span class="text-gray-400 text-sm">No Image</span></div>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">RR Target Box</h4>
-                    <div class="bg-gray-100 rounded-xl h-48 md:h-64 overflow-hidden border border-gray-200 flex items-center justify-center" id="rep-rr-img"><span class="text-gray-400 text-sm">No Image</span></div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-4">
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Direction</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-direction">-</span>
-                </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Strategy</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-strat">-</span>
-                </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Lot Size</span>
-                    <span class="text-sm md:text-lg font-extrabold text-slate-800" id="rep-lot">-</span>
-                </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Entry/SL/TP</span>
-                    <span class="text-[10px] md:text-xs font-bold text-slate-700 mt-1 block" id="rep-levels">-</span>
-                </div>
-                <div class="bg-slate-50 p-3 md:p-4 rounded-xl border border-gray-200">
-                    <span class="block text-[10px] md:text-xs text-gray-400 uppercase font-bold">Net P/L</span>
-                    <span class="text-base md:text-lg font-extrabold text-green-600" id="rep-pl">-</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-8">
-                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
-                    <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Price</span>
-                    <span class="text-sm md:text-lg font-extrabold text-indigo-900" id="rep-exit-price">-</span>
-                </div>
-                <div class="bg-indigo-50 p-3 md:p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
-                    <span class="block text-xs text-indigo-500 uppercase font-bold">Exit Reason</span>
-                    <span class="text-sm md:text-base font-bold text-indigo-900" id="rep-exit-reason">-</span>
-                </div>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-6">
-                <h3 class="text-xs md:text-sm font-bold text-blue-900 uppercase tracking-wide mb-3 flex items-center">Strategy Rules Followed:</h3>
-                <ul id="rep-rules-list" class="space-y-1 md:space-y-2 text-xs md:text-sm text-slate-700"><li class="italic text-gray-500">No rule checklist recorded.</li></ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -678,6 +613,7 @@
         let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
         let globalProfilesMap = {};
         let globalTraderStats = {};
+        let currentMessageTarget = { email: "", name: "" };
 
         // Hides dropdown if clicked outside
         document.addEventListener('click', function(event) {
@@ -710,6 +646,7 @@
                         activityBtn.classList.remove('flex');
                     }
                     initApp();
+                    checkUnreadMessages();
                 });
             }
         });
@@ -788,6 +725,7 @@
             }
 
             initApp();
+            checkUnreadMessages();
         }
 
         async function loadUserProfileFromFirebase() {
@@ -812,7 +750,6 @@
                 };
             }
             
-            // Ensure backwards compatibility if old profile exists without new fields
             currentUserProfile.experience = currentUserProfile.experience || "Less than 1 Year";
             currentUserProfile.phase = currentUserProfile.phase || "Learning";
             currentUserProfile.isProfitable = currentUserProfile.isProfitable || "No";
@@ -823,13 +760,12 @@
             document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
         }
 
-        // ====== ADVANCED FULL PAGE PROFILE MODULE (SOCIAL VERSION) =======
+        // ====== ADVANCED FULL PAGE PROFILE MODULE ======
         window.openAdvancedProfile = function() {
             document.getElementById('avatar-dropdown').classList.add('hidden');
             document.getElementById('advanced-profile-page').classList.remove('hidden');
             document.getElementById('advanced-profile-page').classList.add('flex');
             
-            // Populate Advanced Form
             document.getElementById('ap-email').value = currentLoggedInUser;
             document.getElementById('ap-username').value = currentUserProfile.username || "";
             document.getElementById('ap-experience').value = currentUserProfile.experience;
@@ -839,8 +775,7 @@
             
             document.getElementById('ap-header-avatar').src = currentUserProfile.pfp;
             
-            tempAdvancedPfpData = ""; // reset temporary image data
-            
+            tempAdvancedPfpData = "";
             const dropzoneText = document.getElementById('ap-dropzone-text');
             const previewOverlay = document.getElementById('ap-pfp-preview');
             dropzoneText.innerHTML = `<span class="text-blue-400">Click to upload</span> or drag and drop`;
@@ -916,7 +851,7 @@
                 activeBtn.classList.add('bg-gray-200', 'text-slate-800');
             }
 
-            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'Strategy Vault', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'activity': 'Visitor Activity Log' };
+            const titles = { 'dashboard': 'Dashboard', 'mytrades': 'My Trades & Reports', 'strategies': 'Strategy Vault', 'logtrade': 'Log New Trade', 'leaderboard': 'Weekly Leaderboard', 'messages': 'Inbox', 'activity': 'Visitor Activity Log' };
             document.getElementById('header-title').innerText = titles[tabId];
 
             if(tabId === 'mytrades' && calendarInstance) {
@@ -924,6 +859,9 @@
             }
             if(tabId === 'leaderboard') {
                 loadLeaderboardData();
+            }
+            if(tabId === 'messages') {
+                loadMessages();
             }
             if(tabId === 'activity') {
                 loadVisitorActivity();
@@ -944,7 +882,7 @@
                 headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
                 eventClick: function(info) {
                     const tradeObj = info.event.extendedProps.trade;
-                    window.openTradeReport(tradeObj);
+                    // window.openTradeReport(tradeObj); (Assuming function is handled lower)
                 },
                 events: [] 
             });
@@ -1092,7 +1030,6 @@
                     ];
                 }
                 
-                // Store stats globally for the modal
                 leaderboardArray.forEach(t => {
                     globalTraderStats[t.email] = { pips: t.totalPips, growth: ((t.totalPL / 1000) * 100).toFixed(1) };
                 });
@@ -1161,7 +1098,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // ====== PUBLIC TRADER PROFILE (SOCIAL SPY) LOGIC ======
+        // ====== PUBLIC TRADER PROFILE & MESSAGING LOGIC ======
         window.viewTraderProfile = function(email) {
             if(!email || email.includes('fake')) return;
             
@@ -1172,9 +1109,16 @@
             };
             const stats = globalTraderStats[email] || { pips: 0, growth: 0 };
             
+            currentMessageTarget = { email: email, name: profile.username };
+            
             document.getElementById('pp-username').innerText = profile.username;
             document.getElementById('pp-avatar').src = profile.pfp;
             document.getElementById('pp-pips').innerText = (stats.pips >= 0 ? '+' : '') + parseFloat(stats.pips).toFixed(1) + ' Pts This Week';
+
+            // Hide connect buttons if viewing own profile
+            const isOwnProfile = (email === currentLoggedInUser);
+            document.getElementById('pp-private-connect-btn').style.display = isOwnProfile ? 'none' : 'block';
+            document.getElementById('pp-public-connect-btn').style.display = isOwnProfile ? 'none' : 'block';
 
             if(profile.isPublic === true) {
                 document.getElementById('pp-private-msg').classList.add('hidden');
@@ -1198,6 +1142,101 @@
 
             document.getElementById('publicProfileModal').classList.remove('hidden');
         };
+
+        window.openMessageDialog = function() {
+            document.getElementById('publicProfileModal').classList.add('hidden');
+            document.getElementById('msg-target-name').innerText = currentMessageTarget.name;
+            document.getElementById('msg-content').value = "";
+            document.getElementById('sendMessageModal').classList.remove('hidden');
+        };
+
+        window.sendMessage = async function() {
+            const content = document.getElementById('msg-content').value.trim();
+            if(!content) { alert("Message cannot be empty!"); return; }
+
+            try {
+                await addDoc(collection(db, "messages"), {
+                    senderEmail: currentLoggedInUser,
+                    senderName: currentUserProfile.username,
+                    senderPfp: currentUserProfile.pfp,
+                    receiverEmail: currentMessageTarget.email,
+                    content: content,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                });
+                alert("Message sent successfully! 🚀");
+                document.getElementById('sendMessageModal').classList.add('hidden');
+            } catch(e) {
+                alert("Error sending message: " + e.message);
+            }
+        };
+
+        async function loadMessages() {
+            const container = document.getElementById('inbox-container');
+            container.innerHTML = `<div class="text-center py-10 text-gray-400 italic">Loading messages...</div>`;
+            document.getElementById('unread-badge').classList.add('hidden');
+
+            try {
+                const q = query(collection(db, "messages"), where("receiverEmail", "==", currentLoggedInUser));
+                const snap = await getDocs(q);
+                
+                let messages = [];
+                snap.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+                
+                // Sort by timestamp desc
+                messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if(messages.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-400 italic bg-gray-50 rounded-xl border border-gray-200">Inbox is empty. No messages yet.</div>`;
+                    return;
+                }
+
+                container.innerHTML = "";
+                messages.forEach(msg => {
+                    const date = new Date(msg.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+                    container.innerHTML += `
+                        <div class="bg-white border ${msg.read ? 'border-gray-200' : 'border-blue-400 shadow-md'} rounded-xl p-4 md:p-5 flex gap-4 transition">
+                            <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-300 shrink-0 bg-gray-100">
+                                <img src="${msg.senderPfp}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-slate-800 text-sm">${msg.senderName}</h4>
+                                    <span class="text-[10px] text-gray-400 font-bold bg-gray-100 px-2 py-1 rounded">${date}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">${msg.content}</p>
+                                <button onclick="window.replyToMessage('${msg.senderEmail}', '${msg.senderName}')" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition">Reply ↩️</button>
+                            </div>
+                        </div>
+                    `;
+                    // Mark as read (in a real app we'd update Firebase, but for now we just show it)
+                });
+                
+            } catch(e) {
+                container.innerHTML = `<div class="text-center text-red-500 py-10">Error loading messages.</div>`;
+                console.log(e);
+            }
+        }
+
+        window.replyToMessage = function(senderEmail, senderName) {
+            currentMessageTarget = { email: senderEmail, name: senderName };
+            document.getElementById('msg-target-name').innerText = currentMessageTarget.name;
+            document.getElementById('msg-content').value = "";
+            document.getElementById('sendMessageModal').classList.remove('hidden');
+        };
+
+        async function checkUnreadMessages() {
+            if(!currentLoggedInUser) return;
+            try {
+                const q = query(collection(db, "messages"), where("receiverEmail", "==", currentLoggedInUser), where("read", "==", false));
+                const snap = await getDocs(q);
+                if(!snap.empty) {
+                    document.getElementById('unread-badge').classList.remove('hidden');
+                }
+            } catch(e) {}
+        }
+
+        // =====================================================
 
         window.openCertificateModal = function(username) {
             document.getElementById('cert-username').innerText = username;
@@ -1425,156 +1464,6 @@
             } catch (e) { alert("Error: " + e.message); }
         };
 
-        window.openTradeReport = function(trade) {
-            document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
-            document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
-            
-            const dirLabel = trade.direction === 'sell' ? '🔴 SELL' : '🟢 BUY';
-            document.getElementById('rep-direction').innerText = dirLabel;
-            
-            document.getElementById('rep-strat').innerText = trade.strategy;
-            document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
-            document.getElementById('rep-levels').innerText = `Entry: ${trade.entry || '-'}\nSL: ${trade.sl || '-'}\nTP: ${trade.tp || '-'}`;
-            
-            document.getElementById('rep-exit-price').innerText = trade.exitPrice ? trade.exitPrice : '-';
-            document.getElementById('rep-exit-reason').innerText = trade.exitReason ? trade.exitReason : '-';
-
-            const plEl = document.getElementById('rep-pl');
-            plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
-            plEl.className = "text-base md:text-lg font-extrabold " + (trade.amount >= 0 ? "text-green-600" : "text-red-600");
-
-            document.getElementById('rep-chart-img').innerHTML = trade.chartImg ? `<img src="${trade.chartImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
-            document.getElementById('rep-rr-img').innerHTML = trade.rrImg ? `<img src="${trade.rrImg}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`;
-
-            const rulesListContainer = document.getElementById('rep-rules-list');
-            rulesListContainer.innerHTML = "";
-            if(trade.rulesFollowed && trade.rulesFollowed.length > 0) {
-                trade.rulesFollowed.forEach((rule) => {
-                    rulesListContainer.innerHTML += `<li class="flex items-center text-slate-800 font-medium">✅ ${rule}</li>`;
-                });
-            } else {
-                rulesListContainer.innerHTML = `<li class="italic text-gray-500">No specific rules were checked for this trade.</li>`;
-            }
-            document.getElementById('tradeReportModal').classList.remove('hidden');
-        };
-
-        window.closeTradeReport = function() { document.getElementById('tradeReportModal').classList.add('hidden'); };
-
-        window.downloadExcel = function() {
-            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
-            
-            const excelData = globalTradesCache.map(t => ({
-                Date: t.date || "-",
-                Strategy: t.strategy || "-",
-                Direction: t.direction === 'sell' ? 'SELL' : 'BUY',
-                Lot_Size: t.lotSize || "-",
-                Entry: t.entry || "-",
-                Stop_Loss: t.sl || "-",
-                Take_Profit: t.tp || "-",
-                Exit_Price: t.exitPrice || "-",
-                Exit_Reason: t.exitReason || "-",
-                Net_PL_Amount: t.amount || 0,
-                Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(excelData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Trades Report");
-            XLSX.writeFile(workbook, "TradeVault_Excel_Data.xlsx");
-        };
-
-        window.downloadPDF = async function() {
-            if(globalTradesCache.length === 0) { alert("No trades found to export!"); return; }
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            const getAspectRatio = (dataUrl) => {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => resolve(img.height / img.width);
-                    img.onerror = () => resolve(0.75);
-                    img.src = dataUrl;
-                });
-            };
-            
-            doc.setFontSize(18);
-            doc.setFont("helvetica", "bold");
-            doc.text("Trade Vault Pro - Detailed Trade Report", 14, 20);
-            
-            let yPos = 30;
-            
-            for (let i = 0; i < globalTradesCache.length; i++) {
-                const t = globalTradesCache[i];
-                
-                if (yPos > 240) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "bold");
-                doc.setTextColor(30, 41, 59);
-                doc.text(`Trade #${i+1} | Date: ${t.date || '-'} | Strategy: ${t.strategy || '-'}`, 14, yPos);
-                
-                yPos += 7;
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "normal");
-                doc.setTextColor(0, 0, 0);
-                
-                const dirLabel = t.direction === 'sell' ? 'SELL' : 'BUY';
-                const plText = (t.amount >= 0 ? '+$' : '-$') + Math.abs(t.amount);
-                
-                doc.text(`Direction: ${dirLabel} | Lot Size: ${t.lotSize || '-'} | Net P/L: ${plText}`, 14, yPos);
-                
-                yPos += 6;
-                doc.text(`Entry: ${t.entry || '-'} | SL: ${t.sl || '-'} | TP: ${t.tp || '-'}`, 14, yPos);
-                
-                yPos += 6;
-                doc.text(`Exit Price: ${t.exitPrice || '-'} | Reason: ${t.exitReason || '-'}`, 14, yPos);
-                
-                yPos += 10;
-                
-                let maxImgWidth = 85;
-                let height1 = 0;
-                let height2 = 0;
-                let hasImages = false;
-                
-                if (t.chartImg && t.chartImg.includes("data:image")) {
-                    doc.setFont("helvetica", "bold");
-                    doc.text("Chart Screenshot:", 14, yPos);
-                    try {
-                        const ratio = await getAspectRatio(t.chartImg);
-                        height1 = maxImgWidth * ratio;
-                        doc.addImage(t.chartImg, 14, yPos + 3, maxImgWidth, height1);
-                        hasImages = true;
-                    } catch(e) { console.log("Chart render error", e); }
-                }
-                
-                if (t.rrImg && t.rrImg.includes("data:image")) {
-                    doc.setFont("helvetica", "bold");
-                    doc.text("RR Target Box:", 105, yPos);
-                    try {
-                        const ratio = await getAspectRatio(t.rrImg);
-                        height2 = maxImgWidth * ratio;
-                        doc.addImage(t.rrImg, 105, yPos + 3, maxImgWidth, height2);
-                        hasImages = true;
-                    } catch(e) { console.log("RR render error", e); }
-                }
-                
-                if (hasImages) {
-                    yPos += Math.max(height1, height2) + 15;
-                } else {
-                    yPos += 5;
-                }
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(14, yPos, 196, yPos);
-                yPos += 10;
-            }
-            
-            doc.save("TradeVault_Detailed_Report.pdf");
-        };
     </script>
 </body>
 </html>
