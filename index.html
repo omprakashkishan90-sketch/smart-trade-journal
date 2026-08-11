@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Vault Pro - SaaS Edition</title>
+    <title>Trade Vault Pro - SaaS Elite Edition</title>
     
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,55 +15,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #1e293b; }
+        body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
         
         .circle-chart {
-            width: 90px; height: 90px; border-radius: 50%;
-            background: conic-gradient(#3b82f6 0% 0%, #e2e8f0 0% 100%);
+            width: 100px; height: 100px; border-radius: 50%;
+            background: conic-gradient(#2563eb 0% 0%, #e2e8f0 0% 100%);
             display: flex; align-items: center; justify-content: center;
             transition: background 0.8s ease-in-out;
         }
         .circle-inner {
-            width: 72px; height: 72px; border-radius: 50%;
+            width: 80px; height: 80px; border-radius: 50%;
             background-color: white; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
         
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tab-content.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .fc-event { cursor: pointer; text-align: center; font-weight: 700; padding: 4px 8px; border: none !important; border-radius: 8px !important; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .fc-event { cursor: pointer; text-align: center; font-weight: 700; padding: 4px 8px; border: none !important; border-radius: 8px !important; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .fc-daygrid-day:hover { background-color: #f1f5f9; cursor: pointer; }
         
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+            0% { opacity: 0; transform: scale(0.96) translateY(6px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .chat-bubble { animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .chat-bubble { animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     </style>
 </head>
 <body class="selection:bg-blue-100 selection:text-blue-900">
 
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="absolute inset-0 bg-[#0f172a] z-[100] flex flex-col items-center justify-center transition-opacity duration-700 overflow-y-auto p-4">
-        <div class="bg-white p-8 md:p-10 rounded-[28px] shadow-2xl text-center max-w-md w-full border border-slate-100 relative z-10">
-            <div class="w-14 h-14 bg-slate-900 rounded-2xl mx-auto flex items-center justify-center mb-5 text-white shadow-lg">
-                <svg class="w-7 h-7 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+    <div id="login-screen" class="absolute inset-0 bg-[#090d16] z-[100] flex flex-col items-center justify-center transition-opacity duration-700 overflow-y-auto p-4">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+            <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
+        </div>
+        
+        <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl text-center max-w-md w-full border border-slate-100 relative z-10">
+            <div class="w-16 h-16 bg-slate-900 rounded-2xl mx-auto flex items-center justify-center mb-5 text-white shadow-xl">
+                <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
             </div>
-            <h1 class="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Trade Vault Pro</h1>
-            <p class="text-slate-500 text-xs mb-8 font-medium">Enterprise Analytics & Journal Platform</p>
+            <h1 class="text-2xl font-black text-slate-900 mb-1 tracking-tight">Trade Vault Pro</h1>
+            <p class="text-slate-400 text-xs mb-8 font-semibold">Smart Trading Journal & Analytics Suite</p>
             
-            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-100 transition shadow-sm mb-6">
+            <button onclick="window.loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-slate-50 border border-slate-200 text-slate-800 font-bold py-4 px-4 rounded-2xl hover:bg-slate-100 transition shadow-xs mb-6 text-sm">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                 <span>Continue with Google</span>
             </button>
@@ -76,14 +79,14 @@
 
             <div class="space-y-4 text-left">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Username</label>
-                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-blue-500 text-sm font-semibold transition">
+                    <label class="block text-[11px] font-extrabold text-slate-500 uppercase mb-1.5 tracking-wider">Username</label>
+                    <input id="login-username" type="text" placeholder="Fx arjun" class="w-full px-4.5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:border-blue-600 text-sm font-semibold transition">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Password</label>
-                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-blue-500 text-sm font-semibold transition">
+                    <label class="block text-[11px] font-extrabold text-slate-500 uppercase mb-1.5 tracking-wider">Password</label>
+                    <input id="login-password" type="password" placeholder="••••••••" class="w-full px-4.5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:border-blue-600 text-sm font-semibold transition">
                 </div>
-                <button onclick="window.handleUserPassLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 px-4 rounded-xl transition shadow-lg mt-2 text-sm tracking-wide">
+                <button onclick="window.handleUserPassLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-4 px-4 rounded-2xl transition shadow-lg mt-2 text-sm tracking-wide">
                     Access Platform 🚀
                 </button>
             </div>
@@ -99,43 +102,43 @@
         <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
             <div class="h-20 flex items-center justify-between px-6 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-sm">
-                        <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                    <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-md">
+                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
                     </div>
                     <div>
-                        <span class="block font-extrabold text-slate-900 text-sm leading-none">Trade Vault</span>
-                        <span class="block text-[9px] font-bold text-blue-600 uppercase tracking-widest mt-1">SaaS Edition</span>
+                        <span class="block font-black text-slate-900 text-sm leading-none">Trade Vault</span>
+                        <span class="block text-[9px] font-extrabold text-blue-600 uppercase tracking-widest mt-1">SaaS Elite</span>
                     </div>
                 </div>
-                <button onclick="window.toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-700 bg-slate-50 p-1.5 rounded-lg">
+                <button onclick="window.toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-700 bg-slate-50 p-2 rounded-xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             
             <nav class="flex-1 mt-6 px-4 space-y-1.5 overflow-y-auto pb-6">
-                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-xl font-bold transition text-sm">
+                <button onclick="window.switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center gap-3 px-4.5 py-3.5 bg-blue-50 text-blue-700 rounded-2xl font-extrabold transition text-xs tracking-wide">
                     📊 Dashboard
                 </button>
-                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition text-sm">
+                <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     📅 Calendar & Reports
                 </button>
-                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition text-sm">
+                <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     🧠 Strategy Vault
                 </button>
-                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition text-sm">
-                    ➕ Log New Trade <span class="ml-auto bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-0.5 rounded">PRO</span>
+                <button onclick="window.switchTab('logtrade')" id="btn-logtrade" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
+                    ➕ Log Execution <span class="ml-auto bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-0.5 rounded-full">PRO</span>
                 </button>
                 
                 <div class="my-4 border-t border-slate-100 mx-2"></div>
                 
-                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition text-sm">
+                <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     🏆 Leaderboard
                 </button>
-                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition text-sm">
+                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     <span>💬 Vault Inbox</span>
                     <span class="bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full hidden" id="unread-badge">New</span>
                 </button>
-                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center gap-3 px-4 py-3 text-rose-600 font-bold hover:bg-rose-50 rounded-xl transition text-sm">
+                <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center gap-3 px-4.5 py-3.5 text-rose-600 font-bold hover:bg-rose-50 rounded-2xl transition text-xs tracking-wide">
                     📈 System Logs
                 </button>
             </nav>
@@ -144,31 +147,31 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden w-full relative bg-[#f8fafc]">
             <header class="h-20 bg-white flex items-center justify-between px-6 md:px-10 border-b border-slate-200 relative z-40 shadow-xs">
                 <div class="flex items-center">
-                    <button onclick="window.toggleSidebar()" class="mr-4 md:hidden text-slate-700 hover:text-blue-600 bg-slate-100 p-2 rounded-xl transition">
+                    <button onclick="window.toggleSidebar()" class="mr-4 md:hidden text-slate-700 hover:text-blue-600 bg-slate-100 p-2.5 rounded-2xl transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight" id="header-title">Dashboard</h1>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight" id="header-title">Dashboard</h1>
                 </div>
                 
                 <div class="flex items-center space-x-4">
                     <div class="text-right hidden md:block">
-                        <span class="block text-sm font-extrabold text-slate-900" id="user-display-name">Trader</span>
-                        <span class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Session</span>
+                        <span class="block text-sm font-black text-slate-900" id="user-display-name">Trader</span>
+                        <span class="block text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest">Active Session</span>
                     </div>
                     
                     <div class="relative">
-                        <div class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden border-2 border-white ring-2 ring-slate-200 shrink-0 cursor-pointer shadow-sm hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 overflow-hidden border-2 border-white ring-2 ring-slate-200 shrink-0 cursor-pointer shadow-sm hover:scale-105 transition" onclick="document.getElementById('avatar-dropdown').classList.toggle('hidden')">
                             <img id="header-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=trader" alt="Profile" class="w-full h-full object-cover">
                         </div>
                         
-                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
-                            <div class="px-4 py-3 bg-slate-50 border-b border-slate-100">
-                                <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest">Signed in as</p>
+                        <div id="avatar-dropdown" class="hidden absolute right-0 mt-3 w-52 bg-white rounded-[24px] shadow-2xl border border-slate-100 overflow-hidden z-50">
+                            <div class="px-5 py-4 bg-slate-50 border-b border-slate-100">
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Signed in as</p>
                                 <p class="text-xs font-bold text-slate-800 truncate" id="dropdown-email">Loading...</p>
                             </div>
-                            <div class="p-1.5 space-y-0.5">
-                                <button onclick="window.openAdvancedProfile()" class="w-full text-left px-3 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition flex items-center gap-2">👤 Profile Settings</button>
-                                <button onclick="window.logout()" class="w-full text-left px-3 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition flex items-center gap-2 border-t border-slate-100">🚪 Disconnect</button>
+                            <div class="p-2 space-y-1">
+                                <button onclick="window.openAdvancedProfile()" class="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition flex items-center gap-2.5">👤 Profile Settings</button>
+                                <button onclick="window.logout()" class="w-full text-left px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition flex items-center gap-2.5 border-t border-slate-100">🚪 Disconnect</button>
                             </div>
                         </div>
                     </div>
@@ -179,60 +182,59 @@
                 
                 <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-12 max-w-7xl mx-auto">
-                    <!-- SaaS Header Banner -->
-                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-[24px] p-8 md:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[90px] opacity-20 pointer-events-none"></div>
+                    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-[32px] p-8 md:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-25 pointer-events-none"></div>
                         <h2 class="text-3xl font-black tracking-tight mb-2">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Trader</span></h2>
-                        <p class="text-slate-400 text-sm font-medium">Here is your portfolio overview and performance analytics for this session.</p>
+                        <p class="text-slate-300 text-xs md:text-sm font-medium">Your portfolio aggregated performance analytics and active vault metrics.</p>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col items-center justify-between">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest self-start mb-4">Portfolio Win Rate</h3>
+                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col items-center justify-between">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest self-start mb-4">Portfolio Win Rate</h3>
                             <div class="circle-chart shadow-inner mb-2" id="dash-winrate-circle">
                                 <div class="circle-inner"><span class="text-xl font-black text-slate-900" id="dash-winrate-text">0%</span></div>
                             </div>
                         </div>
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest mb-3">Total Net P/L</h3>
+                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Net P/L</h3>
                             <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-netpl">$0.00</span>
                             <span class="text-xs text-slate-400 font-bold mt-2">Aggregated across all vaults</span>
                         </div>
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest mb-3">Total Executions</h3>
+                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Executions</h3>
                             <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-totaltrades">0</span>
                             <span class="text-xs text-emerald-600 font-bold mt-2">Vault Secured & Synced</span>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1.5 bg-blue-50 text-blue-600 p-1 rounded">🔥</span> Top Strategy</h3>
-                            <span class="text-xl font-extrabold text-slate-900 truncate" id="ai-best-strat">-</span>
+                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-blue-50 text-blue-600 p-1.5 rounded-xl">🔥</span> Top Strategy</h3>
+                            <span class="text-xl font-black text-slate-900 truncate" id="ai-best-strat">-</span>
                         </div>
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1.5 bg-indigo-50 text-indigo-600 p-1 rounded">📅</span> Best Day</h3>
-                            <span class="text-xl font-extrabold text-slate-900 truncate" id="ai-best-day">-</span>
+                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-indigo-50 text-indigo-600 p-1.5 rounded-xl">📅</span> Best Day</h3>
+                            <span class="text-xl font-black text-slate-900 truncate" id="ai-best-day">-</span>
                         </div>
-                        <div class="bg-white rounded-[20px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-extrabold text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-1.5 bg-emerald-50 text-emerald-600 p-1 rounded">💰</span> Largest Win</h3>
-                            <span class="text-xl font-extrabold text-emerald-600 truncate" id="ai-biggest-win">$0.00</span>
+                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-emerald-50 text-emerald-600 p-1.5 rounded-xl">💰</span> Largest Win</h3>
+                            <span class="text-xl font-black text-emerald-600 truncate" id="ai-biggest-win">$0.00</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. MY TRADES & CALENDAR TAB -->
                 <div id="tab-mytrades" class="tab-content pb-12 max-w-7xl mx-auto">
-                    <div class="bg-white rounded-[24px] shadow-xs border border-slate-200/80 p-6 md:p-8 mb-8">
+                    <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-8 mb-8">
                         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4 border-b border-slate-100 pb-6">
                             <div>
                                 <h2 class="text-2xl font-black text-slate-900 tracking-tight">Trading Calendar & Reports</h2>
                                 <p class="text-xs text-slate-500 font-medium mt-1">Click on any logged trade date to inspect analytics and visual blueprints.</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-800 shadow-sm transition">📧 Email Report</button>
-                                <button onclick="window.downloadExcel()" class="bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-emerald-700 shadow-sm transition">📥 Export Excel</button>
-                                <button onclick="window.downloadPDF()" class="bg-rose-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-rose-700 shadow-sm transition">📄 Audit PDF</button>
+                                <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-900 text-white text-xs font-bold px-4.5 py-3 rounded-2xl hover:bg-slate-800 shadow-sm transition">📧 Email Report</button>
+                                <button onclick="window.downloadExcel()" class="bg-emerald-600 text-white text-xs font-bold px-4.5 py-3 rounded-2xl hover:bg-emerald-700 shadow-sm transition">📥 Export Excel</button>
+                                <button onclick="window.downloadPDF()" class="bg-rose-600 text-white text-xs font-bold px-4.5 py-3 rounded-2xl hover:bg-rose-700 shadow-sm transition">📄 Audit PDF</button>
                             </div>
                         </div>
                         <div id="calendar" class="min-h-[500px] text-sm font-semibold"></div>
@@ -243,45 +245,45 @@
                 <div id="tab-strategies" class="tab-content pb-12 max-w-4xl mx-auto">
                     <div class="mb-6 flex justify-between items-center">
                         <h2 class="text-2xl font-black text-slate-900 tracking-tight">Strategy Management</h2>
-                        <button onclick="window.openMyStrategiesModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
+                        <button onclick="window.openMyStrategiesModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4.5 py-3 rounded-2xl shadow-sm transition flex items-center gap-2">
                             <span>📚</span> See My Strategies
                         </button>
                     </div>
 
-                    <div id="strategy-step-1" class="bg-white rounded-[24px] shadow-xs border border-slate-200/80 p-6 md:p-10">
+                    <div id="strategy-step-1" class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10">
                         <h2 class="text-xl font-bold text-slate-900 mb-6 tracking-tight">Create Private Strategy Vault</h2>
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Strategy Name</label>
-                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + London Sweep" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold focus:outline-none focus:border-blue-500 transition text-sm">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Strategy Name</label>
+                                <input id="strategy-name-input" type="text" placeholder="e.g. SMC + London Sweep" class="w-full px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-semibold focus:outline-none focus:border-blue-600 transition text-sm">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Execution Overview</label>
-                                <textarea id="strategy-code-input" class="w-full px-4 py-3.5 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl border border-transparent shadow-inner focus:outline-none" rows="5" placeholder="// Write execution rules..."></textarea>
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Execution Overview</label>
+                                <textarea id="strategy-code-input" class="w-full px-4.5 py-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-2xl border border-transparent shadow-inner focus:outline-none" rows="5" placeholder="// Write execution rules..."></textarea>
                             </div>
-                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-900 text-white font-bold py-3.5 px-8 rounded-xl transition shadow-md text-sm">Next: Define Rules ➡️</button>
+                            <button onclick="window.proceedToRulesStep()" class="w-full md:w-auto bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl transition shadow-md text-sm">Next: Define Rules ➡️</button>
                         </div>
                     </div>
 
-                    <div id="strategy-step-2" class="bg-white rounded-[24px] shadow-xs border border-slate-200/80 p-6 md:p-10 hidden">
+                    <div id="strategy-step-2" class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10 hidden">
                         <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
                             <h2 class="text-xl font-black text-slate-900 tracking-tight" id="rule-page-title">Add Rules</h2>
-                            <span class="text-[10px] font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Step 2 of 2</span>
+                            <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Step 2 of 2</span>
                         </div>
                         <div class="space-y-5">
                             <div class="flex flex-col md:flex-row gap-3">
-                                <input id="single-rule-input" type="text" placeholder="e.g. Risk max 1% per setup" class="flex-1 px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-blue-500 transition text-sm">
-                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-bold px-6 py-3.5 rounded-xl hover:bg-blue-700 transition shadow-sm text-sm">+ Add Rule</button>
+                                <input id="single-rule-input" type="text" placeholder="e.g. Risk max 1% per setup" class="flex-1 px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium focus:outline-none focus:border-blue-600 transition text-sm">
+                                <button onclick="window.addSingleRule()" class="bg-blue-600 text-white font-bold px-6 py-4 rounded-2xl hover:bg-blue-700 transition shadow-sm text-sm">+ Add Rule</button>
                             </div>
-                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 min-h-[150px] shadow-inner">
-                                <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">Checklist Rules:</h4>
+                            <div class="border border-slate-200 rounded-2xl p-5 bg-slate-50 min-h-[150px] shadow-inner">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Checklist Rules:</h4>
                                 <ul id="rules-list-container" class="space-y-2 text-sm text-slate-700 font-semibold">
                                     <li class="text-slate-400 italic text-center mt-6">No rules added yet...</li>
                                 </ul>
                             </div>
                             <div class="flex flex-col md:flex-row justify-between pt-4 gap-3 border-t border-slate-100">
                                 <button onclick="window.backToStrategyStep1()" class="text-slate-500 font-bold px-4 py-2 hover:bg-slate-50 rounded-xl transition text-sm">⬅️ Back</button>
-                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 px-8 rounded-xl shadow-lg transition text-sm">Activate Strategy 🚀</button>
+                                <button onclick="window.saveCompleteStrategyToDatabase()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-8 rounded-2xl shadow-lg transition text-sm">Activate Strategy 🚀</button>
                             </div>
                         </div>
                     </div>
@@ -289,39 +291,39 @@
 
                 <!-- 4. LOG TRADE TAB -->
                 <div id="tab-logtrade" class="tab-content pb-12 max-w-3xl mx-auto">
-                    <div class="bg-white rounded-[24px] shadow-xs border border-slate-200/80 p-6 md:p-10">
+                    <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10">
                         <div class="mb-6 pb-4 border-b border-slate-100">
                             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Log Execution</h2>
                         </div>
                         
                         <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Asset / Pair</label>
-                                <input id="trade-asset" type="text" value="XAUUSD" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-blue-500 transition text-sm">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Asset / Pair</label>
+                                <input id="trade-asset" type="text" value="XAUUSD" class="w-full px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition text-sm">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Strategy Applied</label>
-                                <select id="strategy-dropdown" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-blue-500 transition text-sm"></select>
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Strategy Applied</label>
+                                <select id="strategy-dropdown" class="w-full px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition text-sm"></select>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">1. Chart Screenshot</label>
-                                <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-blue-50/50 transition relative overflow-hidden group">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">1. Chart Screenshot</label>
+                                <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-blue-50/50 transition relative overflow-hidden group">
                                     <div id="chart-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/80 backdrop-blur-xs p-3 rounded-xl group-hover:bg-white">
-                                        <p class="text-xs text-blue-600 font-extrabold" id="chart-file-label">Upload Chart Snippet</p>
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/80 backdrop-blur-xs p-3 rounded-2xl group-hover:bg-white">
+                                        <p class="text-xs text-blue-600 font-bold" id="chart-file-label">Upload Chart Snippet</p>
                                     </div>
                                     <input id="chart-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('chart-image-input', 'chart-file-label', 'chartImgData')" />
                                 </label>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">2. RR Target Box</label>
-                                <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-emerald-50/50 transition relative overflow-hidden group">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">2. RR Target Box</label>
+                                <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-emerald-50/50 transition relative overflow-hidden group">
                                     <div id="rr-preview-box" class="absolute inset-0 bg-contain bg-no-repeat bg-center hidden bg-white"></div>
-                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/80 backdrop-blur-xs p-3 rounded-xl group-hover:bg-white">
-                                        <p class="text-xs text-emerald-600 font-extrabold" id="rr-file-label">Upload RR Box</p>
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-3 px-2 text-center relative z-10 bg-white/80 backdrop-blur-xs p-3 rounded-2xl group-hover:bg-white">
+                                        <p class="text-xs text-emerald-600 font-bold" id="rr-file-label">Upload RR Box</p>
                                     </div>
                                     <input id="rr-image-input" type="file" class="hidden" accept="image/*" onchange="window.previewImage('rr-image-input', 'rr-file-label', 'rrImgData')" />
                                 </label>
@@ -331,60 +333,60 @@
                         <div class="space-y-5 border-t border-slate-100 pt-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Trade Direction</label>
-                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-slate-900 focus:outline-none focus:border-blue-500 text-sm">
+                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Trade Direction</label>
+                                    <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-600 text-sm">
                                         <option value="buy">🟢 BUY (Long)</option>
                                         <option value="sell">🔴 SELL (Short)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Lot Size</label>
-                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-slate-900 focus:outline-none focus:border-blue-500 text-sm">
+                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Lot Size</label>
+                                    <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-4.5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-600 text-sm">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/80 shadow-inner">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200/80 shadow-inner">
                                 <div>
-                                    <label class="block text-[10px] font-extrabold text-blue-600 uppercase tracking-widest mb-1.5">Entry Price</label>
-                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2.5 border border-blue-200 rounded-xl bg-white text-blue-900 font-bold text-sm focus:outline-none">
+                                    <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1.5">Entry Price</label>
+                                    <input id="trade-entry" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3.5 py-3 border border-blue-200 rounded-xl bg-white text-blue-900 font-bold text-sm focus:outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-extrabold text-rose-600 uppercase tracking-widest mb-1.5">Stop Loss</label>
-                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2.5 border border-rose-200 rounded-xl bg-white text-rose-700 font-bold text-sm focus:outline-none">
+                                    <label class="block text-[10px] font-black text-rose-600 uppercase tracking-widest mb-1.5">Stop Loss</label>
+                                    <input id="trade-sl" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3.5 py-3 border border-rose-200 rounded-xl bg-white text-rose-700 font-bold text-sm focus:outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-extrabold text-emerald-600 uppercase tracking-widest mb-1.5">Take Profit</label>
-                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2.5 border border-emerald-200 rounded-xl bg-white text-emerald-700 font-bold text-sm focus:outline-none">
+                                    <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">Take Profit</label>
+                                    <input id="trade-tp" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3.5 py-3 border border-emerald-200 rounded-xl bg-white text-emerald-700 font-bold text-sm focus:outline-none">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100">
                                 <div>
-                                    <label class="block text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest mb-1.5">Exit Price (Actual)</label>
-                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3 py-2.5 bg-white border border-indigo-200 rounded-xl font-bold text-indigo-900 text-sm focus:outline-none" placeholder="Closed price...">
+                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1.5">Exit Price (Actual)</label>
+                                    <input id="trade-exit-price" type="number" step="0.01" oninput="window.calculateFromPrices()" class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl font-bold text-indigo-900 text-sm focus:outline-none" placeholder="Closed price...">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest mb-1.5">Exit Reason</label>
-                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP..." class="w-full px-3 py-2.5 bg-white border border-indigo-200 rounded-xl font-bold text-indigo-900 text-sm focus:outline-none">
+                                    <label class="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1.5">Exit Reason</label>
+                                    <input id="trade-exit-reason" type="text" placeholder="e.g., Hit TP..." class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl font-bold text-indigo-900 text-sm focus:outline-none">
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-5">
-                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                                    <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Calculated RR</label>
-                                    <input id="trade-rr-val" type="text" readonly class="w-full bg-transparent border-none p-0 font-extrabold text-slate-900 text-base" value="1:0">
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Calculated RR</label>
+                                    <input id="trade-rr-val" type="text" readonly class="w-full bg-transparent border-none p-0 font-black text-slate-900 text-base" value="1:0">
                                 </div>
-                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                                    <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Points / Pips</label>
-                                    <input id="trade-pips" type="text" readonly class="w-full bg-transparent border-none p-0 font-extrabold text-slate-900 text-base" value="0 Pts">
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Points / Pips</label>
+                                    <input id="trade-pips" type="text" readonly class="w-full bg-transparent border-none p-0 font-black text-slate-900 text-base" value="0 Pts">
                                 </div>
-                                <div class="bg-blue-50 p-3.5 rounded-xl border border-blue-200 ring-1 ring-blue-400">
-                                    <label class="block text-[9px] font-extrabold text-blue-600 uppercase tracking-widest mb-1">Net P/L ($)</label>
+                                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-200 ring-1 ring-blue-400">
+                                    <label class="block text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Net P/L ($)</label>
                                     <input id="trade-pl" type="number" step="0.01" class="w-full bg-transparent border-none p-0 font-black text-2xl text-emerald-600" value="0.00">
                                 </div>
                             </div>
 
-                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-900 text-white font-black text-base py-4 rounded-xl hover:bg-slate-800 transition shadow-lg mt-4">
+                            <button onclick="window.openRuleVerificationModal()" class="w-full bg-slate-900 text-white font-black text-base py-4 rounded-2xl hover:bg-slate-800 transition shadow-lg mt-4">
                                 Save Execution & Verify Rules 🚀
                             </button>
                         </div>
@@ -395,43 +397,43 @@
                 <div id="tab-leaderboard" class="tab-content pb-12 max-w-4xl mx-auto text-slate-900">
                     <div class="text-center mb-10">
                         <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-2">🏆 WEEKLY CHAMPIONS</h2>
-                        <p class="text-slate-500 text-xs font-semibold">Ranked purely by Weekly Total Pips Captured (Fair Play)</p>
-                        <span class="inline-block mt-3 bg-blue-50 text-blue-700 text-[10px] font-extrabold px-3 py-1 rounded-full border border-blue-200">Auto-resets every Sunday at 3:00 AM 🔄</span>
+                        <p class="text-slate-500 text-xs font-bold">Ranked purely by Weekly Total Pips Captured (Fair Play)</p>
+                        <span class="inline-block mt-3 bg-blue-50 text-blue-700 text-[10px] font-black px-3.5 py-1.5 rounded-full border border-blue-200">Auto-resets every Sunday at 3:00 AM 🔄</span>
                     </div>
 
                     <div id="leaderboard-podium" class="flex flex-row items-end justify-center gap-3 md:gap-6 mb-12 w-full relative"></div>
 
-                    <div class="w-full bg-white rounded-[24px] border border-slate-200 overflow-hidden shadow-sm">
-                        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+                    <div class="w-full bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-xs">
+                        <div class="px-6.5 py-4.5 border-b border-slate-100 bg-slate-50">
                             <h3 class="text-sm font-black text-slate-800 flex items-center gap-2"><span>👥</span> Global Network Board</h3>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse min-w-[600px]">
                                 <thead>
                                     <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 bg-slate-50/50">
-                                        <th class="p-4 w-16 text-center">Rank</th>
-                                        <th class="p-4">Trader Identity</th>
-                                        <th class="p-4 text-center hidden sm:table-cell">Trades</th>
-                                        <th class="p-4 text-right pr-6">Weekly Pips</th>
+                                        <th class="p-4.5 w-16 text-center">Rank</th>
+                                        <th class="p-4.5">Trader Identity</th>
+                                        <th class="p-4.5 text-center hidden sm:table-cell">Trades</th>
+                                        <th class="p-4.5 text-right pr-7">Weekly Pips</th>
                                     </tr>
                                 </thead>
-                                <tbody id="leaderboard-challengers" class="text-sm font-semibold"></tbody>
+                                <tbody id="leaderboard-challengers" class="text-sm font-bold"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 
                 <!-- 6. MESSAGES (INBOX) TAB -->
-                <div id="tab-messages" class="tab-content h-[calc(100vh-140px)] min-h-[550px] max-w-6xl mx-auto flex flex-col bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden relative">
+                <div id="tab-messages" class="tab-content h-[calc(100vh-140px)] min-h-[550px] max-w-6xl mx-auto flex flex-col bg-white rounded-[32px] border border-slate-200 shadow-xs overflow-hidden relative">
                     <div class="bg-slate-900 border-b border-slate-800 p-4 px-6 flex justify-between items-center z-10 text-white">
                         <h2 class="text-base font-black flex items-center gap-2"><span>💬</span> Vault Messenger</h2>
-                        <span class="text-[10px] text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800 font-extrabold uppercase tracking-widest">Secure Line</span>
+                        <span class="text-[10px] text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800 font-black uppercase tracking-widest">Secure Line</span>
                     </div>
 
                     <div class="flex flex-1 overflow-hidden h-full relative">
                         <div id="chat-sidebar" class="w-full md:w-[320px] bg-slate-50 border-r border-slate-200 flex flex-col z-10 absolute md:relative inset-y-0 left-0">
-                            <div class="p-3 border-b border-slate-200 bg-white">
-                                <input type="text" placeholder="Search network..." class="w-full bg-slate-100 text-xs text-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500 font-semibold">
+                            <div class="p-3.5 border-b border-slate-200 bg-white">
+                                <input type="text" placeholder="Search network..." class="w-full bg-slate-100 text-xs text-slate-900 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 font-bold">
                             </div>
                             <div class="overflow-y-auto flex-1 p-2 space-y-1" id="chat-contact-list">
                                 <div class="flex flex-col items-center justify-center h-full text-slate-400 text-xs font-bold uppercase tracking-widest">Loading network...</div>
@@ -445,13 +447,13 @@
                             </div>
 
                             <div id="active-chat-interface" class="hidden flex-col h-full z-20 w-full">
-                                <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <button onclick="window.closeActiveChat()" class="md:hidden text-slate-500 hover:text-slate-900 p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                                        <img id="active-chat-avatar" src="" class="w-9 h-9 rounded-full border border-slate-300 object-cover">
+                                        <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-2xl border border-slate-200 object-cover">
                                         <div>
-                                            <h3 id="active-chat-username" class="text-slate-900 font-extrabold text-sm">Trader</h3>
-                                            <p class="text-[9px] text-emerald-600 font-extrabold uppercase">Online</p>
+                                            <h3 id="active-chat-username" class="text-slate-900 font-black text-sm">Trader</h3>
+                                            <p class="text-[9px] text-emerald-600 font-black uppercase">Online</p>
                                         </div>
                                     </div>
                                 </div>
@@ -459,14 +461,14 @@
                                 <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50" id="chat-messages-history">
                                     <div class="text-center my-4 relative flex justify-center items-center">
                                         <div class="absolute inset-x-0 h-px bg-slate-200"></div>
-                                        <span class="text-[9px] uppercase font-extrabold text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Session</span>
+                                        <span class="text-[9px] uppercase font-black text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Session</span>
                                     </div>
                                 </div>
 
                                 <div class="p-4 bg-white border-t border-slate-200">
-                                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 focus-within:border-blue-500">
-                                        <input type="text" id="chat-input-msg" placeholder="Type secure message..." class="flex-1 bg-transparent text-slate-900 text-xs font-semibold px-3 focus:outline-none py-1.5" onkeypress="if(event.key === 'Enter') window.sendMessage()">
-                                        <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-bold text-xs transition shadow-sm">Send</button>
+                                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 focus-within:border-blue-600">
+                                        <input type="text" id="chat-input-msg" placeholder="Type secure message..." class="flex-1 bg-transparent text-slate-900 text-xs font-bold px-3.5 focus:outline-none py-2" onkeypress="if(event.key === 'Enter') window.sendMessage()">
+                                        <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm">Send</button>
                                     </div>
                                 </div>
                             </div>
@@ -476,7 +478,7 @@
 
                 <!-- 7. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content pb-12 max-w-4xl mx-auto">
-                    <div class="bg-white rounded-[24px] shadow-xs border border-slate-200/80 p-6 md:p-8">
+                    <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-8">
                         <h2 class="text-xl font-black text-slate-900 mb-2">📊 Security System Logs</h2>
                         <div class="overflow-x-auto border border-slate-100 rounded-2xl mt-4">
                             <table class="w-full text-left border-collapse min-w-[500px]">
@@ -487,7 +489,7 @@
                                         <th class="p-4">Protocol</th>
                                     </tr>
                                 </thead>
-                                <tbody id="visitor-activity-table" class="divide-y divide-slate-100 text-xs font-semibold"></tbody>
+                                <tbody id="visitor-activity-table" class="divide-y divide-slate-100 text-xs font-bold"></tbody>
                             </table>
                         </div>
                     </div>
@@ -499,7 +501,7 @@
 
     <!-- SEE MY STRATEGIES MODAL -->
     <div id="myStrategiesModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[80] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[28px] shadow-2xl border border-slate-100 w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-[32px] shadow-2xl border border-slate-100 w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
             <div class="p-6 bg-slate-900 text-white border-b border-slate-800 flex justify-between items-center">
                 <h3 class="text-base font-black flex items-center gap-2"><span>📚</span> My Private Strategy Vault</h3>
                 <button onclick="document.getElementById('myStrategiesModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
@@ -514,56 +516,56 @@
     <div id="advanced-profile-page" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col overflow-y-auto p-4 md:p-10">
         <div class="max-w-2xl mx-auto w-full">
             <button onclick="window.closeAdvancedProfile()" class="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition w-fit font-bold text-xs uppercase tracking-wider">🔙 Back to Dashboard</button>
-            <div class="bg-white rounded-[28px] shadow-2xl border border-slate-200 overflow-hidden mb-8 p-8 space-y-6">
+            <div class="bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden mb-8 p-8 space-y-6">
                 <h2 class="text-2xl font-black text-slate-900 tracking-tight border-b border-slate-100 pb-4">Trader Identity & Journey</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Trader Name</label>
-                        <input id="ap-username" type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none">
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Trader Name</label>
+                        <input id="ap-username" type="text" class="w-full px-4.5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold text-sm focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Registered Email</label>
-                        <input id="ap-email" type="text" readonly class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-semibold text-sm">
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Registered Email</label>
+                        <input id="ap-email" type="text" readonly class="w-full px-4.5 py-3.5 bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 font-semibold text-sm">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-6">
-                    <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Experience</label><select id="ap-experience" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs font-bold"><option>Less than 1 Year</option><option>1-3 Years</option><option>3+ Years Pro</option></select></div>
-                    <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Phase</label><select id="ap-phase" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs font-bold"><option>Learning</option><option>Losing</option><option>Break Even</option><option>Profitable</option></select></div>
-                    <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Profitable?</label><select id="ap-profitable" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs font-bold"><option>No</option><option>Yes</option></select></div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Experience</label><select id="ap-experience" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-xs font-bold"><option>Less than 1 Year</option><option>1-3 Years</option><option>3+ Years Pro</option></select></div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phase</label><select id="ap-phase" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-xs font-bold"><option>Learning</option><option>Losing</option><option>Break Even</option><option>Profitable</option></select></div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profitable?</label><select id="ap-profitable" class="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-xs font-bold"><option>No</option><option>Yes</option></select></div>
                 </div>
-                <div class="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div><h4 class="text-slate-900 font-extrabold text-xs">Public Leaderboard Profile</h4><p class="text-[10px] text-slate-400 font-medium">Allow others to view your stats.</p></div>
+                <div class="flex items-center justify-between bg-slate-50 p-4.5 rounded-2xl border border-slate-200">
+                    <div><h4 class="text-slate-900 font-black text-xs">Public Leaderboard Profile</h4><p class="text-[10px] text-slate-400 font-medium">Allow others to view your stats.</p></div>
                     <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ap-public" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
                 </div>
                 <div class="border-t border-slate-100 pt-6">
-                    <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
+                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
                         <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-30"></div>
                         <div class="flex flex-col items-center justify-center pt-2 pb-3 relative z-10">
-                            <p class="text-xs text-blue-600 font-extrabold" id="ap-dropzone-text">Click to upload Avatar</p>
+                            <p class="text-xs text-blue-600 font-black" id="ap-dropzone-text">Click to upload Avatar</p>
                         </div>
                         <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
                     </label>
                 </div>
-                <div class="pt-4 border-t border-slate-100"><button onclick="window.saveAdvancedProfile()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 px-6 rounded-xl transition text-sm">Sync Vault Profile 🚀</button></div>
+                <div class="pt-4 border-t border-slate-100"><button onclick="window.saveAdvancedProfile()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-4 px-6 rounded-2xl transition text-sm shadow-md">Sync Vault Profile 🚀</button></div>
             </div>
         </div>
     </div>
 
     <!-- PUBLIC TRADER PROFILE MODAL -->
     <div id="publicProfileModal" class="fixed inset-0 bg-slate-900 bg-opacity-40 hidden flex items-center justify-center z-[70] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[28px] shadow-2xl border border-slate-100 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-[32px] shadow-2xl border border-slate-100 w-full max-w-sm overflow-hidden relative" onclick="event.stopPropagation()">
             <button onclick="document.getElementById('publicProfileModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 font-bold text-lg">&times;</button>
             <div class="p-6 text-center border-b border-slate-100 bg-slate-50">
                 <div class="w-20 h-20 mx-auto rounded-full border-2 border-white shadow-md overflow-hidden mb-3"><img id="pp-avatar" src="" class="w-full h-full object-cover"></div>
                 <h3 id="pp-username" class="text-lg font-black text-slate-900">Trader</h3>
-                <p id="pp-pips" class="text-emerald-600 font-extrabold text-xs mt-0.5">+0.0 Pts This Week</p>
+                <p id="pp-pips" class="text-emerald-600 font-black text-xs mt-0.5">+0.0 Pts This Week</p>
             </div>
             <div id="pp-private-msg" class="p-8 text-center hidden"><h4 class="text-slate-800 font-bold text-sm">Vault is Private 🔒</h4></div>
-            <div id="pp-public-details" class="p-5 space-y-3 hidden text-xs font-semibold">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-bold text-[10px]">Experience</span><span id="pp-exp" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">1-3 Years</span></div>
-                <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-bold text-[10px]">Phase</span><span id="pp-phase" class="text-blue-600 bg-blue-50 px-2 py-1 rounded">Learning</span></div>
-                <div class="flex justify-between items-center"><span class="text-slate-400 uppercase font-bold text-[10px]">Profitable?</span><span id="pp-prof" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">Yes</span></div>
-                <div class="pt-3"><button id="pp-connect-btn" class="w-full bg-slate-900 text-white font-extrabold py-3 rounded-xl transition text-xs shadow-sm">Connect & Chat</button></div>
+            <div id="pp-public-details" class="p-5 space-y-3 hidden text-xs font-bold">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Experience</span><span id="pp-exp" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">1-3 Years</span></div>
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Phase</span><span id="pp-phase" class="text-blue-600 bg-blue-50 px-2 py-1 rounded">Learning</span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-400 uppercase font-black text-[10px]">Profitable?</span><span id="pp-prof" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">Yes</span></div>
+                <div class="pt-3"><button id="pp-connect-btn" class="w-full bg-slate-900 text-white font-black py-3 rounded-xl transition text-xs shadow-sm">Connect & Chat</button></div>
             </div>
         </div>
     </div>
@@ -571,11 +573,11 @@
     <!-- CLEAN DOWNLOADABLE TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
-            <div id="capture-trade-report" class="bg-white rounded-[28px] shadow-2xl p-6 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100" style="width: 100%; max-width: 650px;">
+            <div id="capture-trade-report" class="bg-white rounded-[32px] shadow-2xl p-6 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100" style="width: 100%; max-width: 650px;">
                 <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-5 right-5 bg-slate-100 text-slate-500 hover:bg-rose-500 hover:text-white w-7 h-7 rounded-full flex items-center justify-center font-black text-sm transition z-10">&times;</button>
                 
                 <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div class="bg-blue-50 text-blue-600 p-2.5 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
+                    <div class="bg-blue-50 text-blue-600 p-2.5 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
                     <div class="flex-1 flex flex-col justify-center">
                         <h2 class="text-base font-black text-slate-900 tracking-tight leading-tight" id="rep-title">Trade Report</h2>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider" id="rep-date">Execution Date</p>
@@ -617,7 +619,7 @@
                     </div>
                     <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Entry/SL/TP</p>
-                        <span class-[10px] font-semibold text-slate-600 text-[11px] leading-tight" id="rep-levels">-</span>
+                        <span class="text-[11px] font-semibold text-slate-600 leading-tight" id="rep-levels">-</span>
                     </div>
                 </div>
 
@@ -632,7 +634,7 @@
                 </div>
             </div>
 
-            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs py-4 rounded-2xl shadow-lg transition tracking-wide">
+            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-xs py-4 rounded-2xl shadow-lg transition tracking-wide">
                 Download HD Ticket 📸
             </button>
         </div>
@@ -646,23 +648,23 @@
 
     <!-- RULE VERIFICATION MODAL -->
     <div id="ruleVerificationModal" class="fixed inset-0 bg-slate-900 bg-opacity-40 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[28px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
-            <h3 class="text-base font-extrabold text-slate-900 mb-4">🛡️ Rules Verification</h3>
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-4">🛡️ Rules Verification</h3>
             <div id="modal-rules-checklist" class="space-y-2.5 max-h-48 overflow-y-auto mb-6 p-2 bg-slate-50 rounded-2xl border border-slate-100"></div>
             <div class="flex space-x-3">
                 <button onclick="window.closeRuleModal()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
-                <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-slate-900 text-white font-extrabold py-3 rounded-xl text-xs shadow-md">Confirm Execution ✅</button>
+                <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-slate-900 text-white font-black py-3 rounded-xl text-xs shadow-md">Confirm Execution ✅</button>
             </div>
         </div>
     </div>
 
     <!-- CERTIFICATE MODAL -->
     <div id="certificateModal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden flex items-center justify-center z-[90] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-slate-900 border-2 border-amber-500 rounded-[28px] shadow-2xl w-full max-w-md p-8 text-center relative text-white" onclick="event.stopPropagation()">
+        <div class="bg-slate-900 border-2 border-amber-500 rounded-[32px] shadow-2xl w-full max-w-md p-8 text-center relative text-white" onclick="event.stopPropagation()">
             <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
             <div class="text-4xl mb-3">🏆</div>
             <h2 class="text-[9px] font-black tracking-[0.25em] text-amber-400 uppercase mb-1">Certificate of Excellence</h2>
-            <h1 class="text-xl font-extrabold mb-5">Weekly Champion</h1>
+            <h1 class="text-xl font-black mb-5">Weekly Champion</h1>
             <h3 id="cert-username" class="text-base font-black text-blue-400 border-b border-slate-800 pb-2 inline-block px-6">Trader</h3>
         </div>
     </div>
@@ -1035,7 +1037,7 @@
 
                 let winRate = totalTrades > 0 ? Math.round((wins / totalTrades) * 100) : 0;
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
-                document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#3b82f6 0% ${winRate}%, #f1f5f9 ${winRate}% 100%)`;
+                document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#2563eb 0% ${winRate}%, #f1f5f9 ${winRate}% 100%)`;
 
                 let bestStrategy = "-";
                 let maxStratPL = -Infinity;
@@ -1084,7 +1086,7 @@
                     }
 
                     container.innerHTML += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
                             <h4 class="text-slate-900 font-extrabold text-base mb-1.5">${s.name}</h4>
                             <p class="text-xs font-mono text-emerald-600 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-3 whitespace-pre-wrap">${s.description || 'No execution overview.'}</p>
                             <div class="space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
@@ -1216,15 +1218,15 @@
                         let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
                         challengersEl.innerHTML += `
                             <tr onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer border-b border-slate-100 hover:bg-slate-50 transition">
-                                <td class="p-4 text-slate-400 font-black text-center">#${rankNum}</td>
-                                <td class="p-4 font-bold text-slate-800 flex items-center gap-3">
+                                <td class="p-4.5 text-slate-400 font-black text-center">#${rankNum}</td>
+                                <td class="p-4.5 font-bold text-slate-800 flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
                                         <img src="${trader.pfp}" class="w-full h-full object-cover">
                                     </div>
                                     <span>${trader.username}</span>
                                 </td>
-                                <td class="p-4 text-slate-500 hidden sm:table-cell text-center font-bold text-xs">${trader.totalTrades}</td>
-                                <td class="p-4 text-right pr-6 text-emerald-600 font-black text-sm">${pipsText}</td>
+                                <td class="p-4.5 text-slate-500 hidden sm:table-cell text-center font-bold text-xs">${trader.totalTrades}</td>
+                                <td class="p-4.5 text-right pr-7 text-emerald-600 font-black text-sm">${pipsText}</td>
                             </tr>`;
                     });
                 }
@@ -1284,13 +1286,13 @@
                     contactsCount++;
                     let p = globalProfilesMap[email];
                     listEl.innerHTML += `
-                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3 hover:bg-slate-200/60 rounded-xl cursor-pointer transition border border-transparent">
+                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3.5 hover:bg-slate-200/60 rounded-2xl cursor-pointer transition border border-transparent">
                             <div class="relative shrink-0">
-                                <img src="${p.pfp}" class="w-9 h-9 rounded-full object-cover border border-slate-200">
+                                <img src="${p.pfp}" class="w-10 h-10 rounded-2xl object-cover border border-slate-200">
                                 <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></div>
                             </div>
                             <div class="overflow-hidden flex-1">
-                                <h4 class="text-slate-900 text-xs font-extrabold truncate">${p.username}</h4>
+                                <h4 class="text-slate-900 text-xs font-black truncate">${p.username}</h4>
                                 <p class="text-[10px] text-slate-400 truncate mt-0.5 font-medium">Tap to open chat</p>
                             </div>
                         </div>
@@ -1327,12 +1329,12 @@
             document.getElementById('active-chat-avatar').src = pfp;
             
             const historyEl = document.getElementById('chat-messages-history');
-            historyEl.innerHTML = `<div class="text-center my-4 relative flex justify-center items-center"><div class="absolute inset-x-0 h-px bg-slate-200"></div><span class="text-[9px] uppercase font-bold text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Line Active</span></div>`;
+            historyEl.innerHTML = `<div class="text-center my-4 relative flex justify-center items-center"><div class="absolute inset-x-0 h-px bg-slate-200"></div><span class="text-[9px] uppercase font-black text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Line Active</span></div>`;
             
             setTimeout(() => {
                 historyEl.innerHTML += `
                     <div class="flex justify-start mb-3 chat-bubble">
-                        <div class="bg-white text-slate-800 text-xs p-3.5 rounded-2xl rounded-tl-xs max-w-[80%] border border-slate-200 shadow-xs font-medium">
+                        <div class="bg-white text-slate-800 text-xs p-3.5 rounded-2xl rounded-tl-xs max-w-[80%] border border-slate-200 shadow-2xs font-semibold">
                             Hey! Let's share SMC execution setups. 📈
                             <span class="block text-[9px] text-slate-400 mt-1 text-right">09:12 AM</span>
                         </div>
@@ -1360,7 +1362,7 @@
             
             historyEl.innerHTML += `
                 <div class="flex justify-end mb-3 chat-bubble">
-                    <div class="bg-blue-600 text-white text-xs p-3.5 rounded-2xl rounded-tr-xs max-w-[80%] shadow-sm font-medium">
+                    <div class="bg-blue-600 text-white text-xs p-3.5 rounded-2xl rounded-tr-xs max-w-[80%] shadow-sm font-semibold">
                         ${msg}
                         <span class="block text-[9px] text-blue-100 mt-1 text-right">Just now ✓</span>
                     </div>
@@ -1410,8 +1412,8 @@
             if(currentRulesList.length === 0) { container.innerHTML = `<li class="text-slate-400 italic font-medium text-center mt-6">No rules added yet...</li>`; return; }
             container.innerHTML = "";
             currentRulesList.forEach((rule, idx) => {
-                container.innerHTML += `<li class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-2 shadow-2xs">
-                    <span class="bg-blue-50 text-blue-600 text-[10px] font-extrabold px-2 py-0.5 rounded">${idx + 1}</span>
+                container.innerHTML += `<li class="bg-white p-3.5 rounded-2xl border border-slate-200 flex items-center gap-2.5 shadow-2xs">
+                    <span class="bg-blue-50 text-blue-600 text-[10px] font-black px-2.5 py-1 rounded-xl">${idx + 1}</span>
                     <span class="font-semibold text-xs text-slate-700">${rule}</span>
                 </li>`;
             });
@@ -1447,9 +1449,9 @@
                     const v = docSnap.data();
                     tableBody.innerHTML += `
                         <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-4 font-bold text-slate-900">${v.username}</td>
+                            <td class="p-4 font-black text-slate-900">${v.username}</td>
                             <td class="p-4 text-slate-500 text-xs font-semibold">${v.loginTime}</td>
-                            <td class="p-4"><span class="px-2 py-1 text-[9px] font-black uppercase rounded ${v.status.includes('Master') || v.status.includes('Google') ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">${v.status}</span></td>
+                            <td class="p-4"><span class="px-2.5 py-1 text-[9px] font-black uppercase rounded-lg ${v.status.includes('Master') || v.status.includes('Google') ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">${v.status}</span></td>
                         </tr>`;
                 });
             } catch(e) { console.log(e); }
@@ -1523,13 +1525,13 @@
             if(matchedStrat && matchedStrat.rules && matchedStrat.rules.length > 0) {
                 matchedStrat.rules.forEach((rule, idx) => {
                     container.innerHTML += `
-                        <label class="flex items-center space-x-3 cursor-pointer p-3 bg-white rounded-xl border border-slate-200 shadow-2xs hover:border-blue-400 transition">
+                        <label class="flex items-center space-x-3 cursor-pointer p-3.5 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-600 transition">
                             <input type="checkbox" value="${rule}" class="rule-checkbox w-4 h-4 text-blue-600 rounded" checked />
-                            <span class="text-xs text-slate-800 font-semibold">Rule ${idx + 1}: ${rule}</span>
+                            <span class="text-xs text-slate-800 font-bold">Rule ${idx + 1}: ${rule}</span>
                         </label>`;
                 });
             } else {
-                container.innerHTML = `<div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-center"><p class="text-xs text-amber-700 font-bold">No specific rules found.</p></div>`;
+                container.innerHTML = `<div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-center"><p class="text-xs text-amber-700 font-bold">No specific rules found.</p></div>`;
             }
             document.getElementById('ruleVerificationModal').classList.remove('hidden');
         };
@@ -1694,7 +1696,7 @@
                 rulesListContainer.innerHTML = "";
                 if(trade.rulesFollowed && trade.rulesFollowed.length > 0) {
                     trade.rulesFollowed.forEach((rule) => {
-                        rulesListContainer.innerHTML += `<li class="flex items-start gap-2 bg-white p-2 rounded-xl border border-slate-100 shadow-2xs"><span class="bg-blue-50 text-blue-600 rounded-full p-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></span><span class="text-xs font-bold text-slate-700">${rule}</span></li>`;
+                        rulesListContainer.innerHTML += `<li class="flex items-start gap-2.5 bg-white p-3 rounded-2xl border border-slate-100 shadow-2xs"><span class="bg-blue-50 text-blue-600 rounded-full p-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></span><span class="text-xs font-bold text-slate-700">${rule}</span></li>`;
                     });
                 } else {
                     rulesListContainer.innerHTML = `<li class="italic text-slate-400 text-xs">No rule checklist recorded.</li>`;
