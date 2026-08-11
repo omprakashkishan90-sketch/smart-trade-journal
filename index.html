@@ -104,7 +104,7 @@
         
         <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-40 hidden md:hidden backdrop-blur-sm" onclick="window.toggleSidebar()"></div>
 
-        <!-- Sidebar (OG STYLE) -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="w-64 bg-[#f8f9fa] border-r border-gray-200 flex flex-col absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 h-full">
             <div class="h-16 flex items-center justify-between px-6 mt-4 pb-2">
                 <div class="flex items-center gap-3">
@@ -240,10 +240,17 @@
                     </div>
                 </div>
 
-                <!-- 3. STRATEGY VAULT TAB -->
+                <!-- 3. STRATEGY VAULT TAB (WITH "SEE MY STRATEGIES" BUTTON) -->
                 <div id="tab-strategies" class="tab-content px-4 md:px-8 py-8">
+                    <div class="max-w-4xl mx-auto mb-6 flex justify-between items-center">
+                        <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Strategy Management</h2>
+                        <button onclick="window.openMyStrategiesModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                            <span>📚</span> See My Strategies
+                        </button>
+                    </div>
+
                     <div id="strategy-step-1" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-10 max-w-4xl mx-auto">
-                        <h2 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">Create Strategy Vault</h2>
+                        <h2 class="text-xl font-bold text-slate-800 mb-6 tracking-tight">Create Private Strategy Vault</h2>
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Strategy Name</label>
@@ -281,14 +288,13 @@
                     </div>
                 </div>
 
-                <!-- 4. LOG TRADE TAB (PRO WITH ASSET) -->
+                <!-- 4. LOG TRADE TAB (WITH PRIVATE STRATEGIES) -->
                 <div id="tab-logtrade" class="tab-content px-4 md:px-8 py-8">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-10 max-w-3xl mx-auto">
                         <div class="mb-6 pb-4 border-b border-gray-100">
                             <h2 class="text-2xl font-black text-slate-800 tracking-tight">Log Execution</h2>
                         </div>
                         
-                        <!-- ASSET SELECTION -->
                         <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Asset / Pair</label>
@@ -386,7 +392,7 @@
                     </div>
                 </div>
 
-                <!-- 5. WEEKLY LEADERBOARD TAB (SMART RESET & AUTO-POPULATE) -->
+                <!-- 5. WEEKLY LEADERBOARD TAB -->
                 <div id="tab-leaderboard" class="tab-content px-4 md:px-8 pt-8 pb-12 bg-[#090e17] min-h-full text-white">
                     <div class="max-w-4xl mx-auto">
                         <div class="text-center mb-10">
@@ -428,7 +434,6 @@
                         </div>
 
                         <div class="flex flex-1 overflow-hidden h-full relative">
-                            <!-- Sidebar -->
                             <div id="chat-sidebar" class="w-full md:w-[320px] bg-[#0b1120] border-r border-gray-800 flex flex-col z-10 absolute md:relative inset-y-0 left-0">
                                 <div class="p-3 border-b border-gray-800 bg-[#0f172a]">
                                     <input type="text" placeholder="Search network..." class="w-full bg-[#1e293b] text-sm text-white px-4 py-2.5 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500">
@@ -438,7 +443,6 @@
                                 </div>
                             </div>
 
-                            <!-- Main Chat Area -->
                             <div id="chat-main-area" class="hidden md:flex flex-col flex-1 bg-[#090e17] absolute md:relative inset-0 z-20 w-full h-full">
                                 <div id="chat-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
                                     <h3 class="text-xl font-black text-white mb-2">Direct Messages</h3>
@@ -497,6 +501,19 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- SEE MY STRATEGIES MODAL -->
+    <div id="myStrategiesModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-[80] p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-[#1e293b] rounded-2xl shadow-2xl border border-gray-700 w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
+            <div class="p-6 bg-[#0f172a] border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-xl font-black text-white flex items-center gap-2"><span>📚</span> My Private Strategy Vault</h3>
+                <button onclick="document.getElementById('myStrategiesModal').classList.add('hidden')" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 space-y-4 text-white" id="my-strategies-list-container">
+                <div class="text-center py-8 text-gray-500 font-bold uppercase tracking-widest">Loading your strategies...</div>
+            </div>
+        </div>
     </div>
 
     <!-- ADVANCED TRADER IDENTITY MODULE -->
@@ -561,12 +578,9 @@
         </div>
     </div>
 
-    <!-- CLEAN DOWNLOADABLE TRADE REPORT MODAL -->
+    <!-- CLEAN DOWNLOADABLE TRADE REPORT MODAL (MOBILE STACKED HD FIX) -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-95 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-sm" onclick="if(event.target === this) this.classList.add('hidden')">
-        
         <div class="w-full max-w-[700px] mx-auto flex flex-col gap-3" onclick="event.stopPropagation()">
-            
-            <!-- CAPTURE TARGET -->
             <div id="capture-trade-report" class="bg-white rounded-2xl shadow-2xl p-5 relative overflow-hidden flex flex-col gap-3 mx-auto" style="width: 100%; max-width: 700px;">
                 <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-4 right-4 bg-gray-100 text-gray-500 hover:bg-red-500 hover:text-white w-7 h-7 rounded-full flex items-center justify-center font-black text-sm transition z-10">&times;</button>
                 
@@ -578,25 +592,24 @@
                     </div>
                 </div>
 
-                <!-- SIDE-BY-SIDE IMAGES (Fixed IMG Tags for HTML2Canvas) -->
-                <div class="flex flex-row gap-3 w-full">
-                    <div class="w-1/2 flex flex-col">
+                <!-- MOBILE STACKED IMAGES FOR ULTRA HD CLARITY -->
+                <div class="flex flex-col md:flex-row gap-3 w-full">
+                    <div class="w-full md:w-1/2 flex flex-col">
                         <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">Chart Screenshot</p>
-                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-chart-img').src)">
+                        <div class="export-img-wrapper h-56 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-chart-img').src)">
                             <img id="rep-chart-img" src="" class="w-full h-full object-contain p-1 absolute inset-0 hidden">
                             <span id="rep-chart-noimg" class="text-gray-400 text-xs font-bold absolute inset-0 flex items-center justify-center">No Image</span>
                         </div>
                     </div>
-                    <div class="w-1/2 flex flex-col">
+                    <div class="w-full md:w-1/2 flex flex-col">
                         <p class="text-[9px] font-black text-gray-400 uppercase mb-1 tracking-widest pl-1">RR Target Box</p>
-                        <div class="export-img-wrapper h-36 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-rr-img').src)">
+                        <div class="export-img-wrapper h-56 md:h-44 border border-gray-200 cursor-zoom-in relative bg-white" onclick="window.openLightbox(document.getElementById('rep-rr-img').src)">
                             <img id="rep-rr-img" src="" class="w-full h-full object-contain p-1 absolute inset-0 hidden">
                             <span id="rep-rr-noimg" class="text-gray-400 text-xs font-bold absolute inset-0 flex items-center justify-center">No Image</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Stats Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                     <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Direction</p>
@@ -624,14 +637,12 @@
                      <span class="text-xl md:text-2xl font-black text-green-500" id="rep-pl">-</span>
                 </div>
 
-                <!-- Strategy Rules Followed Box (RESTORED OG DESIGN) -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-2">
                     <h3 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Strategy Rules Followed For This Trade:</h3>
                     <ul id="rep-rules-list" class="space-y-1.5 text-sm mt-2"></ul>
                 </div>
             </div>
 
-            <!-- CLEAN DOWNLOAD BUTTON -->
             <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-black text-sm py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1">
                 Download Report 📸
             </button>
@@ -705,7 +716,6 @@
         let globalTraderStats = {};
         let activeChatEmail = "";
 
-        // SUNDAY 3:00 AM LOGIC
         function getMostRecentSunday3AM() {
             const now = new Date();
             let day = now.getDay(); 
@@ -977,9 +987,14 @@
             await loadUserDataFromFirebase();
         }
 
+        // ==============================================
+        // PRIVATE USER-SPECIFIC STRATEGIES LOADING
+        // ==============================================
         async function loadUserDataFromFirebase() {
             try {
-                const stratSnapshot = await getDocs(collection(db, "strategies"));
+                // Fetch ONLY strategies created by currentLoggedInUser
+                const qStrat = query(collection(db, "strategies"), where("userEmail", "==", currentLoggedInUser));
+                const stratSnapshot = await getDocs(qStrat);
                 const dropdown = document.getElementById('strategy-dropdown');
                 dropdown.innerHTML = "";
                 strategiesCache = [];
@@ -988,7 +1003,7 @@
                     strategiesCache.push(data);
                     if(data.name) dropdown.add(new Option(data.name, data.name));
                 });
-                if(dropdown.options.length === 0) dropdown.add(new Option("SMC", "SMC"));
+                if(dropdown.options.length === 0) dropdown.add(new Option("SMC (Default)", "SMC"));
 
                 const q = query(collection(db, "trades"), where("userEmail", "==", currentLoggedInUser));
                 const tradeSnapshot = await getDocs(q);
@@ -1060,9 +1075,51 @@
             } catch(e) { console.log(e); }
         }
 
-        // ==============================================
-        // ALL USERS LEADERBOARD (EVERYONE APPEARS!)
-        // ==============================================
+        // "SEE MY STRATEGIES" MODAL POPUP
+        window.openMyStrategiesModal = async function() {
+            const modal = document.getElementById('myStrategiesModal');
+            const container = document.getElementById('my-strategies-list-container');
+            modal.classList.remove('hidden');
+            container.innerHTML = `<div class="text-center py-8 text-gray-400 font-bold uppercase tracking-widest">Loading your private vault...</div>`;
+
+            try {
+                const qStrat = query(collection(db, "strategies"), where("userEmail", "==", currentLoggedInUser));
+                const snap = await getDocs(qStrat);
+                
+                container.innerHTML = "";
+                if(snap.empty) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500 font-bold uppercase tracking-widest">No strategies saved in your private vault yet.</div>`;
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    let s = docSnap.data();
+                    let rulesHtml = "";
+                    if(s.rules && s.rules.length > 0) {
+                        s.rules.forEach((r, idx) => {
+                            rulesHtml += `<li class="text-xs text-gray-300 font-medium pl-2">• Rule ${idx+1}: ${r}</li>`;
+                        });
+                    } else {
+                        rulesHtml = `<li class="text-xs text-gray-500 italic">No specific rules defined.</li>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="bg-[#0f172a] p-5 rounded-xl border border-gray-800 shadow-inner">
+                            <h4 class="text-blue-400 font-black text-lg mb-2">${s.name}</h4>
+                            <p class="text-xs font-mono text-green-400 bg-black/40 p-3 rounded-lg border border-gray-800 mb-3 whitespace-pre-wrap">${s.description || 'No execution overview provided.'}</p>
+                            <div class="space-y-1 bg-[#161f30] p-3 rounded-lg border border-gray-800">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Checklist Rules:</span>
+                                <ul class="space-y-1">${rulesHtml}</ul>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                container.innerHTML = `<div class="text-center py-8 text-red-400 font-bold">Error loading strategies: ${e.message}</div>`;
+            }
+        };
+
+        // LEADERBOARD DATA
         async function loadLeaderboardData() {
             const podiumEl = document.getElementById('leaderboard-podium');
             const challengersEl = document.getElementById('leaderboard-challengers');
@@ -1140,8 +1197,6 @@
                 challengersEl.innerHTML = "";
 
                 let top3 = leaderboardArray.slice(0, 3);
-                
-                // Show ALL USERS in the table below, starting from Rank 1
                 let rest = leaderboardArray; 
 
                 let rankConfigs = [
@@ -1178,7 +1233,7 @@
                     challengersEl.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500 italic font-medium">Waiting for traders to join...</td></tr>`;
                 } else {
                     rest.forEach((trader, i) => {
-                        let rankNum = i + 1; // Ranks start from 1 for everyone in the table
+                        let rankNum = i + 1;
                         let pipsText = (trader.totalPips >= 0 ? '+' : '') + trader.totalPips.toFixed(1) + " Pts";
                         challengersEl.innerHTML += `
                             <tr onclick="window.viewTraderProfile('${trader.email}')" class="cursor-pointer border-b border-gray-800 hover:bg-[#1e293b] hover:shadow-lg transition duration-200">
@@ -1240,7 +1295,6 @@
             document.getElementById('publicProfileModal').classList.remove('hidden');
         };
 
-        // ALL USERS INBOX
         function loadChatContacts() {
             const listEl = document.getElementById('chat-contact-list');
             listEl.innerHTML = "";
@@ -1294,7 +1348,7 @@
             document.getElementById('active-chat-avatar').src = pfp;
             
             const historyEl = document.getElementById('chat-messages-history');
-            historyEl.innerHTML = `<div class="text-center my-4"><span class="text-[10px] uppercase tracking-widest font-bold text-gray-500 bg-[#0f172a] px-3 py-1 rounded-full border border-gray-800">Secure Session Started</span></div>`;
+            historyEl.innerHTML = `<div class="text-center my-4 relative flex justify-center items-center"><div class="absolute inset-x-0 h-px bg-gray-800"></div><span class="text-[9px] uppercase font-bold text-gray-500 bg-[#090e17] px-3 py-1 rounded-full relative z-10 border border-gray-800">Secure Session Started</span></div>`;
             
             setTimeout(() => {
                 historyEl.innerHTML += `
@@ -1384,15 +1438,23 @@
             });
         }
 
+        // SAVE STRATEGY BOUND TO currentLoggedInUser
         window.saveCompleteStrategyToDatabase = async function() {
             if(currentRulesList.length === 0) { alert("Add at least one execution rule!"); return; }
             try {
-                await addDoc(collection(db, "strategies"), { name: tempStrategyName, description: tempStrategyDesc, rules: currentRulesList, timestamp: new Date() });
-                alert("Vault Strategy Secured! 🚀");
+                await addDoc(collection(db, "strategies"), { 
+                    userEmail: currentLoggedInUser, 
+                    name: tempStrategyName, 
+                    description: tempStrategyDesc, 
+                    rules: currentRulesList, 
+                    timestamp: new Date() 
+                });
+                alert("Vault Strategy Secured Privately! 🚀");
                 document.getElementById('strategy-name-input').value = "";
                 document.getElementById('strategy-code-input').value = "";
                 currentRulesList = [];
                 window.backToStrategyStep1();
+                await loadUserDataFromFirebase();
                 window.switchTab('dashboard');
             } catch (e) { alert("Error: " + e.message); }
         };
@@ -1415,7 +1477,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // NEW ASSET FIELD SUPPORT
         window.previewImage = function(inputId, labelId, varName) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(labelId);
@@ -1504,7 +1565,6 @@
             const followedRules = [];
             checkboxes.forEach(cb => followedRules.push(cb.value));
 
-            // CAPTURE ASSET VALUE (Default XAUUSD)
             const assetValue = document.getElementById('trade-asset') ? document.getElementById('trade-asset').value.trim() || 'XAUUSD' : 'XAUUSD';
 
             const plValue = document.getElementById('trade-pl').value;
@@ -1562,7 +1622,6 @@
             lightbox.classList.remove('flex');
         };
 
-        // ANTI-STRETCH DOWNLOADER
         window.downloadReportImage = function() {
             const reportEl = document.getElementById('capture-trade-report');
             const closeBtn = document.getElementById('close-report-btn');
@@ -1609,12 +1668,10 @@
             }, 100);
         };
 
-        // OG TRADE REPORT MODAL FIX (IMAGES + ASSET + RULES)
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
             
-            // Set the asset dynamically, default to XAUUSD
             if(document.getElementById('rep-asset')) {
                 document.getElementById('rep-asset').innerText = trade.asset || 'XAUUSD';
             }
@@ -1631,7 +1688,6 @@
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
             plEl.className = "text-xl md:text-2xl font-black " + (trade.amount >= 0 ? "text-green-500" : "text-red-500");
 
-            // Images using object-contain trick for pure OG feel
             const chartImg = document.getElementById('rep-chart-img');
             const chartNoImg = document.getElementById('rep-chart-noimg');
             if(trade.chartImg && trade.chartImg.length > 50) {
@@ -1656,7 +1712,6 @@
                 rrNoImg.classList.remove('hidden');
             }
 
-            // Rules Verification Section
             const rulesListContainer = document.getElementById('rep-rules-list');
             if(rulesListContainer) {
                 rulesListContainer.innerHTML = "";
