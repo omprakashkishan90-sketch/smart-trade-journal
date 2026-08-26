@@ -537,6 +537,32 @@
                     <div><h4 class="text-slate-900 font-black text-xs">Public Leaderboard Profile</h4><p class="text-[10px] text-slate-400 font-medium">Allow others to view your stats.</p></div>
                     <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ap-public" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
                 </div>
+                
+                <!-- NEW FEATURE: MYFXBOOK INTEGRATION -->
+                <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">FXB</div>
+                        <div>
+                            <h4 class="text-slate-900 font-black text-sm">Connect Myfxbook</h4>
+                            <p class="text-[10px] text-slate-500 font-bold">Auto-sync your live trading history via API.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1.5">Account ID Number</label>
+                            <input id="myfx-account-id" type="text" placeholder="e.g. 1234567" class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl text-slate-900 font-bold text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1.5">Password / Token</label>
+                            <input id="myfx-password" type="password" placeholder="••••••••" class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl text-slate-900 font-bold text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <button onclick="window.connectMyFxBook()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl transition shadow-sm text-xs mt-1">
+                        Link Account 🔗
+                    </button>
+                </div>
+                <!-- END NEW FEATURE -->
+
                 <div class="border-t border-slate-100 pt-6">
                     <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
                         <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-30"></div>
@@ -706,6 +732,17 @@
         let globalProfilesMap = {};
         let globalTraderStats = {};
         let activeChatEmail = "";
+
+        // Added Myfxbook Connection Logic Function
+        window.connectMyFxBook = function() {
+            const accId = document.getElementById('myfx-account-id').value.trim();
+            const pass = document.getElementById('myfx-password').value;
+            if(!accId || !pass) {
+                alert("Please enter both Account ID Number and Password to connect!");
+                return;
+            }
+            alert("Connecting to Myfxbook API for Account ID " + accId + "...\n(Backend integration pending)");
+        };
 
         function getMostRecentSunday3AM() {
             const now = new Date();
