@@ -134,10 +134,7 @@
                 <button onclick="window.switchTab('leaderboard')" id="btn-leaderboard" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     🏆 Leaderboard
                 </button>
-                <button onclick="window.switchTab('messages')" id="btn-messages" class="w-full flex items-center justify-between px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
-                    <span>💬 Vault Inbox</span>
-                    <span class="bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full hidden" id="unread-badge">New</span>
-                </button>
+                
                 <button onclick="window.switchTab('activity')" id="btn-activity" class="w-full hidden items-center gap-3 px-4.5 py-3.5 text-rose-600 font-bold hover:bg-rose-50 rounded-2xl transition text-xs tracking-wide">
                     📈 System Logs
                 </button>
@@ -423,59 +420,6 @@
                     </div>
                 </div>
                 
-                <!-- 6. MESSAGES (INBOX) TAB -->
-                <div id="tab-messages" class="tab-content h-[calc(100vh-140px)] min-h-[550px] max-w-6xl mx-auto flex flex-col bg-white rounded-[32px] border border-slate-200 shadow-xs overflow-hidden relative">
-                    <div class="bg-slate-900 border-b border-slate-800 p-4 px-6 flex justify-between items-center z-10 text-white">
-                        <h2 class="text-base font-black flex items-center gap-2"><span>💬</span> Vault Messenger</h2>
-                        <span class="text-[10px] text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800 font-black uppercase tracking-widest">Secure Line</span>
-                    </div>
-
-                    <div class="flex flex-1 overflow-hidden h-full relative">
-                        <div id="chat-sidebar" class="w-full md:w-[320px] bg-slate-50 border-r border-slate-200 flex flex-col z-10 absolute md:relative inset-y-0 left-0">
-                            <div class="p-3.5 border-b border-slate-200 bg-white">
-                                <input type="text" placeholder="Search network..." class="w-full bg-slate-100 text-xs text-slate-900 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 font-bold">
-                            </div>
-                            <div class="overflow-y-auto flex-1 p-2 space-y-1" id="chat-contact-list">
-                                <div class="flex flex-col items-center justify-center h-full text-slate-400 text-xs font-bold uppercase tracking-widest">Loading network...</div>
-                            </div>
-                        </div>
-
-                        <div id="chat-main-area" class="hidden md:flex flex-col flex-1 bg-white absolute md:relative inset-0 z-20 w-full h-full">
-                            <div id="chat-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
-                                <h3 class="text-lg font-black text-slate-800 mb-1">Direct Messages</h3>
-                                <p class="text-slate-400 text-xs font-medium">Select a trader from the network to initiate a secure connection.</p>
-                            </div>
-
-                            <div id="active-chat-interface" class="hidden flex-col h-full z-20 w-full">
-                                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <button onclick="window.closeActiveChat()" class="md:hidden text-slate-500 hover:text-slate-900 p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                                        <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-2xl border border-slate-200 object-cover">
-                                        <div>
-                                            <h3 id="active-chat-username" class="text-slate-900 font-black text-sm">Trader</h3>
-                                            <p class="text-[9px] text-emerald-600 font-black uppercase">Online</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50" id="chat-messages-history">
-                                    <div class="text-center my-4 relative flex justify-center items-center">
-                                        <div class="absolute inset-x-0 h-px bg-slate-200"></div>
-                                        <span class="text-[9px] uppercase font-black text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Session</span>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 bg-white border-t border-slate-200">
-                                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 focus-within:border-blue-600">
-                                        <input type="text" id="chat-input-msg" placeholder="Type secure message..." class="flex-1 bg-transparent text-slate-900 text-xs font-bold px-3.5 focus:outline-none py-2" onkeypress="if(event.key === 'Enter') window.sendMessage()">
-                                        <button onclick="window.sendMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm">Send</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- 7. VISITOR ACTIVITY LOG TAB -->
                 <div id="tab-activity" class="tab-content pb-12 max-w-4xl mx-auto">
                     <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-8">
@@ -591,7 +535,6 @@
                 <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Experience</span><span id="pp-exp" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">1-3 Years</span></div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Phase</span><span id="pp-phase" class="text-blue-600 bg-blue-50 px-2 py-1 rounded">Learning</span></div>
                 <div class="flex justify-between items-center"><span class="text-slate-400 uppercase font-black text-[10px]">Profitable?</span><span id="pp-prof" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">Yes</span></div>
-                <div class="pt-3"><button id="pp-connect-btn" class="w-full bg-slate-900 text-white font-black py-3 rounded-xl transition text-xs shadow-sm">Connect & Chat</button></div>
             </div>
         </div>
     </div>
@@ -731,7 +674,6 @@
         let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
         let globalProfilesMap = {};
         let globalTraderStats = {};
-        let activeChatEmail = "";
 
         // Added Myfxbook Connection Logic Function
         window.connectMyFxBook = function() {
@@ -968,24 +910,12 @@
                 'strategies': 'Strategy Management', 
                 'logtrade': 'Log Execution', 
                 'leaderboard': 'Weekly Champions', 
-                'messages': 'Vault Messenger',
                 'activity': 'System Security Logs' 
             };
             document.getElementById('header-title').innerText = titles[tabId] || 'Dashboard';
 
             if(tabId === 'mytrades' && calendarInstance) setTimeout(() => { calendarInstance.render(); }, 100);
             if(tabId === 'leaderboard') loadLeaderboardData();
-            if(tabId === 'messages') {
-                document.getElementById('unread-badge').classList.add('hidden');
-                loadChatContacts();
-                
-                if (window.innerWidth < 768) {
-                    document.getElementById('chat-main-area').classList.add('hidden');
-                    document.getElementById('chat-main-area').classList.remove('flex');
-                    document.getElementById('chat-sidebar').classList.remove('hidden');
-                    document.getElementById('chat-sidebar').classList.add('flex');
-                }
-            }
             if(tabId === 'activity') loadVisitorActivity();
 
             if (window.innerWidth < 768) {
@@ -1305,108 +1235,7 @@
                 document.getElementById('pp-public-details').classList.add('hidden');
             }
 
-            const connectBtn = document.getElementById('pp-connect-btn');
-            if(connectBtn) {
-                connectBtn.onclick = function() { window.openChatFromProfile(email, profile.username, profile.pfp); };
-            }
-
             document.getElementById('publicProfileModal').classList.remove('hidden');
-        };
-
-        function loadChatContacts() {
-            const listEl = document.getElementById('chat-contact-list');
-            listEl.innerHTML = "";
-            
-            let contactsCount = 0;
-            for(let email in globalProfilesMap) {
-                if(email !== currentLoggedInUser) {
-                    contactsCount++;
-                    let p = globalProfilesMap[email];
-                    listEl.innerHTML += `
-                        <div onclick="window.openChatWithUser('${email}', '${p.username}', '${p.pfp}')" class="flex items-center gap-3 p-3.5 hover:bg-slate-200/60 rounded-2xl cursor-pointer transition border border-transparent">
-                            <div class="relative shrink-0">
-                                <img src="${p.pfp}" class="w-10 h-10 rounded-2xl object-cover border border-slate-200">
-                                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></div>
-                            </div>
-                            <div class="overflow-hidden flex-1">
-                                <h4 class="text-slate-900 text-xs font-black truncate">${p.username}</h4>
-                                <p class="text-[10px] text-slate-400 truncate mt-0.5 font-medium">Tap to open chat</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-            if(contactsCount === 0) {
-                listEl.innerHTML = `<div class="text-center p-6 text-slate-400 text-xs font-bold uppercase tracking-wider">No other traders.</div>`;
-            }
-        }
-
-        window.openChatFromProfile = function(email, username, pfp) {
-            document.getElementById('publicProfileModal').classList.add('hidden');
-            window.switchTab('messages');
-            window.openChatWithUser(email, username, pfp);
-        };
-
-        window.openChatWithUser = function(email, username, pfp) {
-            activeChatEmail = email;
-            
-            if (window.innerWidth < 768) {
-                document.getElementById('chat-sidebar').classList.add('hidden');
-                document.getElementById('chat-sidebar').classList.remove('flex');
-            }
-            
-            document.getElementById('chat-empty-state').classList.add('hidden');
-            document.getElementById('chat-main-area').classList.remove('hidden');
-            document.getElementById('chat-main-area').classList.add('flex');
-            
-            document.getElementById('active-chat-interface').classList.remove('hidden');
-            document.getElementById('active-chat-interface').classList.add('flex');
-            
-            document.getElementById('active-chat-username').innerText = username;
-            document.getElementById('active-chat-avatar').src = pfp;
-            
-            const historyEl = document.getElementById('chat-messages-history');
-            historyEl.innerHTML = `<div class="text-center my-4 relative flex justify-center items-center"><div class="absolute inset-x-0 h-px bg-slate-200"></div><span class="text-[9px] uppercase font-black text-slate-400 bg-white px-3 py-1 rounded-full relative z-10 border border-slate-200">Secure Line Active</span></div>`;
-            
-            setTimeout(() => {
-                historyEl.innerHTML += `
-                    <div class="flex justify-start mb-3 chat-bubble">
-                        <div class="bg-white text-slate-800 text-xs p-3.5 rounded-2xl rounded-tl-xs max-w-[80%] border border-slate-200 shadow-2xs font-semibold">
-                            Hey! Let's share SMC execution setups. 📈
-                            <span class="block text-[9px] text-slate-400 mt-1 text-right">09:12 AM</span>
-                        </div>
-                    </div>`;
-                historyEl.scrollTop = historyEl.scrollHeight;
-            }, 300);
-        };
-
-        window.closeActiveChat = function() {
-            if (window.innerWidth < 768) {
-                document.getElementById('chat-main-area').classList.add('hidden');
-                document.getElementById('chat-main-area').classList.remove('flex');
-                document.getElementById('chat-sidebar').classList.remove('hidden');
-                document.getElementById('chat-sidebar').classList.add('flex');
-            }
-            activeChatEmail = "";
-        };
-
-        window.sendMessage = function() {
-            const input = document.getElementById('chat-input-msg');
-            const msg = input.value.trim();
-            if(!msg || !activeChatEmail) return;
-            
-            const historyEl = document.getElementById('chat-messages-history');
-            
-            historyEl.innerHTML += `
-                <div class="flex justify-end mb-3 chat-bubble">
-                    <div class="bg-blue-600 text-white text-xs p-3.5 rounded-2xl rounded-tr-xs max-w-[80%] shadow-sm font-semibold">
-                        ${msg}
-                        <span class="block text-[9px] text-blue-100 mt-1 text-right">Just now ✓</span>
-                    </div>
-                </div>`;
-                
-            input.value = "";
-            historyEl.scrollTop = historyEl.scrollHeight;
         };
 
         window.openCertificateModal = function(username) {
