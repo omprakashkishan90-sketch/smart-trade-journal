@@ -133,7 +133,7 @@
                     📅 Calendar & Reports
                 </button>
                 
-                <!-- NEW ACCOUNT MANAGER TAB BUTTON -->
+                <!-- ACCOUNT MANAGER TAB BUTTON -->
                 <button onclick="window.switchTab('account')" id="btn-account" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     ⚙️ Account Setup
                 </button>
@@ -242,7 +242,7 @@
                         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4 border-b border-slate-100 pb-6">
                             <div>
                                 <h2 class="text-2xl font-black text-slate-900 tracking-tight">Trading Calendar & Reports</h2>
-                                <p class="text-xs text-slate-500 font-medium mt-1">Click on any logged trade date to inspect analytics and visual blueprints.</p>
+                                <p class="text-xs text-slate-500 font-medium mt-1">Master Ledger: Click on any logged trade date to inspect analytics.</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-900 text-white text-xs font-bold px-4.5 py-3 rounded-2xl hover:bg-slate-800 shadow-sm transition">📧 Email Report</button>
@@ -257,8 +257,17 @@
                 <!-- NEW ACCOUNT MANAGER TAB -->
                 <div id="tab-account" class="tab-content pb-12 max-w-4xl mx-auto">
                     <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10">
-                        <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-6 pb-4 border-b border-slate-100">⚙️ Account Manager</h2>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-4">⚙️ Account Manager</h2>
                         
+                        <!-- CURRENT ACTIVE BANNER -->
+                        <div class="bg-blue-50 border border-blue-100 p-5 rounded-2xl mb-8 flex items-center justify-between shadow-inner">
+                            <div>
+                                <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Currently Active Workspace</p>
+                                <h3 id="am-active-account" class="text-xl font-black text-blue-900">Main Account</h3>
+                            </div>
+                            <div class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-md text-xl">⚡</div>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Add New Account Card -->
                             <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col items-start shadow-sm hover:border-blue-300 transition">
@@ -332,7 +341,7 @@
                     <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10">
                         <div class="mb-6 pb-4 border-b border-slate-100 flex justify-between items-center">
                             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Log Execution</h2>
-                            <span id="active-account-indicator" class="text-xs font-extrabold bg-blue-50 text-blue-700 px-3 py-1 rounded-xl">Account: Main</span>
+                            <span id="active-account-indicator" class="text-xs font-extrabold bg-blue-50 text-blue-700 px-3 py-1 rounded-xl shadow-sm">Account: Main</span>
                         </div>
                         
                         <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -515,13 +524,34 @@
 
             <div id="reset-step-2" class="space-y-4 mb-6 hidden">
                 <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Enter 6-Digit OTP</label>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
+                        <span>Enter 6-Digit OTP</span>
+                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
+                    </label>
                     <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
                 </div>
-                <button onclick="window.verifyAndResetAccount()" class="w-full bg-rose-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify & Wipe Account Data ⚠️</button>
+                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
             </div>
 
-            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close</button>
+            <!-- NEW STEP 3: KEEP OR WIPE -->
+            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
+                <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
+                    <span class="text-xl">✅</span>
+                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
+                </div>
+                <p class="text-xs text-slate-500 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
+                
+                <div class="flex flex-col gap-3">
+                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>📅</span> Keep Old Data in Calendar
+                    </button>
+                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>🗑️</span> Wipe Completely (No History)
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
         </div>
     </div>
 
@@ -699,7 +729,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCvvnG3BExrwHTtgqRtoyJK1Dxnr2ljoF4",
@@ -732,6 +762,8 @@
         let globalProfilesMap = {};
         let globalTraderStats = {};
         let generatedOtp = "";
+        let otpGeneratedTime = 0;
+        let otpInterval = null;
 
         // GLOBAL TOAST NOTIFICATION FUNCTION
         window.showToast = function(message, type = 'success') {
@@ -784,9 +816,11 @@
         window.openResetModal = function() {
             document.getElementById('reset-step-1').classList.remove('hidden');
             document.getElementById('reset-step-2').classList.add('hidden');
+            document.getElementById('reset-step-3').classList.add('hidden');
             document.getElementById('reset-otp-input').value = "";
             document.getElementById('reset-modal-desc').innerText = "Clicking send OTP will dispatch a verification code to " + currentLoggedInUser;
             document.getElementById('resetAccountModal').classList.remove('hidden');
+            if(otpInterval) clearInterval(otpInterval);
         };
 
         window.sendResetOtp = async function() {
@@ -796,49 +830,108 @@
             formData.append("access_key", WEB3FORMS_KEY);
             formData.append("subject", "Trade Vault - Account Reset OTP");
             formData.append("email", currentLoggedInUser);
-            formData.append("message", "Your verification code to reset/wipe your account data is: " + generatedOtp);
+            formData.append("message", "Your verification code to reset/wipe your account data is: " + generatedOtp + "\n\nThis OTP will expire in 1 minute.");
 
             try {
                 const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
                 const data = await response.json();
                 if(data.success) {
+                    otpGeneratedTime = Date.now();
                     window.showToast("OTP sent to your registered email!");
                     document.getElementById('reset-step-1').classList.add('hidden');
                     document.getElementById('reset-step-2').classList.remove('hidden');
+                    
+                    let timeLeft = 60;
+                    document.getElementById('otp-timer').innerText = `Expires in ${timeLeft}s`;
+                    otpInterval = setInterval(() => {
+                        timeLeft--;
+                        if(timeLeft <= 0) {
+                            clearInterval(otpInterval);
+                            document.getElementById('otp-timer').innerText = "Expired";
+                        } else {
+                            document.getElementById('otp-timer').innerText = `Expires in ${timeLeft}s`;
+                        }
+                    }, 1000);
+
                 } else {
                     window.showToast("Failed to send email. Check API key.", "error");
                 }
             } catch(e) { window.showToast("Network error: " + e.message, "error"); }
         };
 
-        window.verifyAndResetAccount = async function() {
+        window.verifyAndResetAccount = function() {
             const enteredOtp = document.getElementById('reset-otp-input').value.trim();
+            const now = Date.now();
+            
+            if (now - otpGeneratedTime > 60000) {
+                window.showToast("OTP Expired! Please request a new one.", "error");
+                window.openResetModal(); 
+                return;
+            }
+
             if(enteredOtp !== generatedOtp) {
                 window.showToast("Incorrect OTP code entered!", "error");
                 return;
             }
 
+            // OTP is correct! Move to Step 3
+            if(otpInterval) clearInterval(otpInterval);
+            document.getElementById('reset-step-2').classList.add('hidden');
+            document.getElementById('reset-step-3').classList.remove('hidden');
+        };
+
+        window.finalizeReset = async function(choice) {
             try {
-                currentUserProfile.activeAccountId = 'main_' + Date.now();
+                if (choice === 'wipe') {
+                    window.showToast("Wiping database permanently...", "success");
+                    const q = query(collection(db, "trades"), where("userEmail", "==", currentLoggedInUser));
+                    const snapshot = await getDocs(q);
+                    const deletePromises = [];
+                    snapshot.forEach((docSnap) => {
+                        deletePromises.push(deleteDoc(docSnap.ref));
+                    });
+                    await Promise.all(deletePromises);
+                }
+
+                // Generate new workspace ID
+                const newAccId = 'acc_reset_' + Date.now();
+                currentUserProfile.activeAccountId = newAccId;
+                if(!currentUserProfile.accounts) currentUserProfile.accounts = {};
+                currentUserProfile.accounts[newAccId] = { name: "Reset Workspace", createdAt: new Date().toISOString() };
+                
                 const docRef = doc(db, "profiles", currentLoggedInUser);
                 await setDoc(docRef, currentUserProfile, { merge: true });
 
                 document.getElementById('resetAccountModal').classList.add('hidden');
-                window.showToast("Account reset successfully!");
+                
+                if (choice === 'keep') {
+                    window.showToast("Dashboard reset! Old data safely kept in Calendar.");
+                } else {
+                    window.showToast("Account wiped completely!");
+                }
+                
                 loadUserDataFromFirebase();
                 updateActiveAccountBadge();
-            } catch(e) { window.showToast("Error resetting account: " + e.message, "error"); }
+            } catch(e) {
+                window.showToast("Error finalizing reset: " + e.message, "error");
+            }
         };
 
         function updateActiveAccountBadge() {
             const badge = document.getElementById('active-account-badge');
             const ind = document.getElementById('active-account-indicator');
+            const amDisplay = document.getElementById('am-active-account');
+            
             let accName = "Main Account";
             if(currentUserProfile.accounts && currentUserProfile.accounts[currentUserProfile.activeAccountId]) {
                 accName = currentUserProfile.accounts[currentUserProfile.activeAccountId].name;
+            } else if (currentUserProfile.activeAccountId && currentUserProfile.activeAccountId.includes('reset')) {
+                accName = "Reset Workspace";
             }
+            
             if(badge) badge.innerText = "Active: " + accName;
             if(ind) ind.innerText = "Account: " + accName;
+            if(amDisplay) amDisplay.innerText = accName;
         }
 
         function getMostRecentSunday3AM() {
@@ -1051,7 +1144,7 @@
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(btn => {
-                if(!btn.onclick || !btn.onclick.toString().includes('openAddNewAccount') && !btn.onclick.toString().includes('openResetModal')) {
+                if(!btn.onclick || (!btn.onclick.toString().includes('openAddNewAccount') && !btn.onclick.toString().includes('openResetModal'))) {
                     btn.classList.remove('bg-blue-50', 'text-blue-700');
                     btn.classList.add('text-slate-600');
                 }
@@ -1131,7 +1224,13 @@
                     const t = doc.data();
                     globalTradesCache.push(t);
                     
-                    const isCurrentAccount = !t.accountId || t.accountId === currentUserProfile.activeAccountId;
+                    // NEW STRICT FILTERING LOGIC
+                    // If trade has no accountId, assume it belongs to "main".
+                    let tradeAccId = t.accountId || 'main';
+                    
+                    // Only count towards Dashboard if the trade's account ID perfectly matches the active one
+                    const isCurrentAccount = (tradeAccId === currentUserProfile.activeAccountId);
+
                     if(isCurrentAccount) {
                         totalTrades++;
                         const amt = parseFloat(t.amount || 0);
@@ -1153,6 +1252,7 @@
                         if(amt > biggestWinAmt) biggestWinAmt = amt;
                     }
 
+                    // CALENDAR gets ALL trades stored in DB (acting as a Universal Ledger/History)
                     calendarInstance.addEvent({
                         title: (parseFloat(t.amount || 0) >= 0 ? '+$' : '-$') + Math.abs(parseFloat(t.amount || 0)),
                         start: t.date,
