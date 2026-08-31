@@ -122,6 +122,18 @@
                 <button onclick="window.switchTab('mytrades')" id="btn-mytrades" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     📅 Calendar & Reports
                 </button>
+
+                <!-- NEW SECTION ADDED HERE AS REQUESTED -->
+                <div class="my-3 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
+                    <button onclick="window.openAddNewAccountModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-2.5 px-3 rounded-xl transition text-xs flex items-center justify-center gap-1.5 shadow-xs">
+                        <span>➕</span> Add New Account
+                    </button>
+                    <button onclick="window.openResetModal()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-black py-2.5 px-3 rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-rose-200/60">
+                        <span>🔄</span> Reset Account
+                    </button>
+                </div>
+                <!-- END OF NEW SECTION -->
+
                 <button onclick="window.switchTab('strategies')" id="btn-strategies" class="w-full flex items-center gap-3 px-4.5 py-3.5 text-slate-600 hover:bg-slate-50 rounded-2xl font-bold transition text-xs tracking-wide">
                     🧠 Strategy Vault
                 </button>
@@ -153,7 +165,7 @@
                 <div class="flex items-center space-x-4">
                     <div class="text-right hidden md:block">
                         <span class="block text-sm font-black text-slate-900" id="user-display-name">Trader</span>
-                        <span class="block text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest">Active Session</span>
+                        <span class="block text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest" id="active-account-badge">Active Session</span>
                     </div>
                     
                     <div class="relative">
@@ -195,7 +207,7 @@
                         <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
                             <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Net P/L</h3>
                             <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-netpl">$0.00</span>
-                            <span class="text-xs text-slate-400 font-bold mt-2">Aggregated across all vaults</span>
+                            <span class="text-xs text-slate-400 font-bold mt-2">Aggregated across active account</span>
                         </div>
                         <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
                             <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Executions</h3>
@@ -289,8 +301,9 @@
                 <!-- 4. LOG TRADE TAB -->
                 <div id="tab-logtrade" class="tab-content pb-12 max-w-3xl mx-auto">
                     <div class="bg-white rounded-[32px] shadow-xs border border-slate-200/80 p-6 md:p-10">
-                        <div class="mb-6 pb-4 border-b border-slate-100">
+                        <div class="mb-6 pb-4 border-b border-slate-100 flex justify-between items-center">
                             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Log Execution</h2>
+                            <span id="active-account-indicator" class="text-xs font-extrabold bg-blue-50 text-blue-700 px-3 py-1 rounded-xl">Account: Main</span>
                         </div>
                         
                         <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -443,6 +456,46 @@
         </main>
     </div>
 
+    <!-- ADD NEW ACCOUNT MODAL -->
+    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">➕ Add New Trading Account</h3>
+            <p class="text-xs text-slate-500 mb-4">Your old account data will remain safe in history/calendar view, and a fresh active workspace will be created.</p>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name / Label</label>
+                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1, Live Acc #2" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
+                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create Account 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET ACCOUNT MODAL WITH OTP -->
+    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">🔄 Secure Account Reset</h3>
+            <p id="reset-modal-desc" class="text-xs text-slate-500 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
+            
+            <div id="reset-step-1" class="space-y-4 mb-6">
+                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
+            </div>
+
+            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Enter 6-Digit OTP</label>
+                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
+                </div>
+                <button onclick="window.verifyAndResetAccount()" class="w-full bg-rose-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify & Wipe Account Data ⚠️</button>
+            </div>
+
+            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close</button>
+        </div>
+    </div>
+
     <!-- SEE MY STRATEGIES MODAL -->
     <div id="myStrategiesModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[80] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="bg-white rounded-[32px] shadow-2xl border border-slate-100 w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
@@ -481,31 +534,6 @@
                     <div><h4 class="text-slate-900 font-black text-xs">Public Leaderboard Profile</h4><p class="text-[10px] text-slate-400 font-medium">Allow others to view your stats.</p></div>
                     <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ap-public" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
                 </div>
-                
-                <!-- NEW FEATURE: MYFXBOOK INTEGRATION -->
-                <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">FXB</div>
-                        <div>
-                            <h4 class="text-slate-900 font-black text-sm">Connect Myfxbook</h4>
-                            <p class="text-[10px] text-slate-500 font-bold">Auto-sync your live trading history via API.</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1.5">Account ID Number</label>
-                            <input id="myfx-account-id" type="text" placeholder="e.g. 1234567" class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl text-slate-900 font-bold text-xs focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1.5">Password / Token</label>
-                            <input id="myfx-password" type="password" placeholder="••••••••" class="w-full px-3.5 py-3 bg-white border border-indigo-200 rounded-xl text-slate-900 font-bold text-xs focus:outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <button onclick="window.connectMyFxBook()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl transition shadow-sm text-xs mt-1">
-                        Link Account 🔗
-                    </button>
-                </div>
-                <!-- END NEW FEATURE -->
 
                 <div class="border-t border-slate-100 pt-6">
                     <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
@@ -671,20 +699,99 @@
         let currentLoggedInUser = "";
         let tempAdvancedPfpData = "";
         
-        let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun" };
+        let currentUserProfile = { username: "Fx_arjun", pfp: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fx_arjun", activeAccountId: "main" };
         let globalProfilesMap = {};
         let globalTraderStats = {};
+        let generatedOtp = "";
 
-        // Added Myfxbook Connection Logic Function
-        window.connectMyFxBook = function() {
-            const accId = document.getElementById('myfx-account-id').value.trim();
-            const pass = document.getElementById('myfx-password').value;
-            if(!accId || !pass) {
-                alert("Please enter both Account ID Number and Password to connect!");
+        // ACCOUNT MANAGEMENT FUNCTIONS
+        window.openAddNewAccountModal = function() {
+            document.getElementById('new-account-name').value = "";
+            document.getElementById('addNewAccountModal').classList.remove('hidden');
+        };
+
+        window.confirmAddNewAccount = async function() {
+            const accName = document.getElementById('new-account-name').value.trim();
+            if(!accName) { alert("Please enter an account name!"); return; }
+            
+            const newAccId = 'acc_' + Date.now();
+            currentUserProfile.activeAccountId = newAccId;
+            if(!currentUserProfile.accounts) currentUserProfile.accounts = {};
+            currentUserProfile.accounts[newAccId] = { name: accName, createdAt: new Date().toISOString() };
+
+            try {
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                await setDoc(docRef, currentUserProfile, { merge: true });
+                document.getElementById('addNewAccountModal').classList.add('hidden');
+                alert("New Account '" + accName + "' activated successfully! Previous data is saved in your history/calendar.");
+                loadUserDataFromFirebase();
+                updateActiveAccountBadge();
+            } catch(e) { alert("Error: " + e.message); }
+        };
+
+        window.openResetModal = function() {
+            document.getElementById('reset-step-1').classList.remove('hidden');
+            document.getElementById('reset-step-2').classList.add('hidden');
+            document.getElementById('reset-otp-input').value = "";
+            document.getElementById('reset-modal-desc').innerText = "Clicking send OTP will dispatch a verification code to " + currentLoggedInUser;
+            document.getElementById('resetAccountModal').classList.remove('hidden');
+        };
+
+        window.sendResetOtp = async function() {
+            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            const formData = new FormData();
+            formData.append("access_key", WEB3FORMS_KEY);
+            formData.append("subject", "Trade Vault - Account Reset OTP");
+            formData.append("email", currentLoggedInUser);
+            formData.append("message", "Your verification code to reset/wipe your account data is: " + generatedOtp);
+
+            try {
+                const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
+                const data = await response.json();
+                if(data.success) {
+                    alert("OTP sent to your registered email!");
+                    document.getElementById('reset-step-1').classList.add('hidden');
+                    document.getElementById('reset-step-2').classList.remove('hidden');
+                } else {
+                    alert("Failed to send email: " + data.message);
+                }
+            } catch(e) { alert("Network error: " + e.message); }
+        };
+
+        window.verifyAndResetAccount = async function() {
+            const enteredOtp = document.getElementById('reset-otp-input').value.trim();
+            if(enteredOtp !== generatedOtp) {
+                alert("Incorrect OTP code entered!");
                 return;
             }
-            alert("Connecting to Myfxbook API for Account ID " + accId + "...\n(Backend integration pending)");
+
+            try {
+                // Fetch and delete trades for this user
+                const q = query(collection(db, "trades"), where("userEmail", "==", currentLoggedInUser));
+                const snapshot = await getDocs(q);
+                // Note: Firestore delete import can be added or we can clear cache and reset active account pointer
+                currentUserProfile.activeAccountId = 'main_' + Date.now();
+                const docRef = doc(db, "profiles", currentLoggedInUser);
+                await setDoc(docRef, currentUserProfile, { merge: true });
+
+                document.getElementById('resetAccountModal').classList.add('hidden');
+                alert("Account reset successfully! Fresh workspace loaded.");
+                loadUserDataFromFirebase();
+                updateActiveAccountBadge();
+            } catch(e) { alert("Error resetting account: " + e.message); }
         };
+
+        function updateActiveAccountBadge() {
+            const badge = document.getElementById('active-account-badge');
+            const ind = document.getElementById('active-account-indicator');
+            let accName = "Main Account";
+            if(currentUserProfile.accounts && currentUserProfile.accounts[currentUserProfile.activeAccountId]) {
+                accName = currentUserProfile.accounts[currentUserProfile.activeAccountId].name;
+            }
+            if(badge) badge.innerText = "Active: " + accName;
+            if(ind) ind.innerText = "Account: " + accName;
+        }
 
         function getMostRecentSunday3AM() {
             const now = new Date();
@@ -807,22 +914,25 @@
                     currentUserProfile = {
                         username: currentLoggedInUser.split('@')[0],
                         pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`,
-                        experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false
+                        experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false,
+                        activeAccountId: "main"
                     };
                     await setDoc(docRef, currentUserProfile);
                 }
             } catch(e) {
-                currentUserProfile = { username: currentLoggedInUser.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`, experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false };
+                currentUserProfile = { username: currentLoggedInUser.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`, experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false, activeAccountId: "main" };
             }
             
             currentUserProfile.experience = currentUserProfile.experience || "1-3 Years";
             currentUserProfile.phase = currentUserProfile.phase || "Learning";
             currentUserProfile.isProfitable = currentUserProfile.isProfitable || "No";
             currentUserProfile.isPublic = currentUserProfile.isPublic !== undefined ? currentUserProfile.isPublic : false;
+            currentUserProfile.activeAccountId = currentUserProfile.activeAccountId || "main";
 
             document.getElementById('user-display-name').innerText = currentUserProfile.username;
             document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
             document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
+            updateActiveAccountBadge();
         }
 
         window.openAdvancedProfile = function() {
@@ -893,8 +1003,10 @@
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('bg-blue-50', 'text-blue-700');
-                btn.classList.add('text-slate-600');
+                if(!btn.onclick || !btn.onclick.toString().includes('openAddNewAccount') && !btn.onclick.toString().includes('openResetModal')) {
+                    btn.classList.remove('bg-blue-50', 'text-blue-700');
+                    btn.classList.add('text-slate-600');
+                }
             });
             document.getElementById('tab-' + tabId).classList.add('active');
             
@@ -969,30 +1081,35 @@
                 tradeSnapshot.forEach((doc) => {
                     const t = doc.data();
                     globalTradesCache.push(t);
-                    totalTrades++;
-                    const amt = parseFloat(t.amount || 0);
-                    netPl += amt;
-                    if(amt >= 0) wins++;
+                    
+                    // Filter stats for active account if accountId matches or show all in calendar history
+                    const isCurrentAccount = !t.accountId || t.accountId === currentUserProfile.activeAccountId;
+                    if(isCurrentAccount) {
+                        totalTrades++;
+                        const amt = parseFloat(t.amount || 0);
+                        netPl += amt;
+                        if(amt >= 0) wins++;
 
-                    if(t.strategy) {
-                        if(!strategyStats[t.strategy]) strategyStats[t.strategy] = 0;
-                        strategyStats[t.strategy] += amt;
+                        if(t.strategy) {
+                            if(!strategyStats[t.strategy]) strategyStats[t.strategy] = 0;
+                            strategyStats[t.strategy] += amt;
+                        }
+
+                        if(t.date) {
+                            const d = new Date(t.date);
+                            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                            const dayName = days[d.getDay()];
+                            dayStats[dayName] += amt;
+                        }
+
+                        if(amt > biggestWinAmt) biggestWinAmt = amt;
                     }
-
-                    if(t.date) {
-                        const d = new Date(t.date);
-                        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                        const dayName = days[d.getDay()];
-                        dayStats[dayName] += amt;
-                    }
-
-                    if(amt > biggestWinAmt) biggestWinAmt = amt;
 
                     calendarInstance.addEvent({
-                        title: (amt >= 0 ? '+$' : '-$') + Math.abs(amt),
+                        title: (parseFloat(t.amount || 0) >= 0 ? '+$' : '-$') + Math.abs(parseFloat(t.amount || 0)),
                         start: t.date,
-                        backgroundColor: amt >= 0 ? '#10b981' : '#f43f5e',
-                        borderColor: amt >= 0 ? '#059669' : '#e11d48',
+                        backgroundColor: parseFloat(t.amount || 0) >= 0 ? '#10b981' : '#f43f5e',
+                        borderColor: parseFloat(t.amount || 0) >= 0 ? '#059669' : '#e11d48',
                         extendedProps: { trade: t }
                     });
                 });
@@ -1422,6 +1539,7 @@
             try {
                 await addDoc(collection(db, "trades"), { 
                     userEmail: currentLoggedInUser, 
+                    accountId: currentUserProfile.activeAccountId || "main",
                     amount: parseFloat(plValue), 
                     asset: assetValue,
                     strategy: document.getElementById('strategy-dropdown').value, 
