@@ -70,7 +70,7 @@
                 <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
             </div>
             
-            <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl text-center max-w-md w-full border border-slate-100 relative z-10">
+            <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl text-center max-w-md w-full border border-slate-100 relative z-10 my-auto shrink-0">
                 <div class="w-16 h-16 bg-slate-900 rounded-2xl mx-auto flex items-center justify-center mb-5 text-white shadow-xl">
                     <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
                 </div>
@@ -377,7 +377,7 @@
                         </div>
 
                         <div class="space-y-5 border-t border-slate-100 pt-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Trade Direction</label>
                                     <select id="trade-direction" onchange="window.calculateFromPrices()" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-600 text-sm">
@@ -388,6 +388,17 @@
                                 <div>
                                     <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Lot Size</label>
                                     <input id="trade-lotsize" type="number" step="0.01" value="0.01" oninput="window.calculateFromPrices()" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-600 text-sm">
+                                </div>
+                                <!-- NEW FEATURE: EMOTION TRACKER -->
+                                <div>
+                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Mental State</label>
+                                    <select id="trade-emotion" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-600 text-sm">
+                                        <option value="Confident">😎 Confident / Planned</option>
+                                        <option value="FOMO">🏃‍♂️ FOMO / Rushed</option>
+                                        <option value="Revenge">😡 Revenge Trade</option>
+                                        <option value="Impatient">⏳ Impatient / Early</option>
+                                        <option value="Neutral">😐 Neutral / Robot</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -492,6 +503,8 @@
         </main>
     </div>
 
+    <!-- MODALS SECTION -->
+    
     <!-- ADD NEW ACCOUNT MODAL -->
     <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
@@ -531,7 +544,6 @@
                 <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
             </div>
 
-            <!-- NEW STEP 3: KEEP OR WIPE -->
             <div id="reset-step-3" class="space-y-5 mb-6 hidden">
                 <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
                     <span class="text-xl">✅</span>
@@ -550,19 +562,6 @@
             </div>
 
             <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
-        </div>
-    </div>
-
-    <!-- SEE MY STRATEGIES MODAL -->
-    <div id="myStrategiesModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[80] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[32px] shadow-2xl border border-slate-100 w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
-            <div class="p-6 bg-slate-900 text-white border-b border-slate-800 flex justify-between items-center">
-                <h3 class="text-base font-black flex items-center gap-2"><span>📚</span> My Private Strategy Vault</h3>
-                <button onclick="document.getElementById('myStrategiesModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50" id="my-strategies-list-container">
-                <div class="text-center py-8 text-slate-400 font-bold uppercase tracking-widest text-xs">Loading vault...</div>
-            </div>
         </div>
     </div>
 
@@ -587,11 +586,6 @@
                     <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phase</label><select id="ap-phase" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-xs font-bold"><option>Learning</option><option>Losing</option><option>Break Even</option><option>Profitable</option></select></div>
                     <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profitable?</label><select id="ap-profitable" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-xs font-bold"><option>No</option><option>Yes</option></select></div>
                 </div>
-                <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <div><h4 class="text-slate-900 font-black text-xs">Public Leaderboard Profile</h4><p class="text-[10px] text-slate-400 font-medium">Allow others to view your stats.</p></div>
-                    <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ap-public" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
-                </div>
-
                 <div class="border-t border-slate-100 pt-6">
                     <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
                         <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-30"></div>
@@ -615,16 +609,14 @@
                 <h3 id="pp-username" class="text-lg font-black text-slate-900">Trader</h3>
                 <p id="pp-pips" class="text-emerald-600 font-black text-xs mt-0.5">+0.0 Pts This Week</p>
             </div>
-            <div id="pp-private-msg" class="p-8 text-center hidden"><h4 class="text-slate-800 font-bold text-sm">Vault is Private 🔒</h4></div>
             <div id="pp-public-details" class="p-5 space-y-3 hidden text-xs font-bold">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Experience</span><span id="pp-exp" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">1-3 Years</span></div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-400 uppercase font-black text-[10px]">Phase</span><span id="pp-phase" class="text-blue-600 bg-blue-50 px-2 py-1 rounded">Learning</span></div>
-                <div class="flex justify-between items-center"><span class="text-slate-400 uppercase font-black text-[10px]">Profitable?</span><span id="pp-prof" class="text-slate-800 bg-slate-100 px-2 py-1 rounded">Yes</span></div>
             </div>
         </div>
     </div>
 
-    <!-- CLEAN DOWNLOADABLE TRADE REPORT MODAL -->
+    <!-- TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
             <div id="capture-trade-report" class="bg-white rounded-[32px] shadow-2xl p-6 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100" style="width: 100%; max-width: 650px;">
@@ -664,16 +656,17 @@
                         </div>
                     </div>
                     <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Asset & Strategy</p>
-                        <span class="text-xs font-black text-slate-900 truncate"><span id="rep-asset">XAUUSD</span> • <span id="rep-strat">-</span></span>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Asset</p>
+                        <span class="text-xs font-black text-slate-900 truncate" id="rep-asset">XAUUSD</span>
+                    </div>
+                    <!-- EMOTION DISPLAY -->
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Emotion</p>
+                        <span class="text-xs font-black text-slate-900" id="rep-emotion">Neutral</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Lot Size</p>
                         <span class="text-xs font-black text-slate-900" id="rep-lot">-</span>
-                    </div>
-                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Entry/SL/TP</p>
-                        <span class="text-[11px] font-semibold text-slate-600 leading-tight" id="rep-levels">-</span>
                     </div>
                 </div>
 
@@ -688,9 +681,66 @@
                 </div>
             </div>
 
-            <button id="download-report-btn" onclick="window.downloadReportImage()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-xs py-4 rounded-2xl shadow-lg transition tracking-wide">
-                Download HD Ticket 📸
-            </button>
+            <!-- BUTTONS ROW: TICKET vs FLEX CARD -->
+            <div class="flex gap-3 w-full" id="report-action-buttons">
+                <button onclick="window.downloadReportImage()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs py-4 rounded-2xl shadow-lg transition tracking-wide flex items-center justify-center gap-2">
+                    <span>📄</span> Download Ticket
+                </button>
+                <button onclick="window.generateFlexCard()" class="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-black text-xs py-4 rounded-2xl shadow-lg transition tracking-wide flex items-center justify-center gap-2">
+                    <span>📸</span> Generate Flex Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN INSTAGRAM FLEX CARD (Only for Canvas Export) -->
+    <div id="flex-card-container" class="fixed top-[-9999px] left-[-9999px] z-[-1] pointer-events-none">
+        <div id="capture-flex-card" class="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#090d16] w-[1080px] h-[1080px] relative overflow-hidden flex flex-col justify-between p-16 font-sans">
+            <!-- Background effects -->
+            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600 rounded-full mix-blend-screen filter blur-[150px] opacity-30"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
+            <div class="absolute inset-0 border-[16px] border-white/5 rounded-[64px] m-8"></div>
+            
+            <!-- Top Header -->
+            <div class="relative z-10 flex justify-between items-center w-full">
+                <div class="flex items-center gap-6">
+                    <img id="flex-avatar" src="" class="w-24 h-24 rounded-full border-4 border-white shadow-2xl object-cover">
+                    <div>
+                        <h2 id="flex-username" class="text-4xl font-black text-white tracking-tight">Trader Name</h2>
+                        <p class="text-xl text-slate-400 font-bold tracking-widest uppercase mt-1">Trade Vault Elite</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span id="flex-emotion-badge" class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-2xl font-black px-6 py-3 rounded-full uppercase tracking-widest">😎 Confident</span>
+                </div>
+            </div>
+
+            <!-- Center Content -->
+            <div class="relative z-10 flex flex-col items-center justify-center flex-1 w-full mt-10">
+                <p id="flex-pair" class="text-3xl text-slate-300 font-black tracking-[0.3em] uppercase mb-4">XAUUSD</p>
+                <h1 id="flex-pl" class="text-[140px] leading-none font-black text-emerald-400 tracking-tighter drop-shadow-[0_0_40px_rgba(52,211,153,0.3)]">+$0.00</h1>
+                <div class="mt-12 flex gap-8">
+                    <div class="bg-white/5 backdrop-blur-md border border-white/10 px-8 py-6 rounded-3xl text-center min-w-[250px]">
+                        <p class="text-lg text-slate-400 font-black uppercase tracking-widest mb-2">Direction</p>
+                        <p id="flex-direction" class="text-4xl text-white font-black">BUY</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-md border border-white/10 px-8 py-6 rounded-3xl text-center min-w-[250px]">
+                        <p class="text-lg text-slate-400 font-black uppercase tracking-widest mb-2">Setup</p>
+                        <p id="flex-strategy" class="text-4xl text-white font-black truncate max-w-[300px]">SMC</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="relative z-10 flex justify-between items-end w-full pb-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                    </div>
+                    <p class="text-xl font-black text-slate-500 tracking-widest uppercase">Verified Execution</p>
+                </div>
+                <p id="flex-date" class="text-2xl font-bold text-slate-400">Oct 24, 2026</p>
+            </div>
         </div>
     </div>
 
@@ -709,17 +759,6 @@
                 <button onclick="window.closeRuleModal()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
                 <button onclick="window.confirmAndSaveTrade()" class="flex-1 bg-slate-900 text-white font-black py-3 rounded-xl text-xs shadow-md">Confirm Execution ✅</button>
             </div>
-        </div>
-    </div>
-
-    <!-- CERTIFICATE MODAL -->
-    <div id="certificateModal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden flex items-center justify-center z-[90] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-slate-900 border-2 border-amber-500 rounded-[32px] shadow-2xl w-full max-w-md p-8 text-center relative text-white" onclick="event.stopPropagation()">
-            <button onclick="window.closeCertificateModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-            <div class="text-4xl mb-3">🏆</div>
-            <h2 class="text-[9px] font-black tracking-[0.25em] text-amber-400 uppercase mb-1">Certificate of Excellence</h2>
-            <h1 class="text-xl font-black mb-5">Weekly Champion</h1>
-            <h3 id="cert-username" class="text-base font-black text-blue-400 border-b border-slate-800 pb-2 inline-block px-6">Trader</h3>
         </div>
     </div>
 
@@ -1670,6 +1709,7 @@
             if(!plValue) { window.showToast("P/L calculation required!", "error"); return; }
 
             const directionValue = document.getElementById('trade-direction').value;
+            const emotionValue = document.getElementById('trade-emotion').value; // NEW
             const exitPriceValue = document.getElementById('trade-exit-price').value || "";
             const exitReasonValue = document.getElementById('trade-exit-reason').value || "";
 
@@ -1681,6 +1721,7 @@
                     asset: assetValue,
                     strategy: document.getElementById('strategy-dropdown').value, 
                     direction: directionValue, 
+                    emotion: emotionValue, // NEW
                     lotSize: document.getElementById('trade-lotsize').value,
                     entry: document.getElementById('trade-entry').value,
                     sl: document.getElementById('trade-sl').value,
@@ -1725,10 +1766,10 @@
         window.downloadReportImage = function() {
             const reportEl = document.getElementById('capture-trade-report');
             const closeBtn = document.getElementById('close-report-btn');
-            const downloadBtn = document.getElementById('download-report-btn');
+            const btnRow = document.getElementById('report-action-buttons');
             
             if (closeBtn) closeBtn.style.display = 'none';
-            if (downloadBtn) downloadBtn.style.display = 'none';
+            if (btnRow) btnRow.style.display = 'none';
             
             const originalWidth = reportEl.style.width;
             const originalMaxWidth = reportEl.style.maxWidth;
@@ -1749,7 +1790,7 @@
                     reportEl.style.margin = originalMargin;
                     
                     if (closeBtn) closeBtn.style.display = 'flex';
-                    if (downloadBtn) downloadBtn.style.display = 'block';
+                    if (btnRow) btnRow.style.display = 'flex';
                     
                     const link = document.createElement('a');
                     link.download = `Vault_Ticket_${new Date().getTime()}.png`;
@@ -1762,19 +1803,71 @@
                     reportEl.style.maxWidth = originalMaxWidth;
                     reportEl.style.margin = originalMargin;
                     if (closeBtn) closeBtn.style.display = 'flex';
-                    if (downloadBtn) downloadBtn.style.display = 'block';
+                    if (btnRow) btnRow.style.display = 'flex';
                     window.showToast("Capture failed.", "error");
                 });
             }, 100);
+        };
+
+        // NEW FEATURE: FLEX CARD GENERATOR
+        window.generateFlexCard = function() {
+            const flexCard = document.getElementById('capture-flex-card');
+            const btnRow = document.getElementById('report-action-buttons');
+            const closeBtn = document.getElementById('close-report-btn');
+
+            // Set Data
+            document.getElementById('flex-avatar').src = currentUserProfile.pfp;
+            document.getElementById('flex-username').innerText = currentUserProfile.username;
+            
+            // Move flex card to visible area momentarily to capture
+            const container = document.getElementById('flex-card-container');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '0';
+            container.style.zIndex = '9999';
+            container.style.opacity = '1';
+
+            if (closeBtn) closeBtn.style.display = 'none';
+            if (btnRow) btnRow.style.display = 'none';
+
+            window.showToast("Generating Aesthetic Flex Card... 📸");
+
+            setTimeout(() => {
+                html2canvas(flexCard, { 
+                    scale: 2, 
+                    backgroundColor: null,
+                    useCORS: true 
+                }).then(canvas => {
+                    // Revert UI
+                    container.style.top = '-9999px';
+                    container.style.left = '-9999px';
+                    container.style.zIndex = '-1';
+                    
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    if (btnRow) btnRow.style.display = 'flex';
+                    
+                    const link = document.createElement('a');
+                    link.download = `Vault_Flex_${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    window.showToast("Flex Card Downloaded!");
+                }).catch(err => {
+                    console.error("Capture error: ", err);
+                    container.style.top = '-9999px';
+                    container.style.left = '-9999px';
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    if (btnRow) btnRow.style.display = 'flex';
+                    window.showToast("Capture failed.", "error");
+                });
+            }, 500); // 500ms delay to allow fonts and images to load
         };
 
         window.openTradeReport = function(trade) {
             document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
             document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
             
-            if(document.getElementById('rep-asset')) {
-                document.getElementById('rep-asset').innerText = trade.asset || 'XAUUSD';
-            }
+            // Set Standard Report Data
+            if(document.getElementById('rep-asset')) { document.getElementById('rep-asset').innerText = trade.asset || 'XAUUSD'; }
             
             const isBuy = trade.direction === 'buy';
             document.getElementById('rep-direction').innerText = isBuy ? 'BUY' : 'SELL';
@@ -1782,12 +1875,28 @@
             
             document.getElementById('rep-strat').innerText = trade.strategy;
             document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
+            document.getElementById('rep-emotion').innerText = trade.emotion || 'Neutral';
             document.getElementById('rep-levels').innerHTML = `Entry: ${trade.entry || '-'}<br>SL: ${trade.sl || '-'}<br>TP: ${trade.tp || '-'}`;
 
             const plEl = document.getElementById('rep-pl');
             plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
             plEl.className = "text-xl font-black " + (trade.amount >= 0 ? "text-emerald-600" : "text-rose-600");
 
+            // Set Flex Card Data
+            document.getElementById('flex-pair').innerText = trade.asset || 'XAUUSD';
+            const flexPl = document.getElementById('flex-pl');
+            flexPl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount).toFixed(2);
+            flexPl.className = "text-[140px] leading-none font-black tracking-tighter " + (trade.amount >= 0 ? "text-emerald-400 drop-shadow-[0_0_40px_rgba(52,211,153,0.3)]" : "text-rose-400 drop-shadow-[0_0_40px_rgba(251,113,133,0.3)]");
+            
+            document.getElementById('flex-direction').innerText = isBuy ? 'BUY' : 'SELL';
+            document.getElementById('flex-direction').className = "text-4xl font-black " + (isBuy ? 'text-emerald-400' : 'text-rose-400');
+            document.getElementById('flex-strategy').innerText = trade.strategy;
+            document.getElementById('flex-date').innerText = trade.date;
+            
+            const emBadge = document.getElementById('flex-emotion-badge');
+            emBadge.innerText = trade.emotion || 'Neutral';
+
+            // Handle Images
             const chartImg = document.getElementById('rep-chart-img');
             const chartNoImg = document.getElementById('rep-chart-noimg');
             if(trade.chartImg && trade.chartImg.length > 50) {
@@ -1841,6 +1950,7 @@
                 Asset: t.asset || "XAUUSD",
                 Strategy: t.strategy || "-",
                 Direction: t.direction === 'sell' ? 'SELL' : 'BUY',
+                Emotion: t.emotion || "Neutral",
                 Lot_Size: t.lotSize || "-",
                 Entry: t.entry || "-",
                 Stop_Loss: t.sl || "-",
@@ -1898,7 +2008,7 @@
                 const dirLabel = t.direction === 'sell' ? 'SELL' : 'BUY';
                 const plText = (t.amount >= 0 ? '+$' : '-$') + Math.abs(t.amount);
                 
-                doc.text(`Direction: ${dirLabel} | Lot Size: ${t.lotSize || '-'} | Net P/L: ${plText}`, 14, yPos);
+                doc.text(`Direction: ${dirLabel} | Emotion: ${t.emotion || '-'} | Net P/L: ${plText}`, 14, yPos);
                 
                 yPos += 6;
                 doc.text(`Entry: ${t.entry || '-'} | SL: ${t.sl || '-'} | TP: ${t.tp || '-'}`, 14, yPos);
