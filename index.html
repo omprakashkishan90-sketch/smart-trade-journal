@@ -50,6 +50,12 @@
         
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.96) translateY(6px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .chat-bubble { animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     </style>
 </head>
 <body class="selection:bg-blue-100 selection:text-blue-900 relative">
@@ -196,7 +202,13 @@
                         <p class="text-slate-300 text-xs md:text-sm font-medium">Your portfolio aggregated performance analytics and active vault metrics.</p>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
+                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Account Equity</h3>
+                            <!-- UPDATED TO SHOW EQUITY -->
+                            <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-equity">$0.00</span>
+                            <span class="text-xs text-blue-600 font-bold mt-2">Starting + Net P/L</span>
+                        </div>
                         <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col items-center justify-between">
                             <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest self-start mb-4">Portfolio Win Rate</h3>
                             <div class="circle-chart shadow-inner mb-2" id="dash-winrate-circle">
@@ -266,7 +278,7 @@
                             <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col items-start shadow-sm hover:border-blue-300 transition">
                                 <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-sm">➕</div>
                                 <h3 class="text-lg font-black text-slate-900 mb-2">Add New Account</h3>
-                                <p class="text-xs text-slate-500 font-medium mb-6">Create a fresh workspace. Your old data remains safe in history view.</p>
+                                <p class="text-xs text-slate-500 font-medium mb-6">Create a fresh workspace with starting equity. Your old data remains safe in history.</p>
                                 <button onclick="window.openAddNewAccountModal()" class="mt-auto bg-blue-600 hover:bg-blue-500 text-white font-black py-3 px-6 rounded-xl transition text-xs shadow-md w-full">Create New Account</button>
                             </div>
 
@@ -498,6 +510,78 @@
 
     <!-- MODALS SECTION -->
     
+    <!-- ADD NEW ACCOUNT MODAL -->
+    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">➕ Add New Trading Account</h3>
+            <p class="text-xs text-slate-500 mb-4">Your old account data will remain safe in history/calendar view, and a fresh active workspace will be created.</p>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name / Label</label>
+                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1, Live Acc #2" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600 mb-3">
+                </div>
+                <div>
+                    <!-- NEW FIELD: STARTING EQUITY -->
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Starting Equity ($)</label>
+                    <input id="new-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
+                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create Account 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET ACCOUNT MODAL WITH OTP -->
+    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">🔄 Secure Account Reset</h3>
+            <p id="reset-modal-desc" class="text-xs text-slate-500 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
+            
+            <div id="reset-step-1" class="space-y-4 mb-6">
+                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
+            </div>
+
+            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
+                        <span>Enter 6-Digit OTP</span>
+                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
+                    </label>
+                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
+                </div>
+                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
+            </div>
+
+            <!-- NEW STEP 3: KEEP OR WIPE -->
+            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
+                <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
+                    <span class="text-xl">✅</span>
+                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
+                </div>
+                <p class="text-xs text-slate-500 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
+                
+                <!-- NEW FIELD: STARTING EQUITY ON RESET -->
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Starting Equity ($)</label>
+                    <input id="reset-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>📅</span> Keep Old Data in Calendar
+                    </button>
+                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>🗑️</span> Wipe Completely (No History)
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
+        </div>
+    </div>
+
     <!-- TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
@@ -537,7 +621,6 @@
                             <span class="text-xs font-black text-slate-900 uppercase" id="rep-direction">BUY</span>
                         </div>
                     </div>
-                    <!-- FIXED: Emotion and Asset combined properly in HTML so JS doesn't crash -->
                     <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col justify-center">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Asset & Emotion</p>
                         <span class="text-[11px] font-black text-slate-900 truncate"><span id="rep-asset">XAUUSD</span> • <span id="rep-emotion" class="text-blue-600">Neutral</span></span>
@@ -623,67 +706,6 @@
                 </div>
                 <p id="flex-date" class="text-2xl font-bold text-slate-400">Oct 24, 2026</p>
             </div>
-        </div>
-    </div>
-
-    <!-- OTHER MODALS -->
-    <!-- ADD NEW ACCOUNT MODAL -->
-    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 mb-2">➕ Add New Trading Account</h3>
-            <p class="text-xs text-slate-500 mb-4">Your old account data will remain safe in history/calendar view, and a fresh active workspace will be created.</p>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name / Label</label>
-                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1, Live Acc #2" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
-                </div>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
-                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create Account 🚀</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESET ACCOUNT MODAL WITH OTP -->
-    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 mb-2">🔄 Secure Account Reset</h3>
-            <p id="reset-modal-desc" class="text-xs text-slate-500 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
-            
-            <div id="reset-step-1" class="space-y-4 mb-6">
-                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
-            </div>
-
-            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
-                        <span>Enter 6-Digit OTP</span>
-                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
-                    </label>
-                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
-                </div>
-                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
-            </div>
-
-            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
-                <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
-                    <span class="text-xl">✅</span>
-                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
-                </div>
-                <p class="text-xs text-slate-500 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
-                
-                <div class="flex flex-col gap-3">
-                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>📅</span> Keep Old Data in Calendar
-                    </button>
-                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>🗑️</span> Wipe Completely (No History)
-                    </button>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
         </div>
     </div>
 
@@ -775,6 +797,12 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX -->
+    <div id="imageLightbox" class="fixed inset-0 bg-slate-950 bg-opacity-95 hidden flex-col items-center justify-center z-[150] p-4 backdrop-blur-md" onclick="window.closeLightbox()">
+        <button class="absolute top-5 right-5 text-slate-400 hover:text-white font-black text-2xl z-[160]">&times;</button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded-xl" onclick="event.stopPropagation()">
+    </div>
+
     <!-- FIREBASE AND APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -815,6 +843,7 @@
         let otpGeneratedTime = 0;
         let otpInterval = null;
 
+        // TOAST FUNCTION
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -837,19 +866,27 @@
             }, 3000);
         };
 
+        // ACCOUNT MANAGEMENT FUNCTIONS WITH EQUITY
         window.openAddNewAccountModal = function() {
             document.getElementById('new-account-name').value = "";
+            document.getElementById('new-account-equity').value = "";
             document.getElementById('addNewAccountModal').classList.remove('hidden');
         };
 
         window.confirmAddNewAccount = async function() {
             const accName = document.getElementById('new-account-name').value.trim();
+            const startingEquity = parseFloat(document.getElementById('new-account-equity').value) || 0;
+            
             if(!accName) { window.showToast("Please enter an account name!", "error"); return; }
             
             const newAccId = 'acc_' + Date.now();
             currentUserProfile.activeAccountId = newAccId;
             if(!currentUserProfile.accounts) currentUserProfile.accounts = {};
-            currentUserProfile.accounts[newAccId] = { name: accName, createdAt: new Date().toISOString() };
+            currentUserProfile.accounts[newAccId] = { 
+                name: accName, 
+                startingEquity: startingEquity,
+                createdAt: new Date().toISOString() 
+            };
 
             try {
                 const docRef = doc(db, "profiles", currentLoggedInUser);
@@ -866,6 +903,7 @@
             document.getElementById('reset-step-2').classList.add('hidden');
             document.getElementById('reset-step-3').classList.add('hidden');
             document.getElementById('reset-otp-input').value = "";
+            document.getElementById('reset-account-equity').value = "";
             document.getElementById('reset-modal-desc').innerText = "Clicking send OTP will dispatch a verification code to " + currentLoggedInUser;
             document.getElementById('resetAccountModal').classList.remove('hidden');
             if(otpInterval) clearInterval(otpInterval);
@@ -928,6 +966,8 @@
         };
 
         window.finalizeReset = async function(choice) {
+            const newEquity = parseFloat(document.getElementById('reset-account-equity').value) || 0;
+
             try {
                 if (choice === 'wipe') {
                     window.showToast("Wiping database permanently...", "success");
@@ -943,7 +983,11 @@
                 const newAccId = 'acc_reset_' + Date.now();
                 currentUserProfile.activeAccountId = newAccId;
                 if(!currentUserProfile.accounts) currentUserProfile.accounts = {};
-                currentUserProfile.accounts[newAccId] = { name: "Reset Workspace", createdAt: new Date().toISOString() };
+                currentUserProfile.accounts[newAccId] = { 
+                    name: "Reset Workspace", 
+                    startingEquity: newEquity,
+                    createdAt: new Date().toISOString() 
+                };
                 
                 const docRef = doc(db, "profiles", currentLoggedInUser);
                 await setDoc(docRef, currentUserProfile, { merge: true });
@@ -1090,12 +1134,12 @@
                         username: currentLoggedInUser.split('@')[0],
                         pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`,
                         experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false,
-                        activeAccountId: "main"
+                        activeAccountId: "main", accounts: {}
                     };
                     await setDoc(docRef, currentUserProfile);
                 }
             } catch(e) {
-                currentUserProfile = { username: currentLoggedInUser.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`, experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false, activeAccountId: "main" };
+                currentUserProfile = { username: currentLoggedInUser.split('@')[0], pfp: `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentLoggedInUser}`, experience: "1-3 Years", phase: "Learning", isProfitable: "No", isPublic: false, activeAccountId: "main", accounts: {} };
             }
             
             currentUserProfile.experience = currentUserProfile.experience || "1-3 Years";
@@ -1103,6 +1147,7 @@
             currentUserProfile.isProfitable = currentUserProfile.isProfitable || "No";
             currentUserProfile.isPublic = currentUserProfile.isPublic !== undefined ? currentUserProfile.isPublic : false;
             currentUserProfile.activeAccountId = currentUserProfile.activeAccountId || "main";
+            if(!currentUserProfile.accounts) currentUserProfile.accounts = {};
 
             document.getElementById('user-display-name').innerText = currentUserProfile.username;
             document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
@@ -1297,9 +1342,19 @@
                 });
 
                 document.getElementById('dash-totaltrades').innerText = totalTrades;
+                
                 const netPlEl = document.getElementById('dash-netpl');
                 netPlEl.innerText = (netPl >= 0 ? '+$' : '-$') + Math.abs(netPl).toFixed(2);
                 netPlEl.className = "text-4xl font-black tracking-tight " + (netPl >= 0 ? "text-emerald-600" : "text-rose-600");
+
+                // EQUITY CALCULATION (Starting Equity + Net P/L)
+                let startingEq = 0;
+                if(currentUserProfile.accounts && currentUserProfile.accounts[currentUserProfile.activeAccountId]) {
+                    startingEq = parseFloat(currentUserProfile.accounts[currentUserProfile.activeAccountId].startingEquity) || 0;
+                }
+                const totalEquity = startingEq + netPl;
+                const equityEl = document.getElementById('dash-equity');
+                equityEl.innerText = "$" + totalEquity.toFixed(2);
 
                 let winRate = totalTrades > 0 ? Math.round((wins / totalTrades) * 100) : 0;
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
@@ -1715,7 +1770,7 @@
             if(!plValue) { window.showToast("P/L calculation required!", "error"); return; }
 
             const directionValue = document.getElementById('trade-direction').value;
-            const emotionValue = document.getElementById('trade-emotion').value; // EMOTION SAVED
+            const emotionValue = document.getElementById('trade-emotion').value;
             const exitPriceValue = document.getElementById('trade-exit-price').value || "";
             const exitReasonValue = document.getElementById('trade-exit-reason').value || "";
 
@@ -1727,7 +1782,7 @@
                     asset: assetValue,
                     strategy: document.getElementById('strategy-dropdown').value, 
                     direction: directionValue, 
-                    emotion: emotionValue, // EMOTION SAVED
+                    emotion: emotionValue,
                     lotSize: document.getElementById('trade-lotsize').value,
                     entry: document.getElementById('trade-entry').value,
                     sl: document.getElementById('trade-sl').value,
@@ -1754,24 +1809,9 @@
             } catch (e) { window.showToast("Error saving log: " + e.message, "error"); }
         };
 
-        window.openLightbox = function(imageSrc) {
-            if(!imageSrc || imageSrc.includes('undefined') || imageSrc === window.location.href) return;
-            const lightbox = document.getElementById('imageLightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = imageSrc;
-            lightbox.classList.remove('hidden');
-            lightbox.classList.add('flex');
-        };
-
-        window.closeLightbox = function() {
-            const lightbox = document.getElementById('imageLightbox');
-            lightbox.classList.add('hidden');
-            lightbox.classList.remove('flex');
-        };
-
         window.openTradeReport = function(trade) {
-            document.getElementById('rep-title').innerText = "Trade Report: " + trade.strategy;
-            document.getElementById('rep-date').innerText = "Execution Date: " + trade.date;
+            document.getElementById('rep-title').innerText = "Trade Report: " + (trade.strategy || "Manual Execution");
+            document.getElementById('rep-date').innerText = "Execution Date: " + (trade.date || "N/A");
             
             document.getElementById('rep-asset').innerText = trade.asset || 'XAUUSD';
             document.getElementById('rep-strat').innerText = trade.strategy || '-';
@@ -1780,20 +1820,19 @@
             document.getElementById('rep-direction').innerText = isBuy ? 'BUY' : 'SELL';
             document.getElementById('rep-dir-dot').className = isBuy ? 'w-2 h-2 rounded-full bg-emerald-500' : 'w-2 h-2 rounded-full bg-rose-500';
             
-            // FIXED: Emotion and Lot Size
             document.getElementById('rep-emotion').innerText = trade.emotion || 'Neutral';
             document.getElementById('rep-lot').innerText = trade.lotSize || '0.01';
             document.getElementById('rep-entry').innerText = trade.entry || '-';
 
+            const plAmt = parseFloat(trade.amount || 0);
             const plEl = document.getElementById('rep-pl');
-            plEl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount);
-            plEl.className = "text-xl font-black " + (trade.amount >= 0 ? "text-emerald-600" : "text-rose-600");
+            plEl.innerText = (plAmt >= 0 ? '+$' : '-$') + Math.abs(plAmt).toFixed(2);
+            plEl.className = "text-xl font-black " + (plAmt >= 0 ? "text-emerald-600" : "text-rose-600");
 
-            // Populate Flex Card Data
             document.getElementById('flex-pair').innerText = trade.asset || 'XAUUSD';
             const flexPl = document.getElementById('flex-pl');
-            flexPl.innerText = (trade.amount >= 0 ? '+$' : '-$') + Math.abs(trade.amount).toFixed(2);
-            flexPl.className = "text-[140px] leading-none font-black tracking-tighter " + (trade.amount >= 0 ? "text-emerald-400 drop-shadow-[0_0_40px_rgba(52,211,153,0.3)]" : "text-rose-400 drop-shadow-[0_0_40px_rgba(251,113,133,0.3)]");
+            flexPl.innerText = (plAmt >= 0 ? '+$' : '-$') + Math.abs(plAmt).toFixed(2);
+            flexPl.className = "text-[140px] leading-none font-black tracking-tighter " + (plAmt >= 0 ? "text-emerald-400 drop-shadow-[0_0_40px_rgba(52,211,153,0.3)]" : "text-rose-400 drop-shadow-[0_0_40px_rgba(251,113,133,0.3)]");
             
             document.getElementById('flex-direction').innerText = isBuy ? 'BUY' : 'SELL';
             document.getElementById('flex-direction').className = "text-4xl font-black " + (isBuy ? 'text-emerald-400' : 'text-rose-400');
@@ -1896,18 +1935,15 @@
             }, 100);
         };
 
-        // NEW FUNCTION: GENERATE FLEX CARD
         window.generateFlexCard = function() {
             const flexCard = document.getElementById('capture-flex-card');
             const container = document.getElementById('flex-card-container');
             
-            // Set User Details
             document.getElementById('flex-avatar').src = currentUserProfile.pfp;
             document.getElementById('flex-username').innerText = currentUserProfile.username;
             
             window.showToast("Generating Aesthetic Flex Card... 🌟");
 
-            // Bring to viewport for capture
             container.style.position = 'fixed';
             container.style.top = '0';
             container.style.left = '0';
@@ -1920,7 +1956,6 @@
                     backgroundColor: null,
                     useCORS: true 
                 }).then(canvas => {
-                    // Hide again
                     container.style.top = '-9999px';
                     container.style.left = '-9999px';
                     container.style.zIndex = '-1';
