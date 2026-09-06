@@ -17,19 +17,6 @@
     <style>
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
         
-        .circle-chart {
-            width: 100px; height: 100px; border-radius: 50%;
-            background: conic-gradient(#2563eb 0% 0%, #e2e8f0 0% 100%);
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.8s ease-in-out;
-        }
-        .circle-inner {
-            width: 80px; height: 80px; border-radius: 50%;
-            background-color: white; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
         
@@ -170,7 +157,10 @@
                 <div class="flex items-center space-x-4">
                     <div class="text-right hidden md:block">
                         <span class="block text-sm font-black text-slate-900" id="user-display-name">Trader</span>
-                        <span class="block text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest" id="active-account-badge">Active Session</span>
+                        <span class="block text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest flex items-center gap-1.5 justify-end">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="active-account-badge">Active Session</span>
+                        </span>
                     </div>
                     
                     <div class="relative">
@@ -192,54 +182,126 @@
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto relative p-6 md:p-10">
+            <div class="flex-1 overflow-y-auto relative p-6 md:p-8 lg:p-10">
                 
-                <!-- 1. DASHBOARD TAB -->
-                <div id="tab-dashboard" class="tab-content active pb-12 max-w-7xl mx-auto">
-                    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-[32px] p-8 md:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
+                <!-- 1. PROFESSIONAL DASHBOARD TAB (UPGRADED UI) -->
+                <div id="tab-dashboard" class="tab-content active pb-12 max-w-[1400px] mx-auto">
+                    
+                    <!-- Welcome Banner -->
+                    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-[32px] p-8 md:p-10 text-white mb-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div class="absolute right-0 top-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-25 pointer-events-none"></div>
-                        <h2 class="text-3xl font-black tracking-tight mb-2">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Trader</span></h2>
-                        <p class="text-slate-300 text-xs md:text-sm font-medium">Your portfolio aggregated performance analytics and active vault metrics.</p>
+                        <div class="relative z-10">
+                            <p class="text-blue-300 text-[10px] font-black uppercase tracking-widest mb-1">Master Ledger Active</p>
+                            <h2 class="text-3xl font-black tracking-tight mb-1">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Trader</span></h2>
+                            <p class="text-slate-300 text-xs font-medium">Here is your portfolio's latest performance snapshot.</p>
+                        </div>
+                        <div class="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl flex items-center gap-4 text-right shrink-0">
+                            <div>
+                                <p class="text-[10px] text-slate-300 uppercase tracking-widest font-black">Live Status</p>
+                                <p class="text-sm font-bold text-white mt-0.5">Vault Synchronized</p>
+                            </div>
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center border border-emerald-500/30 text-lg">🛡️</div>
+                        </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Account Equity</h3>
-                            <!-- UPDATED TO SHOW EQUITY -->
-                            <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-equity">$0.00</span>
-                            <span class="text-xs text-blue-600 font-bold mt-2">Starting + Net P/L</span>
+                    <!-- TOP METRICS (4 Column Grid) -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+                        <!-- Metric 1: Equity -->
+                        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-200/80 flex flex-col justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div class="flex items-center gap-3 mb-3 relative z-10">
+                                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-sm shadow-sm">💰</div>
+                                <h3 class="text-slate-500 font-black text-[10px] uppercase tracking-widest">Total Equity</h3>
+                            </div>
+                            <span class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight relative z-10" id="dash-equity">$0.00</span>
                         </div>
-                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col items-center justify-between">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest self-start mb-4">Portfolio Win Rate</h3>
-                            <div class="circle-chart shadow-inner mb-2" id="dash-winrate-circle">
-                                <div class="circle-inner"><span class="text-xl font-black text-slate-900" id="dash-winrate-text">0%</span></div>
+
+                        <!-- Metric 2: Net P/L -->
+                        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-200/80 flex flex-col justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div class="flex items-center gap-3 mb-3 relative z-10">
+                                <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-sm shadow-sm">📈</div>
+                                <h3 class="text-slate-500 font-black text-[10px] uppercase tracking-widest">Net P/L</h3>
+                            </div>
+                            <span class="text-2xl md:text-3xl font-black tracking-tight relative z-10" id="dash-netpl">$0.00</span>
+                        </div>
+
+                        <!-- Metric 3: Win Rate (Upgraded) -->
+                        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-200/80 flex flex-col justify-center relative overflow-hidden hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-sm shadow-sm">🎯</div>
+                                    <h3 class="text-slate-500 font-black text-[10px] uppercase tracking-widest">Win Rate</h3>
+                                </div>
+                                <span class="text-xl font-black text-slate-900" id="dash-winrate-text">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 mt-2 overflow-hidden shadow-inner">
+                                <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-1000 w-0" id="dash-winrate-bar"></div>
                             </div>
                         </div>
-                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Net P/L</h3>
-                            <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-netpl">$0.00</span>
-                            <span class="text-xs text-slate-400 font-bold mt-2">Aggregated across active account</span>
-                        </div>
-                        <div class="bg-white rounded-[28px] p-7 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Total Executions</h3>
-                            <span class="text-4xl font-black text-slate-900 tracking-tight" id="dash-totaltrades">0</span>
-                            <span class="text-xs text-emerald-600 font-bold mt-2">Vault Secured & Synced</span>
+
+                        <!-- Metric 4: Executions -->
+                        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-200/80 flex flex-col justify-center relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div class="flex items-center gap-3 mb-3 relative z-10">
+                                <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-sm shadow-sm">⚡</div>
+                                <h3 class="text-slate-500 font-black text-[10px] uppercase tracking-widest">Executions</h3>
+                            </div>
+                            <span class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight relative z-10" id="dash-totaltrades">0</span>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-blue-50 text-blue-600 p-1.5 rounded-xl">🔥</span> Top Strategy</h3>
-                            <span class="text-xl font-black text-slate-900 truncate" id="ai-best-strat">-</span>
+                    <!-- BOTTOM SECTION (Growth Target + Insights + Recent Trades) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Left Side: Insights & Growth (2 Columns wide on Desktop) -->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            
+                            <!-- NEW FEATURE: Account Growth Tracker -->
+                            <div class="bg-white rounded-[28px] p-6 md:p-8 shadow-xs border border-slate-200/80">
+                                <div class="flex justify-between items-end mb-4">
+                                    <div>
+                                        <h3 class="text-sm font-black text-slate-900 mb-1">Account Growth Tracker</h3>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Based on Starting Equity</p>
+                                    </div>
+                                    <span class="text-2xl font-black text-emerald-500" id="dash-growth-text">0.00%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner relative">
+                                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10"></div>
+                                    <div class="bg-emerald-500 h-4 rounded-full transition-all duration-1000 w-0 relative" id="dash-growth-bar"></div>
+                                </div>
+                            </div>
+
+                            <!-- AI Insights Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex flex-col justify-center">
+                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>🔥</span> Top Strategy</h3>
+                                    <span class="text-sm font-black text-slate-900 truncate" id="ai-best-strat">-</span>
+                                </div>
+                                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex flex-col justify-center">
+                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>📅</span> Best Day</h3>
+                                    <span class="text-sm font-black text-slate-900 truncate" id="ai-best-day">-</span>
+                                </div>
+                                <div class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100 flex flex-col justify-center ring-1 ring-blue-50">
+                                    <h3 class="text-blue-500 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>💎</span> Largest Win</h3>
+                                    <span class="text-lg font-black text-emerald-600 truncate" id="ai-biggest-win">$0.00</span>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-indigo-50 text-indigo-600 p-1.5 rounded-xl">📅</span> Best Day</h3>
-                            <span class="text-xl font-black text-slate-900 truncate" id="ai-best-day">-</span>
+
+                        <!-- Right Side: NEW FEATURE - Recent Trades Widget -->
+                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col h-full">
+                            <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
+                                <h3 class="text-sm font-black text-slate-900">Recent Trades</h3>
+                                <button onclick="window.switchTab('mytrades')" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg hover:bg-blue-100 transition">View All</button>
+                            </div>
+                            
+                            <div id="dash-recent-trades" class="flex flex-col gap-2 flex-1 overflow-y-auto">
+                                <p class="text-xs text-slate-400 italic text-center mt-6 font-semibold">Loading recent activity...</p>
+                            </div>
                         </div>
-                        <div class="bg-white rounded-[28px] p-6 shadow-xs border border-slate-200/80 flex flex-col justify-center">
-                            <h3 class="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2 flex items-center"><span class="mr-2 bg-emerald-50 text-emerald-600 p-1.5 rounded-xl">💰</span> Largest Win</h3>
-                            <span class="text-xl font-black text-emerald-600 truncate" id="ai-biggest-win">$0.00</span>
-                        </div>
+
                     </div>
                 </div>
 
@@ -510,78 +572,6 @@
 
     <!-- MODALS SECTION -->
     
-    <!-- ADD NEW ACCOUNT MODAL -->
-    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 mb-2">➕ Add New Trading Account</h3>
-            <p class="text-xs text-slate-500 mb-4">Your old account data will remain safe in history/calendar view, and a fresh active workspace will be created.</p>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name / Label</label>
-                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1, Live Acc #2" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600 mb-3">
-                </div>
-                <div>
-                    <!-- NEW FIELD: STARTING EQUITY -->
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Starting Equity ($)</label>
-                    <input id="new-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
-                </div>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
-                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create Account 🚀</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESET ACCOUNT MODAL WITH OTP -->
-    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 mb-2">🔄 Secure Account Reset</h3>
-            <p id="reset-modal-desc" class="text-xs text-slate-500 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
-            
-            <div id="reset-step-1" class="space-y-4 mb-6">
-                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
-            </div>
-
-            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
-                        <span>Enter 6-Digit OTP</span>
-                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
-                    </label>
-                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
-                </div>
-                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
-            </div>
-
-            <!-- NEW STEP 3: KEEP OR WIPE -->
-            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
-                <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
-                    <span class="text-xl">✅</span>
-                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
-                </div>
-                <p class="text-xs text-slate-500 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
-                
-                <!-- NEW FIELD: STARTING EQUITY ON RESET -->
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Starting Equity ($)</label>
-                    <input id="reset-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
-                </div>
-
-                <div class="flex flex-col gap-3">
-                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>📅</span> Keep Old Data in Calendar
-                    </button>
-                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>🗑️</span> Wipe Completely (No History)
-                    </button>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
-        </div>
-    </div>
-
     <!-- TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
@@ -706,6 +696,76 @@
                 </div>
                 <p id="flex-date" class="text-2xl font-bold text-slate-400">Oct 24, 2026</p>
             </div>
+        </div>
+    </div>
+
+    <!-- OTHER MODALS -->
+    <!-- ADD NEW ACCOUNT MODAL -->
+    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">➕ Add New Trading Account</h3>
+            <p class="text-xs text-slate-500 mb-4">Your old account data will remain safe in history/calendar view, and a fresh active workspace will be created.</p>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name / Label</label>
+                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1, Live Acc #2" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600 mb-3">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Starting Equity ($)</label>
+                    <input id="new-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs">Cancel</button>
+                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create Account 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET ACCOUNT MODAL WITH OTP -->
+    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 mb-2">🔄 Secure Account Reset</h3>
+            <p id="reset-modal-desc" class="text-xs text-slate-500 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
+            
+            <div id="reset-step-1" class="space-y-4 mb-6">
+                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
+            </div>
+
+            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
+                        <span>Enter 6-Digit OTP</span>
+                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
+                    </label>
+                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none focus:border-blue-600">
+                </div>
+                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
+            </div>
+
+            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
+                <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200 text-center mb-2 shadow-inner">
+                    <span class="text-xl">✅</span>
+                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
+                </div>
+                <p class="text-xs text-slate-500 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
+                
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Starting Equity ($)</label>
+                    <input id="reset-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm focus:outline-none focus:border-blue-600">
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>📅</span> Keep Old Data in Calendar
+                    </button>
+                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>🗑️</span> Wipe Completely (No History)
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Close Modal</button>
         </div>
     </div>
 
@@ -843,7 +903,6 @@
         let otpGeneratedTime = 0;
         let otpInterval = null;
 
-        // TOAST FUNCTION
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -866,7 +925,6 @@
             }, 3000);
         };
 
-        // ACCOUNT MANAGEMENT FUNCTIONS WITH EQUITY
         window.openAddNewAccountModal = function() {
             document.getElementById('new-account-name').value = "";
             document.getElementById('new-account-equity').value = "";
@@ -1297,6 +1355,7 @@
                 const tradeSnapshot = await getDocs(q);
                 
                 globalTradesCache = [];
+                let activeAccountTrades = [];
                 calendarInstance.removeAllEvents();
 
                 let totalTrades = 0, wins = 0, netPl = 0;
@@ -1312,6 +1371,7 @@
                     const isCurrentAccount = (tradeAccId === currentUserProfile.activeAccountId);
 
                     if(isCurrentAccount) {
+                        activeAccountTrades.push(t);
                         totalTrades++;
                         const amt = parseFloat(t.amount || 0);
                         netPl += amt;
@@ -1332,6 +1392,7 @@
                         if(amt > biggestWinAmt) biggestWinAmt = amt;
                     }
 
+                    // CALENDAR gets ALL trades stored in DB (Universal Ledger/History)
                     calendarInstance.addEvent({
                         title: (parseFloat(t.amount || 0) >= 0 ? '+$' : '-$') + Math.abs(parseFloat(t.amount || 0)),
                         start: t.date,
@@ -1345,9 +1406,9 @@
                 
                 const netPlEl = document.getElementById('dash-netpl');
                 netPlEl.innerText = (netPl >= 0 ? '+$' : '-$') + Math.abs(netPl).toFixed(2);
-                netPlEl.className = "text-4xl font-black tracking-tight " + (netPl >= 0 ? "text-emerald-600" : "text-rose-600");
+                netPlEl.className = "text-2xl md:text-3xl font-black tracking-tight relative z-10 " + (netPl >= 0 ? "text-emerald-600" : "text-rose-600");
 
-                // EQUITY CALCULATION (Starting Equity + Net P/L)
+                // EQUITY CALCULATION
                 let startingEq = 0;
                 if(currentUserProfile.accounts && currentUserProfile.accounts[currentUserProfile.activeAccountId]) {
                     startingEq = parseFloat(currentUserProfile.accounts[currentUserProfile.activeAccountId].startingEquity) || 0;
@@ -1356,9 +1417,24 @@
                 const equityEl = document.getElementById('dash-equity');
                 equityEl.innerText = "$" + totalEquity.toFixed(2);
 
+                // GROWTH PROGRESS CALCULATION
+                let growthPercentage = 0;
+                if(startingEq > 0) {
+                    growthPercentage = (netPl / startingEq) * 100;
+                }
+                const growthText = document.getElementById('dash-growth-text');
+                const growthBar = document.getElementById('dash-growth-bar');
+                growthText.innerText = (growthPercentage >= 0 ? '+' : '') + growthPercentage.toFixed(2) + "%";
+                growthText.className = "text-2xl font-black " + (growthPercentage >= 0 ? "text-emerald-500" : "text-rose-500");
+                
+                let visualWidth = Math.min(Math.abs(growthPercentage), 100); 
+                growthBar.style.width = visualWidth + "%";
+                growthBar.className = "h-4 rounded-full transition-all duration-1000 relative " + (growthPercentage >= 0 ? "bg-emerald-500" : "bg-rose-500");
+
+                // WIN RATE BAR
                 let winRate = totalTrades > 0 ? Math.round((wins / totalTrades) * 100) : 0;
                 document.getElementById('dash-winrate-text').innerText = winRate + "%";
-                document.getElementById('dash-winrate-circle').style.background = `conic-gradient(#2563eb 0% ${winRate}%, #f1f5f9 ${winRate}% 100%)`;
+                document.getElementById('dash-winrate-bar').style.width = winRate + "%";
 
                 let bestStrategy = "-";
                 let maxStratPL = -Infinity;
@@ -1375,6 +1451,48 @@
                 document.getElementById('ai-best-strat').innerText = maxStratPL > 0 ? bestStrategy : "-";
                 document.getElementById('ai-best-day').innerText = maxDayPL > 0 ? bestDay : "-";
                 document.getElementById('ai-biggest-win').innerText = biggestWinAmt > 0 ? "+$" + biggestWinAmt.toFixed(2) : "$0.00";
+
+                // RECENT TRADES FEED WIDGET
+                const recentContainer = document.getElementById('dash-recent-trades');
+                recentContainer.innerHTML = "";
+                
+                // Sort active account trades by timestamp descending
+                activeAccountTrades.sort((a, b) => {
+                    let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime();
+                    let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime();
+                    return timeB - timeA;
+                });
+                
+                const recentTrades = activeAccountTrades.slice(0, 5); // Get top 5
+
+                if(recentTrades.length === 0) {
+                    recentContainer.innerHTML = "<p class='text-xs text-slate-400 italic text-center mt-6 font-semibold'>No recent trades found.</p>";
+                } else {
+                    recentTrades.forEach(t => {
+                        const isWin = parseFloat(t.amount) >= 0;
+                        const bgColor = isWin ? 'bg-emerald-50' : 'bg-rose-50';
+                        const textColor = isWin ? 'text-emerald-600' : 'text-rose-600';
+                        const sign = isWin ? '+' : '-';
+                        
+                        recentContainer.innerHTML += `
+                            <div class="flex justify-between items-center p-3.5 hover:bg-slate-50 rounded-2xl transition border border-transparent hover:border-slate-100 shadow-2xs group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-xl ${bgColor} ${textColor} flex items-center justify-center font-black text-[10px] uppercase shadow-sm">
+                                        ${t.direction === 'buy' ? 'B' : 'S'}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-black text-slate-900 leading-tight">${t.asset}</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-0.5">${t.date}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-black ${textColor}">${sign}$${Math.abs(t.amount).toFixed(2)}</p>
+                                    <p class="text-[9px] font-bold text-slate-400 mt-0.5 uppercase">${t.emotion || 'Neutral'}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
 
             } catch(e) { console.log(e); }
         }
@@ -1807,6 +1925,21 @@
                 await loadUserDataFromFirebase();
                 window.switchTab('dashboard');
             } catch (e) { window.showToast("Error saving log: " + e.message, "error"); }
+        };
+
+        window.openLightbox = function(imageSrc) {
+            if(!imageSrc || imageSrc.includes('undefined') || imageSrc === window.location.href) return;
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+        };
+
+        window.closeLightbox = function() {
+            const lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
         };
 
         window.openTradeReport = function(trade) {
