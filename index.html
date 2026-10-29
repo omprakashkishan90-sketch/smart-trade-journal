@@ -1625,6 +1625,13 @@
                     });
                 });
 
+                // 👉 PDF AUR EXCEL KE LIYE DATE-WISE SORTING (Oldest to Newest)
+                globalTradesCache.sort((a, b) => { 
+                    let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime(); 
+                    let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime(); 
+                    return timeA - timeB; 
+                });
+
                 document.getElementById('dash-totaltrades').innerText = totalTrades;
                 
                 const netPlEl = document.getElementById('dash-netpl'); 
