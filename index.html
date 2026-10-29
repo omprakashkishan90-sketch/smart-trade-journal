@@ -65,6 +65,13 @@
         .dark .fc-theme-standard td { border-color: #334155 !important; }
         .dark .fc-daygrid-day-number { color: #cbd5e1; } 
         .dark .fc-daygrid-day:hover { background-color: #1e293b; cursor: pointer; }
+
+        /* Disable user select on Calendar days to prevent text highlighting during Long Press */
+        .fc-daygrid-day {
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
     </style>
 </head>
 <body class="bg-[#f8fafc] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 relative">
@@ -323,9 +330,12 @@
                         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
                             <div>
                                 <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Trading Calendar & Reports</h2>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Master Ledger: Click on any logged trade date to inspect analytics. Hold 3s for Daily Notes.</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Master Ledger: Click on any logged trade date to inspect analytics. Hold 1.5s for Daily Notes.</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
+                                <!-- Add Note Button -->
+                                <button onclick="window.openDailyNotesModal()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-sm transition">📝 Add Note</button>
+                                
                                 <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-900 dark:bg-blue-600 text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-sm transition">📧 Email Report</button>
                                 <button onclick="window.downloadExcel()" class="bg-emerald-600 text-white text-xs font-bold px-5 py-3 rounded-2xl hover:bg-emerald-700 shadow-sm transition">📥 Export Excel</button>
                                 <button onclick="window.downloadPDF()" class="bg-rose-600 text-white text-xs font-bold px-5 py-3 rounded-2xl hover:bg-rose-700 shadow-sm transition">📄 Audit PDF</button>
@@ -342,7 +352,7 @@
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-5 rounded-2xl mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-inner">
                             <div>
                                 <p class="text-[10px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-1">Currently Active Workspace</p>
-                                <select id="workspace-account-selector" onchange="window.switchActiveAccount(this.value)" class="mt-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black text-lg px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-700 focus:outline-none">
+                                <select id="workspace-account-selector" onchange="window.switchActiveAccount(this.value)" class="mt-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black text-lg px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-700 focus:outline-none cursor-pointer">
                                     <option value="main">Main Account</option>
                                 </select>
                             </div>
@@ -663,7 +673,7 @@
         </div>
     </div>
 
-    <!-- TRADE REPORT MODAL -->
+    <!-- TRADE REPORT MODAL (FEATURE #1 UPDATED) -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
             <div id="capture-trade-report" class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl p-6 md:p-8 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100 dark:border-slate-700 mt-10 mb-6" style="width: 100%; max-width: 650px;">
@@ -754,9 +764,9 @@
             <button onclick="window.closeDailyNotesModal()" class="absolute top-5 right-5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-600 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-black transition">&times;</button>
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center text-xl">📝</div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Daily Trader Note</h3>
-                    <p class="text-xs font-bold text-blue-600 dark:text-blue-400" id="notes-modal-date-display">Date: --</p>
+                <div class="flex flex-col">
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white leading-tight">Daily Trader Note</h3>
+                    <input type="date" id="notes-modal-date-picker" onchange="window.loadNoteForSelectedDate()" class="text-[11px] font-black text-blue-600 dark:text-blue-400 bg-transparent border-none p-0 focus:ring-0 mt-0.5 cursor-pointer">
                 </div>
             </div>
             <textarea id="daily-note-textarea" rows="5" placeholder="Write psychological notes, market conditions, or lessons learned for this day..." class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-600 transition mb-4 resize-none"></textarea>
@@ -810,133 +820,6 @@
                     <p class="text-xl font-black text-slate-500 tracking-widest uppercase">Verified Execution</p>
                 </div>
                 <p id="flex-date" class="text-2xl font-bold text-slate-400">Oct 24, 2026</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD ACCOUNT MODAL -->
-    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100 dark:border-slate-700" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">➕ Add New Trading Account</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Your old account data will remain safe in history/calendar view.</p>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name</label>
-                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white mb-3">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Starting Equity ($)</label>
-                    <input id="new-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white">
-                </div>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl text-xs">Cancel</button>
-                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create 🚀</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- RESET ACCOUNT MODAL WITH OTP -->
-    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
-        <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100 dark:border-slate-700" onclick="event.stopPropagation()">
-            <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">🔄 Secure Account Reset</h3>
-            <p id="reset-modal-desc" class="text-xs text-slate-500 dark:text-slate-400 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
-            
-            <div id="reset-step-1" class="space-y-4 mb-6">
-                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 dark:bg-blue-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
-            </div>
-
-            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
-                        <span>Enter 6-Digit OTP</span>
-                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
-                    </label>
-                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none dark:text-white">
-                </div>
-                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 dark:bg-blue-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
-            </div>
-
-            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
-                <div class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800 text-center mb-2 shadow-inner">
-                    <span class="text-xl">✅</span>
-                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
-                </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
-                
-                <div>
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Starting Equity ($)</label>
-                    <input id="reset-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white">
-                </div>
-
-                <div class="flex flex-col gap-3">
-                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>📅</span> Keep Old Data
-                    </button>
-                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
-                        <span>🗑️</span> Wipe Completely
-                    </button>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl text-xs">Close</button>
-        </div>
-    </div>
-
-    <!-- ADVANCED TRADER IDENTITY MODULE -->
-    <div id="advanced-profile-page" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col overflow-y-auto p-4 md:p-10">
-        <div class="max-w-2xl mx-auto w-full">
-            <button onclick="window.closeAdvancedProfile()" class="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition w-fit font-bold text-xs uppercase tracking-wider">🔙 Back to Dashboard</button>
-            <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-8 p-8 space-y-6">
-                <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-100 dark:border-slate-700 pb-4">Trader Identity & Journey</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Trader Name</label>
-                        <input id="ap-username" type="text" class="w-full px-5 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white font-bold text-sm focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Registered Email</label>
-                        <input id="ap-email" type="text" readonly class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-500 dark:text-slate-400 font-semibold text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-700 pt-6">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Experience</label>
-                        <select id="ap-experience" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
-                            <option>Less than 1 Year</option>
-                            <option>1-3 Years</option>
-                            <option>3+ Years Pro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phase</label>
-                        <select id="ap-phase" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
-                            <option>Learning</option>
-                            <option>Losing</option>
-                            <option>Break Even</option>
-                            <option>Profitable</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profitable?</label>
-                        <select id="ap-profitable" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
-                            <option>No</option>
-                            <option>Yes</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="border-t border-slate-100 dark:border-slate-700 pt-6">
-                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition relative overflow-hidden">
-                        <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-30"></div>
-                        <div class="flex flex-col items-center justify-center pt-2 pb-3 relative z-10">
-                            <p class="text-xs text-blue-600 dark:text-blue-400 font-black" id="ap-dropzone-text">Click to upload Avatar</p>
-                        </div>
-                        <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
-                    </label>
-                </div>
-                <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
-                    <button onclick="window.saveAdvancedProfile()" class="w-full bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white font-black py-4 px-6 rounded-2xl transition text-sm shadow-md">Sync Vault Profile 🚀</button>
-                </div>
             </div>
         </div>
     </div>
@@ -1064,7 +947,7 @@
         let tempStrategyName = "";
         let tempStrategyDesc = "";
         
-        let selectedNoteDate = ""; // Feature #2 State
+        let selectedNoteDate = ""; 
 
         window.saveApiKey = function() {
             const keyInput = document.getElementById('gemini-key-input').value.trim();
@@ -1707,10 +1590,6 @@
                         window.showToast("Error opening trade details", "error"); 
                     } 
                 },
-                // FEATURE #2: 3-Second Long Press on Calendar Date
-                dateClick: function(info) {
-                    // Quick click does nothing or can select, let's use long press handler
-                },
                 datesSet: function() {
                     attachCalendarLongPress();
                 },
@@ -1726,7 +1605,7 @@
             await loadUserDataFromFirebase();
         }
 
-        // FEATURE #2: Long Press Handler for Calendar Days (3 seconds)
+        // FEATURE #2: 1.5-Second Long Press on Calendar Date
         function attachCalendarLongPress() {
             setTimeout(() => {
                 const dayEls = document.querySelectorAll('.fc-daygrid-day');
@@ -1738,7 +1617,7 @@
                     const startPress = () => {
                         pressTimer = setTimeout(() => {
                             window.openDailyNotesModal(dateStr);
-                        }, 3000); // 3 seconds hold
+                        }, 1500); // 1.5 seconds hold
                     };
 
                     const cancelPress = () => {
@@ -1746,21 +1625,32 @@
                     };
 
                     el.addEventListener('mousedown', startPress);
-                    el.addEventListener('touchstart', startPress);
+                    el.addEventListener('touchstart', startPress, {passive: true});
                     el.addEventListener('mouseup', cancelPress);
                     el.addEventListener('mouseleave', cancelPress);
                     el.addEventListener('touchend', cancelPress);
+                    el.addEventListener('touchmove', cancelPress, {passive: true});
                 });
             }, 500);
         }
 
         window.openDailyNotesModal = async function(dateStr) {
+            if (!dateStr) dateStr = new Date().toISOString().split('T')[0];
             selectedNoteDate = dateStr;
-            document.getElementById('notes-modal-date-display').innerText = "Date: " + dateStr;
+            const datePicker = document.getElementById('notes-modal-date-picker');
+            datePicker.value = dateStr;
+
             const textarea = document.getElementById('daily-note-textarea');
             textarea.value = "Loading note...";
             document.getElementById('dailyNotesModal').classList.remove('hidden');
+            
+            window.loadNoteForSelectedDate();
+        };
 
+        window.loadNoteForSelectedDate = async function() {
+            const dateStr = document.getElementById('notes-modal-date-picker').value;
+            selectedNoteDate = dateStr;
+            const textarea = document.getElementById('daily-note-textarea');
             try {
                 const docRef = doc(db, "daily_notes", currentLoggedInUser + "_" + currentUserProfile.activeAccountId + "_" + dateStr);
                 const docSnap = await getDoc(docRef);
@@ -1873,18 +1763,18 @@
                         if(amt > biggestWinAmt) {
                             biggestWinAmt = amt;
                         }
+                        
+                        calendarInstance.addEvent({ 
+                            title: (parseFloat(t.amount || 0) >= 0 ? '+$' : '-$') + Math.abs(parseFloat(t.amount || 0)), 
+                            start: t.date, 
+                            backgroundColor: parseFloat(t.amount || 0) >= 0 ? '#10b981' : '#f43f5e', 
+                            borderColor: parseFloat(t.amount || 0) >= 0 ? '#059669' : '#e11d48', 
+                            extendedProps: { trade: t } 
+                        });
                     }
-
-                    calendarInstance.addEvent({ 
-                        title: (parseFloat(t.amount || 0) >= 0 ? '+$' : '-$') + Math.abs(parseFloat(t.amount || 0)), 
-                        start: t.date, 
-                        backgroundColor: parseFloat(t.amount || 0) >= 0 ? '#10b981' : '#f43f5e', 
-                        borderColor: parseFloat(t.amount || 0) >= 0 ? '#059669' : '#e11d48', 
-                        extendedProps: { trade: t } 
-                    });
                 });
 
-                // Sort trades chronological for PDF / Excel
+                // PDF AUR EXCEL KE LIYE DATE-WISE SORTING
                 globalTradesCache.sort((a, b) => { 
                     let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime(); 
                     let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime(); 
