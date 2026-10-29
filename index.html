@@ -323,7 +323,7 @@
                         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
                             <div>
                                 <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Trading Calendar & Reports</h2>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Master Ledger: Click on any logged trade date to inspect analytics.</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Master Ledger: Click on any logged trade date to inspect analytics. Hold 3s for Daily Notes.</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="window.sendWeeklyReportEmail()" class="bg-slate-900 dark:bg-blue-600 text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-sm transition">📧 Email Report</button>
@@ -339,12 +339,17 @@
                 <div id="tab-account" class="tab-content pb-12 max-w-4xl mx-auto">
                     <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-xs border border-slate-200/80 dark:border-slate-700 p-6 md:p-10">
                         <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-4">⚙️ Account Manager</h2>
-                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-5 rounded-2xl mb-8 flex items-center justify-between shadow-inner">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-5 rounded-2xl mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-inner">
                             <div>
                                 <p class="text-[10px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-1">Currently Active Workspace</p>
-                                <h3 id="am-active-account" class="text-xl font-black text-blue-900 dark:text-blue-100">Main Account</h3>
+                                <select id="workspace-account-selector" onchange="window.switchActiveAccount(this.value)" class="mt-1 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black text-lg px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-700 focus:outline-none">
+                                    <option value="main">Main Account</option>
+                                </select>
                             </div>
-                            <div class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-md text-xl">⚡</div>
+                            <div class="flex items-center gap-3 w-full md:w-auto">
+                                <button onclick="window.openAddNewAccountModal()" class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-500 text-white font-black px-5 py-3 rounded-xl transition text-xs shadow-md">➕ Add Workspace</button>
+                                <div class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-md text-xl shrink-0">⚡</div>
+                            </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-start shadow-sm transition">
@@ -661,8 +666,9 @@
     <!-- TRADE REPORT MODAL -->
     <div id="tradeReportModal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden flex-col justify-center items-center z-[100] overflow-y-auto p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="w-full max-w-[650px] mx-auto flex flex-col gap-4" onclick="event.stopPropagation()">
-            <div id="capture-trade-report" class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl p-6 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100 dark:border-slate-700" style="width: 100%; max-width: 650px;">
-                <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-5 right-5 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-500 hover:text-white w-7 h-7 rounded-full flex items-center justify-center font-black text-sm transition z-10">&times;</button>
+            <div id="capture-trade-report" class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl p-6 md:p-8 relative overflow-hidden flex flex-col gap-4 mx-auto border border-slate-100 dark:border-slate-700 mt-10 mb-6" style="width: 100%; max-width: 650px;">
+                <!-- FEATURE #1: Prominent Close Button Added -->
+                <button id="close-report-btn" onclick="window.closeTradeReport()" class="absolute top-4 right-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-600 hover:text-white w-9 h-9 rounded-full flex items-center justify-center font-black text-lg transition z-50 shadow-md">&times;</button>
                 
                 <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
                     <div class="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-2.5 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
@@ -742,6 +748,25 @@
         </div>
     </div>
 
+    <!-- FEATURE #2: DAILY NOTES MODAL -->
+    <div id="dailyNotesModal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden flex items-center justify-center z-[130] p-4 backdrop-blur-xs" onclick="if(event.target === this) window.closeDailyNotesModal()">
+        <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl w-full max-w-lg p-6 md:p-8 border border-slate-100 dark:border-slate-700 relative" onclick="event.stopPropagation()">
+            <button onclick="window.closeDailyNotesModal()" class="absolute top-5 right-5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-600 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-black transition">&times;</button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center text-xl">📝</div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Daily Trader Note</h3>
+                    <p class="text-xs font-bold text-blue-600 dark:text-blue-400" id="notes-modal-date-display">Date: --</p>
+                </div>
+            </div>
+            <textarea id="daily-note-textarea" rows="5" placeholder="Write psychological notes, market conditions, or lessons learned for this day..." class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-600 transition mb-4 resize-none"></textarea>
+            <div class="flex gap-3">
+                <button onclick="window.closeDailyNotesModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-3.5 rounded-2xl text-xs">Cancel</button>
+                <button onclick="window.saveDailyNote()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition">Save Note 💾</button>
+            </div>
+        </div>
+    </div>
+
     <!-- HIDDEN INSTAGRAM FLEX CARD -->
     <div id="flex-card-container" class="fixed top-[-9999px] left-[-9999px] z-[-1] pointer-events-none">
         <div id="capture-flex-card" class="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#090d16] w-[1080px] h-[1080px] relative overflow-hidden flex flex-col justify-between p-16 font-sans">
@@ -785,6 +810,133 @@
                     <p class="text-xl font-black text-slate-500 tracking-widest uppercase">Verified Execution</p>
                 </div>
                 <p id="flex-date" class="text-2xl font-bold text-slate-400">Oct 24, 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD ACCOUNT MODAL -->
+    <div id="addNewAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100 dark:border-slate-700" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">➕ Add New Trading Account</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Your old account data will remain safe in history/calendar view.</p>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Account Name</label>
+                    <input id="new-account-name" type="text" placeholder="e.g. Prop Firm Phase 1" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white mb-3">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Starting Equity ($)</label>
+                    <input id="new-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white">
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="document.getElementById('addNewAccountModal').classList.add('hidden')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl text-xs">Cancel</button>
+                <button onclick="window.confirmAddNewAccount()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-md">Create 🚀</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- RESET ACCOUNT MODAL WITH OTP -->
+    <div id="resetAccountModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[120] p-4 backdrop-blur-xs" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-slate-100 dark:border-slate-700" onclick="event.stopPropagation()">
+            <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">🔄 Secure Account Reset</h3>
+            <p id="reset-modal-desc" class="text-xs text-slate-500 dark:text-slate-400 mb-4">Clicking send OTP will dispatch a verification code to your registered email address.</p>
+            
+            <div id="reset-step-1" class="space-y-4 mb-6">
+                <button onclick="window.sendResetOtp()" class="w-full bg-slate-900 dark:bg-blue-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Send OTP to Registered Email ✉️</button>
+            </div>
+
+            <div id="reset-step-2" class="space-y-4 mb-6 hidden">
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
+                        <span>Enter 6-Digit OTP</span>
+                        <span class="text-rose-500 font-bold" id="otp-timer">Expires in 60s</span>
+                    </label>
+                    <input id="reset-otp-input" type="text" placeholder="123456" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm tracking-widest text-center focus:outline-none dark:text-white">
+                </div>
+                <button onclick="window.verifyAndResetAccount()" class="w-full bg-slate-900 dark:bg-blue-600 text-white font-black py-3.5 rounded-2xl text-xs shadow-md">Verify OTP 🛡️</button>
+            </div>
+
+            <div id="reset-step-3" class="space-y-5 mb-6 hidden">
+                <div class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800 text-center mb-2 shadow-inner">
+                    <span class="text-xl">✅</span>
+                    <h4 class="text-sm font-black mt-1">OTP Verified Successfully!</h4>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 text-center font-semibold">Do you want to keep your previous data in the Calendar (History) or wipe it out permanently?</p>
+                
+                <div>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Starting Equity ($)</label>
+                    <input id="reset-account-equity" type="number" step="0.01" placeholder="e.g. 10000" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm focus:outline-none dark:text-white">
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="window.finalizeReset('keep')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>📅</span> Keep Old Data
+                    </button>
+                    <button onclick="window.finalizeReset('wipe')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-2xl text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <span>🗑️</span> Wipe Completely
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('resetAccountModal').classList.add('hidden')" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl text-xs">Close</button>
+        </div>
+    </div>
+
+    <!-- ADVANCED TRADER IDENTITY MODULE -->
+    <div id="advanced-profile-page" class="fixed inset-0 bg-slate-900 z-[60] hidden flex-col overflow-y-auto p-4 md:p-10">
+        <div class="max-w-2xl mx-auto w-full">
+            <button onclick="window.closeAdvancedProfile()" class="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition w-fit font-bold text-xs uppercase tracking-wider">🔙 Back to Dashboard</button>
+            <div class="bg-white dark:bg-[#1f2937] rounded-[32px] shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-8 p-8 space-y-6">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-100 dark:border-slate-700 pb-4">Trader Identity & Journey</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Trader Name</label>
+                        <input id="ap-username" type="text" class="w-full px-5 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white font-bold text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Registered Email</label>
+                        <input id="ap-email" type="text" readonly class="w-full px-5 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-500 dark:text-slate-400 font-semibold text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-700 pt-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Experience</label>
+                        <select id="ap-experience" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
+                            <option>Less than 1 Year</option>
+                            <option>1-3 Years</option>
+                            <option>3+ Years Pro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phase</label>
+                        <select id="ap-phase" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
+                            <option>Learning</option>
+                            <option>Losing</option>
+                            <option>Break Even</option>
+                            <option>Profitable</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profitable?</label>
+                        <select id="ap-profitable" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-xs font-bold">
+                            <option>No</option>
+                            <option>Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="border-t border-slate-100 dark:border-slate-700 pt-6">
+                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition relative overflow-hidden">
+                        <div id="ap-pfp-preview" class="absolute inset-0 bg-cover bg-center hidden opacity-30"></div>
+                        <div class="flex flex-col items-center justify-center pt-2 pb-3 relative z-10">
+                            <p class="text-xs text-blue-600 dark:text-blue-400 font-black" id="ap-dropzone-text">Click to upload Avatar</p>
+                        </div>
+                        <input id="ap-pfp-input-file" type="file" class="hidden" accept="image/*" onchange="window.handleAdvancedPfpUpload()" />
+                    </label>
+                </div>
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+                    <button onclick="window.saveAdvancedProfile()" class="w-full bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white font-black py-4 px-6 rounded-2xl transition text-sm shadow-md">Sync Vault Profile 🚀</button>
+                </div>
             </div>
         </div>
     </div>
@@ -885,7 +1037,6 @@
         const CORRECT_PASS = "Xauusd @123"; 
         const WEB3FORMS_KEY = "8e21fed3-cf5f-4858-a3ef-cdcf9fe34c96";
         
-        // NEW SECURE API KEY LOGIC
         let GEMINI_API_KEY = localStorage.getItem('geminiApiKey') || "";
 
         let calendarInstance = null; 
@@ -912,8 +1063,9 @@
         
         let tempStrategyName = "";
         let tempStrategyDesc = "";
+        
+        let selectedNoteDate = ""; // Feature #2 State
 
-        // Save Custom API Key
         window.saveApiKey = function() {
             const keyInput = document.getElementById('gemini-key-input').value.trim();
             if(keyInput) {
@@ -926,7 +1078,6 @@
             }
         };
 
-        // Check Key on Load
         window.addEventListener('DOMContentLoaded', () => {
             if(!GEMINI_API_KEY) {
                 const apiBox = document.getElementById('api-setup-box');
@@ -934,7 +1085,6 @@
             }
         });
 
-        // Theme Setup
         window.toggleTheme = function() {
             const html = document.documentElement; 
             html.classList.toggle('dark');
@@ -1004,11 +1154,40 @@
                 document.getElementById('addNewAccountModal').classList.add('hidden'); 
                 window.showToast("Account activated successfully!"); 
                 loadUserDataFromFirebase(); 
-                updateActiveAccountBadge(); 
+                updateActiveAccountDropdown(); 
             } catch(e) { 
                 window.showToast("Error: " + e.message, "error"); 
             }
         };
+
+        window.switchActiveAccount = async function(accId) {
+            currentUserProfile.activeAccountId = accId;
+            try {
+                await setDoc(doc(db, "profiles", currentLoggedInUser), currentUserProfile, { merge: true });
+                window.showToast("Switched workspace successfully!");
+                loadUserDataFromFirebase();
+                updateActiveAccountDropdown();
+            } catch(e) {
+                window.showToast("Error switching account", "error");
+            }
+        };
+
+        function updateActiveAccountDropdown() {
+            const dropdown = document.getElementById('workspace-account-selector');
+            if(!dropdown) return;
+            dropdown.innerHTML = "";
+            
+            if(currentUserProfile.accounts && Object.keys(currentUserProfile.accounts).length > 0) {
+                for(let accId in currentUserProfile.accounts) {
+                    let opt = new Option(currentUserProfile.accounts[accId].name, accId);
+                    if(accId === currentUserProfile.activeAccountId) opt.selected = true;
+                    dropdown.add(opt);
+                }
+            } else {
+                dropdown.add(new Option("Main Account", "main"));
+            }
+            updateActiveAccountBadge();
+        }
 
         window.openResetModal = function() { 
             document.getElementById('reset-step-1').classList.remove('hidden'); 
@@ -1122,7 +1301,7 @@
                 }
                 
                 loadUserDataFromFirebase(); 
-                updateActiveAccountBadge();
+                updateActiveAccountDropdown();
             } catch(e) { 
                 window.showToast("Error finalizing reset: " + e.message, "error"); 
             }
@@ -1260,7 +1439,7 @@
                         isProfitable: "No", 
                         isPublic: false, 
                         activeAccountId: "main", 
-                        accounts: {} 
+                        accounts: { "main": { name: "Main Account", startingEquity: 0 } } 
                     }; 
                     await setDoc(docRef, currentUserProfile); 
                 } 
@@ -1273,20 +1452,20 @@
                     isProfitable: "No", 
                     isPublic: false, 
                     activeAccountId: "main", 
-                    accounts: {} 
+                    accounts: { "main": { name: "Main Account", startingEquity: 0 } } 
                 }; 
             }
             
             currentUserProfile.activeAccountId = currentUserProfile.activeAccountId || "main"; 
             
-            if(!currentUserProfile.accounts) {
-                currentUserProfile.accounts = {};
+            if(!currentUserProfile.accounts || Object.keys(currentUserProfile.accounts).length === 0) {
+                currentUserProfile.accounts = { "main": { name: "Main Account", startingEquity: 0 } };
             }
             
             document.getElementById('user-display-name').innerText = currentUserProfile.username; 
             document.getElementById('welcome-user-name').innerText = currentUserProfile.username; 
             document.getElementById('header-avatar-img').src = currentUserProfile.pfp; 
-            updateActiveAccountBadge();
+            updateActiveAccountDropdown();
         }
 
         window.openAdvancedProfile = function() { 
@@ -1527,7 +1706,14 @@
                         console.error("Calendar click error:", e); 
                         window.showToast("Error opening trade details", "error"); 
                     } 
-                }, 
+                },
+                // FEATURE #2: 3-Second Long Press on Calendar Date
+                dateClick: function(info) {
+                    // Quick click does nothing or can select, let's use long press handler
+                },
+                datesSet: function() {
+                    attachCalendarLongPress();
+                },
                 events: [] 
             });
             calendarInstance.render(); 
@@ -1539,6 +1725,80 @@
 
             await loadUserDataFromFirebase();
         }
+
+        // FEATURE #2: Long Press Handler for Calendar Days (3 seconds)
+        function attachCalendarLongPress() {
+            setTimeout(() => {
+                const dayEls = document.querySelectorAll('.fc-daygrid-day');
+                dayEls.forEach(el => {
+                    let pressTimer = null;
+                    const dateStr = el.getAttribute('data-date');
+                    if(!dateStr) return;
+
+                    const startPress = () => {
+                        pressTimer = setTimeout(() => {
+                            window.openDailyNotesModal(dateStr);
+                        }, 3000); // 3 seconds hold
+                    };
+
+                    const cancelPress = () => {
+                        if (pressTimer) clearTimeout(pressTimer);
+                    };
+
+                    el.addEventListener('mousedown', startPress);
+                    el.addEventListener('touchstart', startPress);
+                    el.addEventListener('mouseup', cancelPress);
+                    el.addEventListener('mouseleave', cancelPress);
+                    el.addEventListener('touchend', cancelPress);
+                });
+            }, 500);
+        }
+
+        window.openDailyNotesModal = async function(dateStr) {
+            selectedNoteDate = dateStr;
+            document.getElementById('notes-modal-date-display').innerText = "Date: " + dateStr;
+            const textarea = document.getElementById('daily-note-textarea');
+            textarea.value = "Loading note...";
+            document.getElementById('dailyNotesModal').classList.remove('hidden');
+
+            try {
+                const docRef = doc(db, "daily_notes", currentLoggedInUser + "_" + currentUserProfile.activeAccountId + "_" + dateStr);
+                const docSnap = await getDoc(docRef);
+                if(docSnap.exists()) {
+                    textarea.value = docSnap.data().note || "";
+                } else {
+                    textarea.value = "";
+                }
+            } catch(e) {
+                textarea.value = "";
+            }
+        };
+
+        window.closeDailyNotesModal = function() {
+            document.getElementById('dailyNotesModal').classList.add('hidden');
+        };
+
+        window.saveDailyNote = async function() {
+            const noteText = document.getElementById('daily-note-textarea').value.trim();
+            if(!selectedNoteDate) return;
+
+            try {
+                window.showToast("Saving Daily Note... ⏳");
+                const docId = currentLoggedInUser + "_" + currentUserProfile.activeAccountId + "_" + selectedNoteDate;
+                await setDoc(doc(db, "daily_notes", docId), {
+                    userEmail: currentLoggedInUser,
+                    accountId: currentUserProfile.activeAccountId,
+                    date: selectedNoteDate,
+                    note: noteText,
+                    updatedAt: new Date()
+                }, { merge: true });
+
+                window.showToast("Daily Note Saved Successfully! ✅");
+                window.closeDailyNotesModal();
+            } catch(e) {
+                window.showToast("Error saving note: " + e.message, "error");
+            }
+        };
 
         async function loadUserDataFromFirebase() {
             try {
@@ -1576,7 +1836,6 @@
                 tradeSnapshot.forEach((doc) => {
                     const t = doc.data();
                     
-                    // UNDEFINED BUG FIX
                     if (!t.asset || t.asset === 'undefined') {
                         t.asset = 'XAUUSD'; 
                     }
@@ -1625,7 +1884,7 @@
                     });
                 });
 
-                // 👉 PDF AUR EXCEL KE LIYE DATE-WISE SORTING (Oldest to Newest)
+                // Sort trades chronological for PDF / Excel
                 globalTradesCache.sort((a, b) => { 
                     let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime(); 
                     let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime(); 
