@@ -7,8 +7,8 @@ import {
 import { collection, addDoc, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const CORRECT_PASS = "Xauusd @123";
-// Mobile/popup issue aaye toh true rakho, popup chalana ho toh false kar sakte ho
-const USE_REDIRECT_LOGIN = true;
+// Redirect mode band kar diya hai taaki sidha popup chale aur session lose na ho
+const USE_REDIRECT_LOGIN = false;
 
 let currentLoggedInUser = "";
 let tempAdvancedPfpData = "";
