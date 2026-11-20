@@ -1,8 +1,14 @@
 import { auth, provider, db } from './firebase-config.js';
-import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { collection, addDoc, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const CORRECT_PASS = "Xauusd @123";
+// Mobile/popup issue aaye toh true rakho, popup chalana ho toh false kar sakte ho
+const USE_REDIRECT_LOGIN = true;
 
 let currentLoggedInUser = "";
 let tempAdvancedPfpData = "";
@@ -27,7 +33,10 @@ window.toggleTheme = function() {
     if (icon) icon.innerText = isDark ? '☀️' : '🌙';
 };
 
-if (localStorage.getItem('tradeVaultTheme') === 'dark' || (!('tradeVaultTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+if (
+    localStorage.getItem('tradeVaultTheme') === 'dark' ||
+    (!('tradeVaultTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+) {
     document.documentElement.classList.add('dark');
     document.addEventListener('DOMContentLoaded', () => {
         const icon = document.getElementById('theme-icon');
@@ -59,12 +68,29 @@ window.showToast = function(message, type = 'success') {
 document.addEventListener('click', function(event) {
     const dropdown = document.getElementById('avatar-dropdown');
     const avatarDiv = document.querySelector('.relative .cursor-pointer');
-    if (dropdown && !dropdown.classList.contains('hidden') && avatarDiv && !avatarDiv.contains(event.target) && !dropdown.contains(event.target)) {
+    if (
+        dropdown &&
+        !dropdown.classList.contains('hidden') &&
+        avatarDiv &&
+        !avatarDiv.contains(event.target) &&
+        !dropdown.contains(event.target)
+    ) {
         dropdown.classList.add('hidden');
     }
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const redirectResult = await getRedirectResult(auth);
+        if (redirectResult && redirectResult.user && redirectResult.user.email) {
+            await logVisitorAndEnter(redirectResult.user.email, "Google Redirect Login");
+            return;
+        }
+    } catch (e) {
+        console.error("Redirect Result Error:", e);
+        window.showToast(e?.code ? `Google Error: ${e.code}` : "Google Redirect Error", "error");
+    }
+
     const savedUser = localStorage.getItem('tradeVaultUser');
     if (savedUser) {
         currentLoggedInUser = savedUser;
@@ -78,44 +104,66 @@ window.addEventListener('DOMContentLoaded', () => {
         const dropEmail = document.getElementById('dropdown-email');
         if (dropEmail) dropEmail.innerText = savedUser;
 
-        window.loadUserProfileFromFirebase().then(() => {
-            const activityBtn = document.getElementById('btn-activity');
-            if (activityBtn && (savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun")) {
-                activityBtn.classList.remove('hidden');
-                activityBtn.classList.add('flex');
-            }
-            if (typeof window.initApp === 'function') window.initApp();
-        });
+        await window.loadUserProfileFromFirebase();
+        const activityBtn = document.getElementById('btn-activity');
+        if (
+            activityBtn &&
+            (savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun")
+        ) {
+            activityBtn.classList.remove('hidden');
+            activityBtn.classList.add('flex');
+        }
+        if (typeof window.initApp === 'function') window.initApp();
     }
 });
 
 window.toggleSidebar = function() {
-    document.getElementById('sidebar').classList.toggle('-translate-x-full');
-    document.getElementById('sidebar-overlay').classList.toggle('hidden');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.toggle('-translate-x-full');
+    if (overlay) overlay.classList.toggle('hidden');
 };
 
 window.logout = function() {
     localStorage.removeItem('tradeVaultUser');
     auth.signOut().then(() => {
         window.location.reload();
+    }).catch(() => {
+        window.location.reload();
     });
 };
 
 window.loginWithGoogle = async function() {
     try {
+        if (USE_REDIRECT_LOGIN) {
+            window.showToast("Redirecting to Google...");
+            await signInWithRedirect(auth, provider);
+            return;
+        }
+
         const result = await signInWithPopup(auth, provider);
-        if (result && result.user) {
+        if (result && result.user && result.user.email) {
             await logVisitorAndEnter(result.user.email, "Google Login");
         }
     } catch (e) {
         console.error("Google Sign-In Error:", e);
+        if (!USE_REDIRECT_LOGIN && (e?.code === 'auth/popup-blocked' || e?.code === 'auth/operation-not-supported-in-this-environment')) {
+            try {
+                await signInWithRedirect(auth, provider);
+                return;
+            } catch (redirectErr) {
+                console.error("Fallback Redirect Error:", redirectErr);
+            }
+        }
         window.showToast(e?.code ? `Google Error: ${e.code}` : "Google Error", "error");
     }
 };
 
 window.handleUserPassLogin = async function() {
-    const uInput = document.getElementById('login-username').value.trim().toLowerCase();
-    const pInput = document.getElementById('login-password').value;
+    const uInputEl = document.getElementById('login-username');
+    const pInputEl = document.getElementById('login-password');
+    const uInput = uInputEl ? uInputEl.value.trim().toLowerCase() : "";
+    const pInput = pInputEl ? pInputEl.value : "";
 
     if ((uInput === "fx arjun" || uInput === "fxarjun") && pInput === CORRECT_PASS) {
         await logVisitorAndEnter("fxarjun812@gmail.com", "Master Credentials 🔒");
@@ -158,7 +206,10 @@ async function logVisitorAndEnter(identifier, method) {
     await window.loadUserProfileFromFirebase();
     const activityBtn = document.getElementById('btn-activity');
 
-    if (activityBtn && (identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun")) {
+    if (
+        activityBtn &&
+        (identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun")
+    ) {
         activityBtn.classList.remove('hidden');
         activityBtn.classList.add('flex');
     }
@@ -219,18 +270,28 @@ window.loadUserProfileFromFirebase = async function() {
 window.openAdvancedProfile = function() {
     const page = document.getElementById('advanced-profile-page');
     if (!page) return;
-    document.getElementById('avatar-dropdown').classList.add('hidden');
+    const dropdown = document.getElementById('avatar-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
     page.classList.remove('hidden');
     page.classList.add('flex');
-    document.getElementById('ap-email').value = currentLoggedInUser;
-    document.getElementById('ap-username').value = currentUserProfile.username || "";
-    document.getElementById('ap-experience').value = currentUserProfile.experience || "1-3 Years";
-    document.getElementById('ap-phase').value = currentUserProfile.phase || "Learning";
-    document.getElementById('ap-profitable').value = currentUserProfile.isProfitable || "No";
+
+    const emailEl = document.getElementById('ap-email');
+    const userEl = document.getElementById('ap-username');
+    const expEl = document.getElementById('ap-experience');
+    const phaseEl = document.getElementById('ap-phase');
+    const profEl = document.getElementById('ap-profitable');
+    const dropText = document.getElementById('ap-dropzone-text');
+    const previewEl = document.getElementById('ap-pfp-preview');
+
+    if (emailEl) emailEl.value = currentLoggedInUser;
+    if (userEl) userEl.value = currentUserProfile.username || "";
+    if (expEl) expEl.value = currentUserProfile.experience || "1-3 Years";
+    if (phaseEl) phaseEl.value = currentUserProfile.phase || "Learning";
+    if (profEl) profEl.value = currentUserProfile.isProfitable || "No";
 
     tempAdvancedPfpData = "";
-    document.getElementById('ap-dropzone-text').innerHTML = `Click to upload Avatar`;
-    document.getElementById('ap-pfp-preview').classList.add('hidden');
+    if (dropText) dropText.innerHTML = `Click to upload Avatar`;
+    if (previewEl) previewEl.classList.add('hidden');
 };
 
 window.closeAdvancedProfile = function() {
@@ -245,22 +306,25 @@ window.handleAdvancedPfpUpload = function() {
     const dropzoneText = document.getElementById('ap-dropzone-text');
     const previewOverlay = document.getElementById('ap-pfp-preview');
 
-    if (input.files && input.files[0]) {
+    if (input && input.files && input.files[0]) {
         const file = input.files[0];
-        dropzoneText.innerText = "Selected: " + file.name;
+        if (dropzoneText) dropzoneText.innerText = "Selected: " + file.name;
 
         const reader = new FileReader();
         reader.onload = function(e) {
             tempAdvancedPfpData = e.target.result;
-            previewOverlay.style.backgroundImage = `url('${tempAdvancedPfpData}')`;
-            previewOverlay.classList.remove('hidden');
+            if (previewOverlay) {
+                previewOverlay.style.backgroundImage = `url('${tempAdvancedPfpData}')`;
+                previewOverlay.classList.remove('hidden');
+            }
         };
         reader.readAsDataURL(file);
     }
 };
 
 window.saveAdvancedProfile = async function() {
-    const newName = document.getElementById('ap-username').value.trim();
+    const newNameEl = document.getElementById('ap-username');
+    const newName = newNameEl ? newNameEl.value.trim() : "";
 
     if (!newName) {
         window.showToast("Trader name cannot be empty!", "error");
@@ -282,7 +346,8 @@ window.saveAdvancedProfile = async function() {
         window.closeAdvancedProfile();
         await window.loadUserProfileFromFirebase();
 
-        if (document.getElementById('tab-leaderboard').classList.contains('active') && typeof window.loadLeaderboardData === 'function') {
+        const lbTab = document.getElementById('tab-leaderboard');
+        if (lbTab && lbTab.classList.contains('active') && typeof window.loadLeaderboardData === 'function') {
             window.loadLeaderboardData();
         }
     } catch (e) {
@@ -300,9 +365,10 @@ window.switchTab = function(tabId) {
         }
     });
 
-    document.getElementById('tab-' + tabId).classList.add('active');
-    const activeBtn = document.getElementById('btn-' + tabId);
+    const targetTab = document.getElementById('tab-' + tabId);
+    if (targetTab) targetTab.classList.add('active');
 
+    const activeBtn = document.getElementById('btn-' + tabId);
     if (activeBtn) {
         activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
         activeBtn.classList.add('bg-blue-50', 'text-blue-700', 'dark:bg-blue-900/30', 'dark:text-blue-400');
@@ -319,7 +385,8 @@ window.switchTab = function(tabId) {
         'aicoach': 'AI Trading Coach'
     };
 
-    document.getElementById('header-title').innerText = titles[tabId] || 'Dashboard';
+    const headerTitle = document.getElementById('header-title');
+    if (headerTitle) headerTitle.innerText = titles[tabId] || 'Dashboard';
 
     if (tabId === 'mytrades' && window.calendarInstance) {
         setTimeout(() => { window.calendarInstance.render(); }, 100);
@@ -332,7 +399,7 @@ window.switchTab = function(tabId) {
     }
     if (window.innerWidth < 768) {
         const sidebar = document.getElementById('sidebar');
-        if (!sidebar.classList.contains('-translate-x-full')) {
+        if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
             window.toggleSidebar();
         }
     }
