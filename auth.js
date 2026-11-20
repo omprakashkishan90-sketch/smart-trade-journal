@@ -1,6 +1,6 @@
 import { auth, provider, db } from './firebase-config.js';
 import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { collection, addDoc, getDocs, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { collection, addDoc, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const CORRECT_PASS = "Xauusd @123";
 
@@ -68,15 +68,19 @@ window.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('tradeVaultUser');
     if (savedUser) {
         currentLoggedInUser = savedUser;
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-
-        setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
-        document.getElementById('dropdown-email').innerText = savedUser;
+        const loginScreen = document.getElementById('login-screen');
+        const mainApp = document.getElementById('main-app');
+        if (loginScreen) loginScreen.classList.add('hidden');
+        if (mainApp) {
+            mainApp.classList.remove('hidden');
+            setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+        }
+        const dropEmail = document.getElementById('dropdown-email');
+        if (dropEmail) dropEmail.innerText = savedUser;
 
         window.loadUserProfileFromFirebase().then(() => {
             const activityBtn = document.getElementById('btn-activity');
-            if (savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun") {
+            if (activityBtn && (savedUser.toLowerCase() === "fxarjun812@gmail.com" || savedUser.toLowerCase() === "fx arjun")) {
                 activityBtn.classList.remove('hidden');
                 activityBtn.classList.add('flex');
             }
@@ -104,7 +108,8 @@ window.loginWithGoogle = async function() {
             await logVisitorAndEnter(result.user.email, "Google Login");
         }
     } catch (e) {
-        window.showToast("Google Error", "error");
+        console.error("Google Sign-In Error:", e);
+        window.showToast(e?.code ? `Google Error: ${e.code}` : "Google Error", "error");
     }
 };
 
@@ -131,7 +136,8 @@ window.handleUserPassLogin = async function() {
 async function logVisitorAndEnter(identifier, method) {
     currentLoggedInUser = identifier;
     localStorage.setItem('tradeVaultUser', identifier);
-    document.getElementById('dropdown-email').innerText = identifier;
+    const dropEmail = document.getElementById('dropdown-email');
+    if (dropEmail) dropEmail.innerText = identifier;
 
     try {
         await addDoc(collection(db, "visitors"), {
@@ -141,14 +147,18 @@ async function logVisitorAndEnter(identifier, method) {
         });
     } catch (e) {}
 
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.remove('hidden');
-    setTimeout(() => document.getElementById('main-app').classList.remove('opacity-0'), 50);
+    const loginScreen = document.getElementById('login-screen');
+    const mainApp = document.getElementById('main-app');
+    if (loginScreen) loginScreen.classList.add('hidden');
+    if (mainApp) {
+        mainApp.classList.remove('hidden');
+        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+    }
 
     await window.loadUserProfileFromFirebase();
     const activityBtn = document.getElementById('btn-activity');
 
-    if (identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun") {
+    if (activityBtn && (identifier.toLowerCase() === "fxarjun812@gmail.com" || identifier.toLowerCase() === "fx arjun")) {
         activityBtn.classList.remove('hidden');
         activityBtn.classList.add('flex');
     }
@@ -194,9 +204,13 @@ window.loadUserProfileFromFirebase = async function() {
         currentUserProfile.accounts = { "main": { name: "Main Account", startingEquity: 0 } };
     }
 
-    document.getElementById('user-display-name').innerText = currentUserProfile.username;
-    document.getElementById('welcome-user-name').innerText = currentUserProfile.username;
-    document.getElementById('header-avatar-img').src = currentUserProfile.pfp;
+    const dispName = document.getElementById('user-display-name');
+    const welcName = document.getElementById('welcome-user-name');
+    const avatarImg = document.getElementById('header-avatar-img');
+    if (dispName) dispName.innerText = currentUserProfile.username;
+    if (welcName) welcName.innerText = currentUserProfile.username;
+    if (avatarImg) avatarImg.src = currentUserProfile.pfp;
+
     if (typeof window.updateActiveAccountDropdown === 'function') {
         window.updateActiveAccountDropdown();
     }
