@@ -164,17 +164,39 @@
 
                     <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-[32px] p-8 md:p-10 text-white mb-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div class="absolute right-0 top-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-25 pointer-events-none"></div>
-                        <div class="relative z-10">
+                        
+                        <div class="relative z-10 flex-1">
                             <p class="text-blue-300 text-[10px] font-black uppercase tracking-widest mb-1">Master Ledger Active</p>
                             <h2 class="text-3xl font-black tracking-tight mb-1">Welcome Back, <span id="welcome-user-name" class="text-blue-400">Trader</span></h2>
                             <p class="text-slate-300 text-xs font-medium">Here is your portfolio's latest performance snapshot.</p>
                         </div>
-                        <div class="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl flex items-center gap-4 text-right shrink-0">
-                            <div>
-                                <p class="text-[10px] text-slate-300 uppercase tracking-widest font-black">Live Status</p>
-                                <p class="text-sm font-bold text-white mt-0.5">Vault Synchronized</p>
+                        
+                        <!-- RIGHT SIDE: Timeframe Dropdown + Live Status -->
+                        <div class="relative z-10 flex flex-wrap items-center gap-4 shrink-0">
+                            
+                            <!-- NAYA TIME FILTER DROPDOWN -->
+                            <div class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3.5 rounded-2xl flex items-center gap-3 cursor-pointer hover:bg-white/20 transition">
+                                <div class="text-blue-400 text-lg">📅</div>
+                                <div class="flex flex-col">
+                                    <p class="text-[9px] text-slate-300 uppercase tracking-widest font-black text-left">Timeframe</p>
+                                    <select id="dashboard-timeframe" onchange="if(typeof window.loadDashboardData === 'function') window.loadDashboardData()" class="bg-transparent text-white font-black text-sm focus:outline-none cursor-pointer appearance-none w-24">
+                                        <option value="overall" class="bg-slate-900 text-white">Overall</option>
+                                        <option value="month" class="bg-slate-900 text-white">This Month</option>
+                                        <option value="week" class="bg-slate-900 text-white">This Week</option>
+                                    </select>
+                                </div>
+                                <div class="pointer-events-none text-slate-400 text-[10px] ml-1">▼</div>
                             </div>
-                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center border border-emerald-500/30 text-lg">🛡️</div>
+
+                            <!-- EXISTING LIVE STATUS -->
+                            <div class="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl flex items-center gap-4 text-right">
+                                <div>
+                                    <p class="text-[10px] text-slate-300 uppercase tracking-widest font-black">Live Status</p>
+                                    <p class="text-sm font-bold text-white mt-0.5">Vault Synchronized</p>
+                                </div>
+                                <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center border border-emerald-500/30 text-lg">🛡️</div>
+                            </div>
+                            
                         </div>
                     </div>
 
