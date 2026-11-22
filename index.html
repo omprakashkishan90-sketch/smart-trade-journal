@@ -162,6 +162,7 @@
                 <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content active pb-12 max-w-[1400px] mx-auto">
 
+                    <!-- TOP WELCOME BANNER (Clean & Uncluttered) -->
                     <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 rounded-[32px] p-8 md:p-10 text-white mb-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div class="absolute right-0 top-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-25 pointer-events-none"></div>
                         <div class="relative z-10">
@@ -252,16 +253,29 @@
                                 </div>
                             </div>
                             <!-- Insights Grid -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                <!-- Total Pips (NEW) -->
+                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>🎯</span> Total Pips</h3>
+                                    <span class="text-sm font-black text-slate-900 dark:text-white truncate" id="ai-total-pips">+0.0</span>
+                                </div>
+                                <!-- Top Strategy -->
+                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
                                     <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>🔥</span> Top Strategy</h3>
                                     <span class="text-sm font-black text-slate-900 dark:text-white truncate" id="ai-best-strat">-</span>
                                 </div>
-                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>📅</span> Best Day</h3>
+                                <!-- Best Day -->
+                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>🟢</span> Best Day</h3>
                                     <span class="text-sm font-black text-slate-900 dark:text-white truncate" id="ai-best-day">-</span>
                                 </div>
-                                <div class="bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl p-5 border border-blue-100 dark:border-blue-900/50 flex flex-col justify-center ring-1 ring-blue-50 dark:ring-blue-900/30">
+                                <!-- Worst Day (NEW) -->
+                                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                                    <h3 class="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>🔴</span> Worst Day</h3>
+                                    <span class="text-sm font-black text-slate-900 dark:text-white truncate" id="ai-worst-day">-</span>
+                                </div>
+                                <!-- Largest Win -->
+                                <div class="bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl p-4 border border-blue-100 dark:border-blue-900/50 flex flex-col justify-center ring-1 ring-blue-50 dark:ring-blue-900/30">
                                     <h3 class="text-blue-500 dark:text-blue-400 font-black text-[9px] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span>💎</span> Largest Win</h3>
                                     <span class="text-lg font-black text-emerald-600 dark:text-emerald-400 truncate" id="ai-biggest-win">$0.00</span>
                                 </div>
