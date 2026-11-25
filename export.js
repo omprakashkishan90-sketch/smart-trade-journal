@@ -130,9 +130,11 @@ window.downloadReportImage = function() {
     const reportEl = document.getElementById('capture-trade-report');
     const closeBtn = document.getElementById('close-report-btn');
     const btnRow = document.getElementById('report-action-buttons');
+    const rulesSection = document.getElementById('rep-rules-list')?.parentElement;
 
     if (closeBtn) closeBtn.style.display = 'none';
     if (btnRow) btnRow.style.display = 'none';
+    if (rulesSection) rulesSection.style.display = 'none';
     window.showToast("Capturing ticket... 📸");
 
     const originalWidth = reportEl.style.width;
@@ -143,31 +145,30 @@ window.downloadReportImage = function() {
     reportEl.style.maxWidth = '650px';
     reportEl.style.margin = '0 auto';
 
+    const restoreReportUi = () => {
+        reportEl.style.width = originalWidth;
+        reportEl.style.maxWidth = originalMaxWidth;
+        reportEl.style.margin = originalMargin;
+
+        if (closeBtn) closeBtn.style.display = 'flex';
+        if (btnRow) btnRow.style.display = 'flex';
+        if (rulesSection) rulesSection.style.display = '';
+    };
+
     setTimeout(() => {
         html2canvas(reportEl, {
             scale: 2,
             backgroundColor: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
             useCORS: true
-        }).then(canvas => {
-            reportEl.style.width = originalWidth;
-            reportEl.style.maxWidth = originalMaxWidth;
-            reportEl.style.margin = originalMargin;
-
-            if (closeBtn) closeBtn.style.display = 'flex';
-            if (btnRow) btnRow.style.display = 'flex';
+        }).then((canvas) => {
+            restoreReportUi();
 
             const link = document.createElement('a');
             link.download = `Vault_Ticket_${new Date().getTime()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-        }).catch(err => {
-            reportEl.style.width = originalWidth;
-            reportEl.style.maxWidth = originalMaxWidth;
-            reportEl.style.margin = originalMargin;
-
-            if (closeBtn) closeBtn.style.display = 'flex';
-            if (btnRow) btnRow.style.display = 'flex';
-
+        }).catch(() => {
+            restoreReportUi();
             window.showToast("Capture failed.", "error");
         });
     }, 100);
@@ -178,8 +179,8 @@ window.generateFlexCard = function() {
     const container = document.getElementById('flex-card-container');
     const currentUserProfile = typeof window.getUserProfile === 'function' ? window.getUserProfile() : { pfp: "", username: "Trader" };
 
-    document.getElementById('flex-avatar').src = currentUserProfile.pfp;
-    document.getElementById('flex-username').innerText = currentUserProfile.username;
+    document.getElementById('flex-avatar').src = currentUserProfile.pfp || "https://api.dicebear.com/7.x/avataaars/svg?seed=trader";
+    document.getElementById('flex-username').innerText = currentUserProfile.username || "Trader";
     window.showToast("Generating Aesthetic Flex Card... 🌟");
 
     container.style.position = 'fixed';
@@ -190,10 +191,14 @@ window.generateFlexCard = function() {
 
     setTimeout(() => {
         html2canvas(flexCard, {
-            scale: 2,
+            scale: 1,
+            width: 1080,
+            height: 1080,
+            windowWidth: 1080,
+            windowHeight: 1080,
             backgroundColor: null,
             useCORS: true
-        }).then(canvas => {
+        }).then((canvas) => {
             container.style.top = '-9999px';
             container.style.left = '-9999px';
             container.style.zIndex = '-1';
@@ -204,13 +209,19 @@ window.generateFlexCard = function() {
             link.href = canvas.toDataURL('image/png');
             link.click();
             window.showToast("Flex Card Downloaded! 📸");
+        }).catch(() => {
+            container.style.top = '-9999px';
+            container.style.left = '-9999px';
+            container.style.zIndex = '-1';
+            container.style.opacity = '0';
+            window.showToast("Flex card failed.", "error");
         });
     }, 300);
 };
 
 window.downloadExcel = function() {
     const globalTradesCache = typeof window.getTradesCache === 'function' ? window.getTradesCache() : [];
-    const noTradingDates = window.noTradingDaysList || []; // Yahan fetch kiya
+    const noTradingDates = window.noTradingDaysList || [];
 
     if (globalTradesCache.length === 0 && noTradingDates.length === 0) {
         window.showToast("No trades found to export!", "error");
@@ -219,7 +230,6 @@ window.downloadExcel = function() {
 
     window.showToast("Generating Excel file... ⏳");
 
-    // 1. Regular Trades ka data banao
     let excelData = globalTradesCache.map(t => ({
         Date: t.date || "-",
         Asset: t.asset || "XAUUSD",
@@ -236,7 +246,6 @@ window.downloadExcel = function() {
         Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
     }));
 
-    // 2. Empty dates ko "No Trading Day" banakar array mein append karo
     noTradingDates.forEach(dateStr => {
         excelData.push({
             Date: dateStr,
@@ -250,12 +259,11 @@ window.downloadExcel = function() {
             Take_Profit: "-",
             Exit_Price: "-",
             Exit_Reason: "-",
-            Net_PL_Amount: "-", // Dash for empty
+            Net_PL_Amount: "-",
             Rules_Followed: "-"
         });
     });
 
-    // 3. Poori list ko date ke hisaab se sort karo (naya din upar)
     excelData.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 
     setTimeout(() => {
