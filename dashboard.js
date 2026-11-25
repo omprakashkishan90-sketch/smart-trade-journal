@@ -9,10 +9,57 @@ window.setTradesCache = (trades) => { globalTradesCache = trades; };
 window.getStrategiesCache = () => strategiesCache;
 window.setStrategiesCache = (strats) => { strategiesCache = strats; };
 
+function parseTradeDate(dateStr) {
+    if (!dateStr) return null;
+    const raw = String(dateStr).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        const [y, m, d] = raw.split('-').map(Number);
+        return new Date(y, m - 1, d);
+    }
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function toLocalDateKey(dateObj) {
+    if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) return null;
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+function getTimeframeStartDate(timeframe, now = new Date()) {
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    if (timeframe === 'week') {
+        const day = today.getDay();
+        const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+        return new Date(today.getFullYear(), today.getMonth(), diff, 0, 0, 0, 0);
+    }
+    if (timeframe === 'month') {
+        return new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0);
+    }
+    return null;
+}
+
+window.loadDashboardData = async function() {
+    await window.loadUserDataFromFirebase();
+};
+
 window.loadUserDataFromFirebase = async function() {
-    const currentLoggedInUser = window.getCurrentUser();
-    const currentUserProfile = window.getUserProfile();
+    const currentLoggedInUser = typeof window.getCurrentUser === 'function'
+        ? window.getCurrentUser()
+        : localStorage.getItem('tradeVaultUser');
+    const currentUserProfile = typeof window.getUserProfile === 'function'
+        ? window.getUserProfile()
+        : { accounts: { main: { startingEquity: 0 } }, activeAccountId: 'main' };
+
     if (!currentLoggedInUser) return;
+
+    const activeAccId = currentUserProfile?.activeAccountId || 'main';
+    const timeframe = document.getElementById('dashboard-timeframe')?.value || 'overall';
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const timeframeStart = getTimeframeStartDate(timeframe, now);
 
     try {
         const qStrat = query(collection(db, "strategies"), where("userEmail", "==", currentLoggedInUser));
@@ -38,17 +85,29 @@ window.loadUserDataFromFirebase = async function() {
         const tradeSnapshot = await getDocs(q);
 
         globalTradesCache = [];
-        let activeAccountTrades = [];
+        let allActiveAccountTrades = [];
+        let filteredTrades = [];
+
         if (window.calendarInstance) {
             window.calendarInstance.removeAllEvents();
         }
 
-        let validTradesForWinRate = 0, wins = 0, netPl = 0, totalLoggedTrades = 0;
+        let validTradesForWinRate = 0;
+        let wins = 0;
+        let netPl = 0;
+        let totalLoggedTrades = 0;
         let strategyStats = {};
-        let dayStats = { "Sunday": 0, "Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0 };
+        let dayStats = {
+            "Sunday": 0,
+            "Monday": 0,
+            "Tuesday": 0,
+            "Wednesday": 0,
+            "Thursday": 0,
+            "Friday": 0,
+            "Saturday": 0
+        };
         let biggestWinAmt = 0;
-        
-        let loggedDates = new Set(); // NAYA: Calendar ke liye log ki hui dates track karne ke liye
+        let loggedDatesAll = new Set();
 
         tradeSnapshot.forEach((docSnap) => {
             const t = docSnap.data();
@@ -59,47 +118,25 @@ window.loadUserDataFromFirebase = async function() {
 
             globalTradesCache.push(t);
 
-            let tradeAccId = t.accountId || 'main';
-            const isCurrentAccount = (tradeAccId === currentUserProfile.activeAccountId);
+            const tradeAccId = t.accountId || 'main';
+            const isCurrentAccount = (tradeAccId === activeAccId);
 
             if (isCurrentAccount) {
-                activeAccountTrades.push(t);
-                totalLoggedTrades++;
+                allActiveAccountTrades.push(t);
 
-                if (t.date) {
-                    loggedDates.add(t.date); // Date set mein add kardi
+                const parsedDate = parseTradeDate(t.date);
+                const normalizedDate = parsedDate
+                    ? new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate(), 0, 0, 0, 0)
+                    : null;
+
+                if (normalizedDate) {
+                    loggedDatesAll.add(toLocalDateKey(normalizedDate));
                 }
 
                 const amt = parseFloat(t.amount || 0);
-                netPl += amt;
-
                 const isBreakEven = (amt >= -1.00 && amt <= 1.00);
 
-                if (!isBreakEven) {
-                    validTradesForWinRate++;
-                    if (amt > 1.00) {
-                        wins++;
-                    }
-                }
-
-                if (t.strategy && !isBreakEven) {
-                    if (!strategyStats[t.strategy]) {
-                        strategyStats[t.strategy] = 0;
-                    }
-                    strategyStats[t.strategy] += amt;
-                }
-
-                if (t.date && !isBreakEven) {
-                    const d = new Date(t.date);
-                    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                    const dayName = days[d.getDay()];
-                    dayStats[dayName] += amt;
-                }
-
-                if (amt > biggestWinAmt) {
-                    biggestWinAmt = amt;
-                }
-
+                // Calendar event for active account trade
                 let bgColor = '#64748b';
                 let borderColor = '#475569';
                 let prefix = (amt >= 0 ? '+$' : '-$');
@@ -118,38 +155,72 @@ window.loadUserDataFromFirebase = async function() {
                         extendedProps: { trade: t }
                     });
                 }
+
+                // Filter for dashboard metrics
+                const matchesTimeframe =
+                    timeframe === 'overall' ||
+                    (normalizedDate && timeframeStart && normalizedDate >= timeframeStart && normalizedDate <= todayStart);
+
+                if (matchesTimeframe) {
+                    filteredTrades.push(t);
+                    totalLoggedTrades++;
+                    netPl += amt;
+
+                    if (!isBreakEven) {
+                        validTradesForWinRate++;
+                        if (amt > 1.00) {
+                            wins++;
+                        }
+                    }
+
+                    if (t.strategy && !isBreakEven) {
+                        if (!strategyStats[t.strategy]) {
+                            strategyStats[t.strategy] = 0;
+                        }
+                        strategyStats[t.strategy] += amt;
+                    }
+
+                    if (normalizedDate && !isBreakEven) {
+                        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        const dayName = days[normalizedDate.getDay()];
+                        dayStats[dayName] += amt;
+                    }
+
+                    if (amt > biggestWinAmt) {
+                        biggestWinAmt = amt;
+                    }
+                }
             }
         });
 
-        // ---> NO TRADING DAYS LOGIC START <---
+        // No Trading Days calculation (excludes weekends, respects timeframe)
         let noTradeDates = [];
-        if (activeAccountTrades.length > 0) {
-            let earliestDate = new Date(activeAccountTrades[0].date);
-            activeAccountTrades.forEach(t => {
-                let d = new Date(t.date);
-                if (d < earliestDate) earliestDate = d;
+        let rangeStart = timeframeStart;
+
+        if (!rangeStart && allActiveAccountTrades.length > 0) {
+            allActiveAccountTrades.forEach((t) => {
+                const d = parseTradeDate(t.date);
+                if (!d) return;
+                const dStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+                if (!rangeStart || dStart < rangeStart) {
+                    rangeStart = dStart;
+                }
             });
+        }
 
-            let today = new Date();
-            let cursor = new Date(earliestDate);
-
-            // Pehle trade se aaj tak loop
-            while (cursor <= today) {
-                // Saturday (6) aur Sunday (0) ignore marna hai
-                if (cursor.getDay() !== 0 && cursor.getDay() !== 6) {
-                    let y = cursor.getFullYear();
-                    let m = String(cursor.getMonth() + 1).padStart(2, '0');
-                    let d = String(cursor.getDate()).padStart(2, '0');
-                    let dStr = `${y}-${m}-${d}`;
-                    
-                    if (!loggedDates.has(dStr)) {
-                        noTradeDates.push(dStr);
-                        // Calendar pe "No" daal diya
+        if (rangeStart && rangeStart <= todayStart) {
+            const cursor = new Date(rangeStart);
+            while (cursor <= todayStart) {
+                const dayOfWeek = cursor.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    const key = toLocalDateKey(cursor);
+                    if (!loggedDatesAll.has(key)) {
+                        noTradeDates.push(key);
                         if (window.calendarInstance) {
                             window.calendarInstance.addEvent({
                                 title: 'No',
-                                start: dStr,
-                                backgroundColor: '#94a3b8', // Halki slate theme
+                                start: key,
+                                backgroundColor: '#94a3b8',
                                 borderColor: '#cbd5e1',
                                 textColor: '#ffffff',
                                 allDay: true
@@ -160,12 +231,15 @@ window.loadUserDataFromFirebase = async function() {
                 cursor.setDate(cursor.getDate() + 1);
             }
         }
-        window.noTradingDaysList = noTradeDates; // Ye line Excel Export ke liye kaam aayegi
-        // ---> NO TRADING DAYS LOGIC END <---
+        window.noTradingDaysList = noTradeDates;
 
         globalTradesCache.sort((a, b) => {
-            let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime();
-            let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime();
+            let timeA = a.timestamp && typeof a.timestamp.toDate === 'function'
+                ? a.timestamp.toDate().getTime()
+                : (parseTradeDate(a.date)?.getTime() || 0);
+            let timeB = b.timestamp && typeof b.timestamp.toDate === 'function'
+                ? b.timestamp.toDate().getTime()
+                : (parseTradeDate(b.date)?.getTime() || 0);
             return timeA - timeB;
         });
 
@@ -179,8 +253,8 @@ window.loadUserDataFromFirebase = async function() {
         }
 
         let startingEq = 0;
-        if (currentUserProfile.accounts && currentUserProfile.accounts[currentUserProfile.activeAccountId]) {
-            startingEq = parseFloat(currentUserProfile.accounts[currentUserProfile.activeAccountId].startingEquity) || 0;
+        if (currentUserProfile.accounts && currentUserProfile.accounts[activeAccId]) {
+            startingEq = parseFloat(currentUserProfile.accounts[activeAccId].startingEquity) || 0;
         }
 
         const totalEquity = startingEq + netPl;
@@ -221,37 +295,50 @@ window.loadUserDataFromFirebase = async function() {
 
         let bestDay = "-";
         let maxDayPL = -Infinity;
+        let worstDay = "-";
+        let minDayPL = Infinity;
+
         for (let d in dayStats) {
             if (dayStats[d] > maxDayPL && dayStats[d] > 0) {
                 maxDayPL = dayStats[d];
                 bestDay = d;
             }
+            if (dayStats[d] < minDayPL && dayStats[d] < 0) {
+                minDayPL = dayStats[d];
+                worstDay = d;
+            }
         }
 
         const bestStratEl = document.getElementById('ai-best-strat');
         const bestDayEl = document.getElementById('ai-best-day');
+        const worstDayEl = document.getElementById('ai-worst-day');
         const biggestWinEl = document.getElementById('ai-biggest-win');
 
         if (bestStratEl) bestStratEl.innerText = maxStratPL > 0 ? bestStrategy : "-";
         if (bestDayEl) bestDayEl.innerText = maxDayPL > 0 ? bestDay : "-";
+        if (worstDayEl) worstDayEl.innerText = minDayPL < 0 ? worstDay : "-";
         if (biggestWinEl) biggestWinEl.innerText = biggestWinAmt > 0 ? "+$" + biggestWinAmt.toFixed(2) : "$0.00";
 
         const recentContainer = document.getElementById('dash-recent-trades');
         if (!recentContainer) return;
         recentContainer.innerHTML = "";
 
-        activeAccountTrades.sort((a, b) => {
-            let timeA = a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.date).getTime();
-            let timeB = b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.date).getTime();
+        filteredTrades.sort((a, b) => {
+            let timeA = a.timestamp && typeof a.timestamp.toDate === 'function'
+                ? a.timestamp.toDate().getTime()
+                : (parseTradeDate(a.date)?.getTime() || 0);
+            let timeB = b.timestamp && typeof b.timestamp.toDate === 'function'
+                ? b.timestamp.toDate().getTime()
+                : (parseTradeDate(b.date)?.getTime() || 0);
             return timeB - timeA;
         });
 
-        const recentTrades = activeAccountTrades.slice(0, 5);
+        const recentTrades = filteredTrades.slice(0, 5);
 
         if (recentTrades.length === 0) {
             recentContainer.innerHTML = "<p class='text-xs text-slate-400 italic text-center mt-6 font-semibold'>No recent trades found.</p>";
         } else {
-            recentTrades.forEach(t => {
+            recentTrades.forEach((t) => {
                 const amt = parseFloat(t.amount || 0);
                 const isBreakEven = (amt >= -1.00 && amt <= 1.00);
 
