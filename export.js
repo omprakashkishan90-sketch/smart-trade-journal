@@ -128,38 +128,54 @@ window.closeTradeReport = function() {
 
 window.downloadReportImage = function() {
     const reportEl = document.getElementById('capture-trade-report');
+    if (!reportEl) return;
+
     const closeBtn = document.getElementById('close-report-btn');
     const btnRow = document.getElementById('report-action-buttons');
-    const rulesSection = document.getElementById('rep-rules-list')?.parentElement;
+    const rulesList = document.getElementById('rep-rules-list');
+    const rulesBox = rulesList ? rulesList.closest('div.rounded-2xl') || rulesList.parentElement : null;
 
     if (closeBtn) closeBtn.style.display = 'none';
     if (btnRow) btnRow.style.display = 'none';
-    if (rulesSection) rulesSection.style.display = 'none';
+    if (rulesBox) rulesBox.style.display = 'none';
+
     window.showToast("Capturing ticket... 📸");
 
     const originalWidth = reportEl.style.width;
     const originalMaxWidth = reportEl.style.maxWidth;
     const originalMargin = reportEl.style.margin;
+    const originalPadding = reportEl.style.padding;
 
     reportEl.style.width = '650px';
     reportEl.style.maxWidth = '650px';
     reportEl.style.margin = '0 auto';
+    reportEl.style.padding = '28px';
 
     const restoreReportUi = () => {
         reportEl.style.width = originalWidth;
         reportEl.style.maxWidth = originalMaxWidth;
         reportEl.style.margin = originalMargin;
+        reportEl.style.padding = originalPadding;
 
         if (closeBtn) closeBtn.style.display = 'flex';
         if (btnRow) btnRow.style.display = 'flex';
-        if (rulesSection) rulesSection.style.display = '';
+        if (rulesBox) rulesBox.style.display = '';
     };
 
     setTimeout(() => {
         html2canvas(reportEl, {
             scale: 2,
             backgroundColor: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
-            useCORS: true
+            useCORS: true,
+            onclone: (clonedDoc) => {
+                const clonedRulesList = clonedDoc.getElementById('rep-rules-list');
+                const clonedRulesBox = clonedRulesList
+                    ? clonedRulesList.closest('div.rounded-2xl') || clonedRulesList.parentElement
+                    : null;
+                if (clonedRulesBox) {
+                    clonedRulesBox.style.display = 'none';
+                }
+            }
         }).then((canvas) => {
             restoreReportUi();
 
@@ -171,16 +187,33 @@ window.downloadReportImage = function() {
             restoreReportUi();
             window.showToast("Capture failed.", "error");
         });
-    }, 100);
+    }, 120);
 };
 
 window.generateFlexCard = function() {
     const flexCard = document.getElementById('capture-flex-card');
     const container = document.getElementById('flex-card-container');
-    const currentUserProfile = typeof window.getUserProfile === 'function' ? window.getUserProfile() : { pfp: "", username: "Trader" };
+    if (!flexCard || !container) return;
 
-    document.getElementById('flex-avatar').src = currentUserProfile.pfp || "https://api.dicebear.com/7.x/avataaars/svg?seed=trader";
-    document.getElementById('flex-username').innerText = currentUserProfile.username || "Trader";
+    const currentUserProfile = typeof window.getUserProfile === 'function'
+        ? window.getUserProfile()
+        : { pfp: "", username: "Trader" };
+
+    const flexAvatar = document.getElementById('flex-avatar');
+    const flexUsername = document.getElementById('flex-username');
+    const flexStrategy = document.getElementById('flex-strategy');
+
+    if (flexAvatar) {
+        flexAvatar.src = currentUserProfile.pfp || "https://api.dicebear.com/7.x/avataaars/svg?seed=trader";
+    }
+    if (flexUsername) {
+        flexUsername.innerText = currentUserProfile.username || "Trader";
+    }
+    if (flexStrategy) {
+        flexStrategy.classList.remove('text-4xl', 'truncate', 'max-w-[300px]');
+        flexStrategy.classList.add('text-2xl', 'leading-snug', 'break-words', 'max-w-[340px]');
+    }
+
     window.showToast("Generating Aesthetic Flex Card... 🌟");
 
     container.style.position = 'fixed';
