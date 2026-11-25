@@ -210,14 +210,17 @@ window.generateFlexCard = function() {
 
 window.downloadExcel = function() {
     const globalTradesCache = typeof window.getTradesCache === 'function' ? window.getTradesCache() : [];
-    if (globalTradesCache.length === 0) {
+    const noTradingDates = window.noTradingDaysList || []; // Yahan fetch kiya
+
+    if (globalTradesCache.length === 0 && noTradingDates.length === 0) {
         window.showToast("No trades found to export!", "error");
         return;
     }
 
     window.showToast("Generating Excel file... ⏳");
 
-    const excelData = globalTradesCache.map(t => ({
+    // 1. Regular Trades ka data banao
+    let excelData = globalTradesCache.map(t => ({
         Date: t.date || "-",
         Asset: t.asset || "XAUUSD",
         Strategy: t.strategy || "-",
@@ -232,6 +235,28 @@ window.downloadExcel = function() {
         Net_PL_Amount: t.amount || 0,
         Rules_Followed: t.rulesFollowed ? t.rulesFollowed.join(", ") : "-"
     }));
+
+    // 2. Empty dates ko "No Trading Day" banakar array mein append karo
+    noTradingDates.forEach(dateStr => {
+        excelData.push({
+            Date: dateStr,
+            Asset: "No Trading Day",
+            Strategy: "-",
+            Direction: "-",
+            Emotion: "-",
+            Lot_Size: "-",
+            Entry: "-",
+            Stop_Loss: "-",
+            Take_Profit: "-",
+            Exit_Price: "-",
+            Exit_Reason: "-",
+            Net_PL_Amount: "-", // Dash for empty
+            Rules_Followed: "-"
+        });
+    });
+
+    // 3. Poori list ko date ke hisaab se sort karo (naya din upar)
+    excelData.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 
     setTimeout(() => {
         const worksheet = XLSX.utils.json_to_sheet(excelData);
